@@ -1,0 +1,198 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+_global_script_classes=[{
+"base": "PuzzleElement",
+"class": &"Area",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Area.gd"
+}, {
+"base": "RefCounted",
+"class": &"Decorator",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Decorator.gd"
+}, {
+"base": "RefCounted",
+"class": &"DirectionedEdge",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/DirectionedEdge.gd"
+}, {
+"base": "PuzzleElement",
+"class": &"Edge",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Edge.gd"
+}, {
+"base": "InputEventAction",
+"class": &"InputPuzzleForceExitEvent",
+"language": &"GDScript",
+"path": "res://Puzzle/Panel/InputPuzzleForceExitEvent.gd"
+}, {
+"base": "Node3D",
+"class": &"Interactable",
+"language": &"GDScript",
+"path": "res://InteractiveObject/Interactable.gd"
+}, {
+"base": "Resource",
+"class": &"JsonResource",
+"language": &"GDScript",
+"path": "res://Puzzle/Json/JsonResource.gd"
+}, {
+"base": "ResourceFormatLoader",
+"class": &"JsonResourceLoader",
+"language": &"GDScript",
+"path": "res://Puzzle/Json/JsonResourceLoader.gd"
+}, {
+"base": "RefCounted",
+"class": &"LineData",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/LineData.gd"
+}, {
+"base": "RefCounted",
+"class": &"LineDataSegment",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/LineDataSegment.gd"
+}, {
+"base": "RenderItem",
+"class": &"LineSegment",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/RenderItems/LineSegment.gd"
+}, {
+"base": "RenderItem",
+"class": &"PuzzleBoardLine",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/RenderItems/PuzzleBoardLine.gd"
+}, {
+"base": "Resource",
+"class": &"PuzzleData",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/PuzzleData.gd"
+}, {
+"base": "RefCounted",
+"class": &"PuzzleElement",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/PuzzleElement.gd"
+}, {
+"base": "RefCounted",
+"class": &"PuzzleFunction",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/PuzzleFunction.gd"
+}, {
+"base": "Interactable",
+"class": &"PuzzlePanel",
+"language": &"GDScript",
+"path": "res://Puzzle/Panel/PuzzlePanel.gd"
+}, {
+"base": "ColorRect",
+"class": &"PuzzleRenderer",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/PuzzleRenderer.gd"
+}, {
+"base": "Node2D",
+"class": &"RenderItem",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/RenderItems/RenderItem.gd"
+}, {
+"base": "TextureShapeResource",
+"class": &"TextureRegularShapeResource",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/ShapeResource/TextureRegularShapeResource.gd"
+}, {
+"base": "TextureShapeResource",
+"class": &"TextureRoundedShapeResource",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/ShapeResource/TextureRoundedShapeResource.gd"
+}, {
+"base": "RenderItem",
+"class": &"TextureShape",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/RenderItems/TextureShape.gd"
+}, {
+"base": "Resource",
+"class": &"TextureShapeResource",
+"language": &"GDScript",
+"path": "res://Puzzle/Renderer/ShapeResource/TextureShapeResource.gd"
+}, {
+"base": "PuzzleElement",
+"class": &"Vertice",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Vertice.gd"
+}]
+_global_script_class_icons={
+"Area": "",
+"Decorator": "",
+"DirectionedEdge": "",
+"Edge": "",
+"InputPuzzleForceExitEvent": "",
+"Interactable": "",
+"JsonResource": "",
+"JsonResourceLoader": "",
+"LineData": "",
+"LineDataSegment": "",
+"LineSegment": "",
+"PuzzleBoardLine": "",
+"PuzzleData": "",
+"PuzzleElement": "",
+"PuzzleFunction": "",
+"PuzzlePanel": "",
+"PuzzleRenderer": "",
+"RenderItem": "",
+"TextureRegularShapeResource": "",
+"TextureRoundedShapeResource": "",
+"TextureShape": "",
+"TextureShapeResource": "",
+"Vertice": ""
+}
+
+[application]
+
+config/name="MyWitness"
+run/main_scene="res://World.tscn"
+config/features=PackedStringArray("4.0", "Vulkan Clustered")
+
+[autoload]
+
+GlobalData="*res://GlobalData.gd"
+
+[debug]
+
+gdscript/warnings/unused_variable=0
+gdscript/warnings/unused_local_constant=0
+gdscript/warnings/shadowed_variable=0
+gdscript/warnings/unused_private_class_variable=0
+gdscript/warnings/unused_parameter=0
+gdscript/warnings/unused_signal=0
+gdscript/warnings/return_value_discarded=0
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/always_on_top=true
+window/size/window_width_override=1920
+window/size/window_height_override=1080
+
+[layer_names]
+
+3d_physics/layer_1="Normal"
+3d_physics/layer_2="Visual"
+3d_physics/layer_31="CurrentPuzzlePanel"
+3d_physics/layer_32="PuzzlePanel"
+
+[physics]
+
+common/enable_object_picking=false
+
+[rendering]
+
+shadows/directional_shadow/size=8192
+reflections/reflection_atlas/reflection_size=1024
+anti_aliasing/quality/msaa=2
+anti_aliasing/quality/use_debanding=true
+occlusion_culling/use_occlusion_culling=true

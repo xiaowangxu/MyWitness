@@ -1,0 +1,37 @@
+class_name PuzzleBoardLine
+extends RenderItem
+
+var puzzle_board : PuzzleData :
+	set(val):
+		puzzle_board = val
+		update()
+var normal_radius : float = 25.0 :
+	set(val):
+		val = clampf(val, 0.0, INF)
+		if val != normal_radius:
+			normal_radius = val
+			update()
+var start_radius : float = 60.0 :
+	set(val):
+		val = clampf(val, 0.0, INF)
+		if val != normal_radius:
+			start_radius = val
+			update()
+
+func _init(puzzle_board : PuzzleData, normal_radius : float = 25.0, start_radius : float = 60.0) -> void:
+	self.puzzle_board = puzzle_board
+	self.normal_radius = normal_radius
+	self.start_radius = start_radius
+
+func _draw() -> void:
+	for vertice in puzzle_board.vertices:
+		match vertice.type:
+			Vertice.VerticeType.STOP:
+				pass
+			Vertice.VerticeType.START:
+				RenderingServer.canvas_item_add_circle(_rid, vertice.position, start_radius, WHITE)
+			_:
+				RenderingServer.canvas_item_add_circle(_rid, vertice.position, normal_radius, WHITE)
+	for edge in puzzle_board.edges:
+		RenderingServer.canvas_item_add_line(_rid, edge.from.position, edge.to.position, WHITE, normal_radius*2)
+	pass

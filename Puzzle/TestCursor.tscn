@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b2kp0bv8h3r1i"]
+
+[node name="TestCursor" type="Polygon2D"]
+position = Vector2(100, 100)
+scale = Vector2(2, 2)
+z_index = 100
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-8, 0, 0, -8, 8, 0, 0, 8)

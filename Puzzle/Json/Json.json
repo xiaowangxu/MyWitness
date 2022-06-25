@@ -1,0 +1,88 @@
+{
+	"board": {
+		"base_size": [700,700],
+		"background_color": [0.29,0.36,0.06,1.0],
+		"background_line_color": [0.15,0.18,0.04,1.0],
+		"start_radius": 70.0,
+		"normal_radius": 26.0,
+		"line_correct_color": [0.0,0.26,0.9,1.0],
+		"line_drawing_color": [0.0,10.0,2.0,1.0],
+	},
+	"decorators": [{
+		"type": 0,
+		"data":{
+			"edge_count": 6,
+			"radius": 20,
+			"round_cornor": 4,
+			"uv": false
+		}
+	}, {
+		"type": 0,
+		"data":{
+			"edge_count": 6,
+			"radius": 45,
+			"round_cornor": 20,
+			"uv": true
+		}
+	}],
+	"points": [{
+			"position": [550,350],
+			"type": 3
+		}, {
+			"position": [450,523.205],
+			"type": 3
+		}, {
+			"position": [250,523.205],
+			"type": 3
+		}, {
+			"position": [150,350],
+			"type": 3
+		}, {
+			"position": [250,176.795],
+			"type": 0
+		}, {
+			"position": [450,176.795],
+			"type": 3
+		}, {
+			"position": [475.0,566.506],
+			"type": 1
+		}],
+	"egdes": [{
+			"from": 0,
+			"to": 1
+		},{
+			"from": 1,
+			"to": 2
+		},{
+			"from": 2,
+			"to": 3,
+		},{
+			"from": 3,
+			"to": 4
+		},{
+			"from": 4,
+			"to": 5
+		},{
+			"from": 5,
+			"to": 0,
+			"decorator": {
+				"id": 0,
+				"color": [0.02,0.02,0.02,1.0],
+				"texture": null,
+				"rotation": 0
+			}
+		},{
+			"from": 1,
+			"to": 6
+		}],
+	"areas":[{
+		"srounds": [0,1,2,3,4,5],
+		"position":[350,350],
+		"decorator": {
+			"id": 1,
+			"color": [0.15,0,0.06,1.0],
+			"texture": null,
+			"rotation": 0
+		}
+	}]
+}
