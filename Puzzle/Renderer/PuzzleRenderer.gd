@@ -29,8 +29,6 @@ func _ready() -> void:
 	size = puzzle_data.base_size
 	scale = viewport_size / size
 	
-	
-	
 	if show_element & 0b1:
 		self.color = puzzle_data.background_color
 	else:

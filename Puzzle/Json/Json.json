@@ -6,7 +6,7 @@
 		"start_radius": 70.0,
 		"normal_radius": 26.0,
 		"line_correct_color": [0.0,0.26,0.9,1.0],
-		"line_drawing_color": [0.0,10.0,2.0,1.0],
+		"line_drawing_color": [1.0,0.1,0.0,1.0],
 	},
 	"decorators": [{
 		"type": 0,

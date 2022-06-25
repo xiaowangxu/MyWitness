@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://ds0t4dxfs0ukg"]
+[gd_scene load_steps=52 format=3 uid="uid://ds0t4dxfs0ukg"]
 
 [ext_resource type="Script" path="res://node_3d.gd" id="1_pcbh2"]
 [ext_resource type="Script" path="res://GameUI/MouseCursor.gd" id="2_4xuxx"]
@@ -6,11 +6,46 @@
 [ext_resource type="Texture2D" uid="uid://cap8s7gnvd3yn" path="res://Leaves4.png" id="3_n4qhc"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="4_p8ber"]
 [ext_resource type="ArrayMesh" uid="uid://bfu0qkcwf5e21" path="res://Grass3.obj" id="6_8ttyw"]
-[ext_resource type="Texture2D" uid="uid://lnrb2gidfbl2" path="res://test.webp" id="6_fe2jj"]
 [ext_resource type="Material" uid="uid://cuftf8iel3754" path="res://GrassMaterial.tres" id="6_sb0nc"]
 [ext_resource type="ArrayMesh" uid="uid://hf6r8fma0hbe" path="res://untitled.obj" id="7_h2hpa"]
 [ext_resource type="Script" path="res://Puzzle/Panel/PuzzlePanelPillar.gd" id="7_texxe"]
 [ext_resource type="ArrayOccluder3D" uid="uid://c8646lyg8f13m" path="res://World/World.occ" id="8_alni2"]
+
+[sub_resource type="Shader" id="Shader_qe6d4"]
+code = "shader_type canvas_item;
+uniform float percent = 0.1;
+uniform float mul = 2.0;
+uniform float a = 1.0;
+uniform float b = 1.0;
+
+void fragment() {
+	vec2 asp = 1.0 / SCREEN_PIXEL_SIZE;
+	float w = asp.x/2.0;
+	float h = asp.y/2.0;
+	float _a = min(percent * w, percent * h);
+	
+	float _p = (h - _a) / h;
+	float p = (w - _a) / w;
+	
+	vec2 uv = SCREEN_UV * 2.0 - vec2(1.0);
+	uv.x /= p;
+	uv.y /= _p;
+	
+	float dis = pow(abs(uv.x), mul) + pow(abs(uv.y), mul);
+	
+	
+//	COLOR.rg = SCREEN_UV;
+	COLOR.a *= smoothstep(a, b, dis);
+	// Place fragment code here.
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q3dth"]
+shader = SubResource( "Shader_qe6d4" )
+shader_param/a = -0.187
+shader_param/b = 2.261
+shader_param/mul = 8.0
+shader_param/percent = 0.043
 
 [sub_resource type="Shader" id="Shader_li08q"]
 code = "shader_type canvas_item;
@@ -181,42 +216,6 @@ normal_texture = SubResource( "NoiseTexture_wa1mc" )
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_eia8a"]
 points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
 
-[sub_resource type="Shader" id="Shader_qe6d4"]
-code = "shader_type canvas_item;
-uniform float percent = 0.1;
-uniform float mul = 2.0;
-uniform float a = 1.0;
-uniform float b = 1.0;
-
-void fragment() {
-	vec2 asp = 1.0 / SCREEN_PIXEL_SIZE;
-	float w = asp.x/2.0;
-	float h = asp.y/2.0;
-	float _a = min(percent * w, percent * h);
-	
-	float _p = (h - _a) / h;
-	float p = (w - _a) / w;
-	
-	vec2 uv = SCREEN_UV * 2.0 - vec2(1.0);
-	uv.x /= p;
-	uv.y /= _p;
-	
-	float dis = pow(abs(uv.x), mul) + pow(abs(uv.y), mul);
-	
-	
-//	COLOR.rg = SCREEN_UV;
-	COLOR.a *= smoothstep(a, b, dis);
-	// Place fragment code here.
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_q3dth"]
-shader = SubResource( "Shader_qe6d4" )
-shader_param/a = -0.187
-shader_param/b = 2.261
-shader_param/mul = 8.0
-shader_param/percent = 0.043
-
 [sub_resource type="ArrayMesh" id="ArrayMesh_hc6b6"]
 _surfaces = [{
 "aabb": AABB(-1.0048, -1, -1.0048, 2.0096, 3.36907, 2.0096),
@@ -325,6 +324,8 @@ resource_local_to_scene = true
 diffuse_mode = 1
 specular_mode = 2
 roughness_texture = SubResource( "NoiseTexture_c68ec" )
+emission_enabled = true
+emission_energy = 1.6
 normal_scale = 11.99
 normal_texture = SubResource( "NoiseTexture_wa1mc" )
 
@@ -428,6 +429,13 @@ script = ExtResource( "1_pcbh2" )
 
 [node name="GameUI" type="CanvasLayer" parent="."]
 
+[node name="PostEffect" type="ColorRect" parent="GameUI"]
+material = SubResource( "ShaderMaterial_q3dth" )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.317647)
+
 [node name="ColorRect" type="ColorRect" parent="GameUI"]
 visible = false
 material = SubResource( "ShaderMaterial_cx5ws" )
@@ -453,6 +461,9 @@ visible = false
 scale = Vector2(3, 3)
 color = Color(0, 1, 0, 0.34902)
 polygon = PackedVector2Array(2.33333, -2.66667, 4.66667, -2.33333, 0, 0, 1.66667, -5)
+
+[node name="Camera3D2" type="Camera3D" parent="."]
+transform = Transform3D(0.922228, 0, -0.386647, 0, 1, 0, 0.386647, 0, 0.922228, -3.18729, 3.20994, 2.3759)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( "Environment_lhcbd" )
@@ -518,7 +529,13 @@ metadata/_edit_group_ = true
 [node name="PuzzlePanel" parent="Panel2/立方体" instance=ExtResource( "4_p8ber" )]
 transform = Transform3D(-0.8, 0, -0.000864238, 0, 0.8, 0, 0.000691324, 0, -1, 1.29589e-05, 0, 0.0149941)
 puzzle_name = "second"
-_base_puzzle_config = 14
+ViewportConfigs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
 metadata/_edit_group_ = true
 
 [node name="Mesh" type="MeshInstance3D" parent="Panel2/立方体/PuzzlePanel"]
@@ -539,12 +556,6 @@ shape = SubResource( "ConvexPolygonShape3D_eia8a" )
 
 [node name="Audio" type="AudioStreamPlayer" parent="Panel2/立方体/PuzzlePanel"]
 bus = &"PuzzleSoundEffect"
-
-[node name="PostEffect" type="ColorRect" parent="Panel2/立方体/PuzzlePanel"]
-material = SubResource( "ShaderMaterial_q3dth" )
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.317647)
 
 [node name="柱体" type="MeshInstance3D" parent="Panel2"]
 transform = Transform3D(0.0636469, 0, 8.88178e-16, 0, 2.26543e-08, -0.0636469, -1.86265e-09, 0.0633459, 2.27619e-08, 0.355291, 3.43153, 0.0581123)
@@ -577,6 +588,13 @@ skeleton = NodePath("")
 [node name="PuzzlePanel" parent="Panel4/立方体" instance=ExtResource( "4_p8ber" )]
 transform = Transform3D(-0.8, 0, -0.000864238, 0, 0.8, 0, 0.000691324, 0, -1, 1.29589e-05, 0, 0.0149941)
 puzzle_name = "hello_world"
+ViewportConfigs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
 metadata/_edit_group_ = true
 
 [node name="Mesh" type="MeshInstance3D" parent="Panel4/立方体/PuzzlePanel"]
@@ -596,12 +614,6 @@ transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
 shape = SubResource( "ConvexPolygonShape3D_eia8a" )
 
 [node name="Audio" type="AudioStreamPlayer" parent="Panel4/立方体/PuzzlePanel"]
-
-[node name="PostEffect" type="ColorRect" parent="Panel4/立方体/PuzzlePanel"]
-material = SubResource( "ShaderMaterial_q3dth" )
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.470588)
 
 [node name="柱体" type="MeshInstance3D" parent="Panel4"]
 transform = Transform3D(0.0636469, 0, 8.88178e-16, 0, 2.26543e-08, -0.0636469, -1.86265e-09, 0.0633459, 2.27619e-08, 0.355291, 3.43153, 0.0581123)
@@ -634,7 +646,19 @@ skeleton = NodePath("")
 [node name="PuzzlePanel" parent="Panel3/立方体" instance=ExtResource( "4_p8ber" )]
 transform = Transform3D(-0.8, 0, 8.9407e-08, 0, 0.8, 0, -5.96046e-08, 0, -1, 0, 0, 0.015)
 puzzle_name = "first_try"
-material_textures_target = 1
+ViewportConfigs = [{
+"name": "background",
+"targets": PackedStringArray("surface_material_override/0:albedo_texture"),
+"transparent": false,
+"update": true,
+"visual": 7
+}, {
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:emission_texture"),
+"transparent": true,
+"update": true,
+"visual": 8
+}]
 metadata/_edit_group_ = true
 
 [node name="Mesh" type="MeshInstance3D" parent="Panel3/立方体/PuzzlePanel"]
@@ -654,19 +678,6 @@ transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
 shape = SubResource( "ConvexPolygonShape3D_eia8a" )
 
 [node name="Audio" type="AudioStreamPlayer" parent="Panel3/立方体/PuzzlePanel"]
-
-[node name="PostEffect" type="ColorRect" parent="Panel3/立方体/PuzzlePanel"]
-material = SubResource( "ShaderMaterial_q3dth" )
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.470588)
-
-[node name="Background" type="Sprite2D" parent="Panel3/立方体/PuzzlePanel"]
-scale = Vector2(0.683594, 0.683594)
-texture = ExtResource( "6_fe2jj" )
-centered = false
-region_enabled = true
-region_rect = Rect2(400, 20, 1024, 1024)
 
 [node name="柱体" type="MeshInstance3D" parent="Panel3"]
 transform = Transform3D(0.0636469, 0, 8.88178e-16, 0, 2.26543e-08, -0.0636469, -1.86265e-09, 0.0633459, 2.27619e-08, 0.355291, 3.43153, 0.0581123)
@@ -695,13 +706,17 @@ libraries = {
 "": SubResource( "AnimationLibrary_rbou8" )
 }
 
-[node name="Camera3D2" type="Camera3D" parent="."]
-transform = Transform3D(0.922228, 0, -0.386647, 0, 1, 0, 0.386647, 0, 0.922228, -3.18729, 3.20994, 2.3759)
-
 [node name="TestPuzzle" parent="." instance=ExtResource( "4_p8ber" )]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -4.45086, 3.32821, -1.65065)
 script = ExtResource( "7_texxe" )
 puzzle_name = "second"
+ViewportConfigs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
 metadata/_edit_group_ = true
 
 [node name="Mesh" type="MeshInstance3D" parent="TestPuzzle"]
