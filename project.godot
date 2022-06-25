@@ -192,6 +192,8 @@ common/enable_object_picking=false
 [rendering]
 
 shadows/directional_shadow/size=8192
+shadows/directional_shadow/soft_shadow_quality=4
+shadows/shadows/soft_shadow_quality=4
 reflections/reflection_atlas/reflection_size=1024
 anti_aliasing/quality/msaa=2
 anti_aliasing/quality/use_debanding=true

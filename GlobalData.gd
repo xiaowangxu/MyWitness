@@ -4,7 +4,7 @@ extends Node3D
 const PuzzleGroupName : StringName = &"PuzzleGroup"
 const PuzzleSoundEffectsBus : StringName = &"PuzzleSoundEffect"
 const PuzzleViewportSizes : Dictionary = {
-	"regular": Vector2(1024, 1024),
+	"regular": Vector2(800, 800),
 }
 const AllPuzzleJsons : Dictionary = {
 	"first_try": preload("res://Puzzle/Json/Json.json"),

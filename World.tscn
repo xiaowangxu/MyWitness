@@ -203,7 +203,7 @@ colors = PackedColorArray(0.828125, 0.828125, 0.828125, 1, 0.734375, 0.734375, 0
 color_ramp = SubResource( "Gradient_3mxsx" )
 noise = SubResource( "FastNoiseLite_8kgto" )
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p8m24"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_165wu"]
 resource_local_to_scene = true
 transparency = 1
 diffuse_mode = 1
@@ -470,7 +470,6 @@ environment = SubResource( "Environment_lhcbd" )
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(23.5545, 0, 0, 0, 0.999999, 0, 0, 0, 19.0304, 0, 0, 0)
-visible = false
 material_override = SubResource( "StandardMaterial3D_gbw2i" )
 gi_mode = 1
 mesh = SubResource( "PlaneMesh_gmvf8" )
@@ -542,7 +541,7 @@ metadata/_edit_group_ = true
 transform = Transform3D(1, 0, -5.96046e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
 mesh = SubResource( "QuadMesh_v513a" )
 skeleton = NodePath("../../../..")
-surface_material_override/0 = SubResource( "StandardMaterial3D_p8m24" )
+surface_material_override/0 = SubResource( "StandardMaterial3D_165wu" )
 
 [node name="Area" type="Area3D" parent="Panel2/立方体/PuzzlePanel"]
 collision_layer = 2147483648

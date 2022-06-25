@@ -77,7 +77,6 @@ func _ready() -> void:
 	pass
 
 func set_viewports(config : Dictionary) -> void:
-	print(config)
 	var viewport : SubViewport = SubViewport.new()
 	var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size, config.visual)
 	viewport.size = viewport_size
