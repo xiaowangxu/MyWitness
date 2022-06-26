@@ -1,19 +1,21 @@
 {
 	"board": {
 		"base_size": [700,700],
-		"background_color": [0.29,0.36,0.06,1.0],
-		"background_line_color": [0.15,0.18,0.04,1.0],
-		"start_radius": 70.0,
-		"normal_radius": 26.0,
+		"background_color": [0.15,0.06,0.02,1.0],
+		"background_line_color": [0.25,0.12,0.04,1.0],
+		"start_radius": 60.0,
+		"normal_radius": 22.0,
 		"line_correct_color": [0.0,0.26,0.9,1.0],
-		"line_drawing_color": [1.0,0.1,0.0,1.0],
+		"line_error_color": [0.0,0.005,0.02,1.0],
+		"line_drawing_color": [1.0,0.05,0.0,1.0],
+		"line_highlight_color": [1.0,0.12,0.0,1.0],
 	},
 	"decorators": [{
 		"type": 0,
 		"data":{
 			"edge_count": 6,
-			"radius": 20,
-			"round_cornor": 4,
+			"radius": 18,
+			"round_cornor": 3,
 			"uv": false
 		}
 	}, {
@@ -67,7 +69,7 @@
 			"to": 0,
 			"decorator": {
 				"id": 0,
-				"color": [0.02,0.02,0.02,1.0],
+				"color": [0.52,0.52,0.52,1.0],
 				"texture": null,
 				"rotation": 0
 			}
@@ -80,7 +82,7 @@
 		"position":[350,350],
 		"decorator": {
 			"id": 1,
-			"color": [0.15,0,0.06,1.0],
+			"color": [0.45,0.3,0.0,1.0],
 			"texture": null,
 			"rotation": 0
 		}

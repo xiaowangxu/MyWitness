@@ -10,7 +10,7 @@ const AudioSoundEffects = {
 
 signal move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_answered(correct : bool)
-signal puzzle_started()
+signal puzzle_started(puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_exited()
 
 @export var puzzle_name : String = ""
@@ -35,41 +35,28 @@ var puzzle_renderer_viewport_map : Dictionary = {}
 var update_viewport_list : Array[SubViewport] = []
 
 @onready var mesh : MeshInstance3D = $Mesh
-@onready var area : Area3D = $Area
+@onready var area : CollisionObject3D = $Area
 @onready var audio : AudioStreamPlayer = $Audio
 
-var viewport_size : Vector2
+var viewport_size : Vector2 = GlobalData.PuzzleViewportSizes.regular
 var base_viewport : SubViewport = null
 @onready var puzzle_data : PuzzleData = GlobalData.AllPuzzleData[puzzle_name]
 var base_puzzle_renderer : PuzzleRenderer = null
 var puzzle_line : LineData = null
 
 #var test_cursor := preload("res://Puzzle/TestCursor.tscn").instantiate()
-var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
+@onready var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
 func _ready() -> void:
-	move_finished.connect(on_move_finished)
+	move_finished.connect(_on_move_finished)
 	puzzle_answered.connect(on_puzzle_answered)
 	puzzle_started.connect(on_puzzle_started)
 	puzzle_exited.connect(on_puzzle_exited)
 	area.add_to_group(GlobalData.PuzzleGroupName)
-	(area as Area3D).collision_layer = 0b00000000000000000000000000000001
-	(area as Area3D).monitorable = false
-	(area as Area3D).monitoring = false
+	area.collision_layer |= GlobalData.PhysicsLayerInteractables | GlobalData.PhysicsLayerPuzzles
 	audio.bus = GlobalData.PuzzleSoundEffectsBus
-	viewport_size = GlobalData.PuzzleViewportSizes.regular
 	
 	for config in ViewportConfigs:
 		set_viewports(config)
-	
-#	if has_node("PostEffect"):
-#		var post_effect : ColorRect = get_node("PostEffect")
-#		remove_child(post_effect)
-#		puzzlerenderer.add_child(post_effect)
-#	if has_node("Background"):
-#		var background :  = get_node("Background")
-#		remove_child(background)
-#		puzzlerenderer.add_child(background)
-#		puzzlerenderer.move_child(background, 0)
 	
 	base_viewport.add_child(test_info)
 	base_puzzle_renderer.state_changed.connect(on_puzzle_state_changed)
@@ -101,8 +88,7 @@ func set_viewports(config : Dictionary) -> void:
 
 var current_position : Vector2 = Vector2.ZERO
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
-#	print(">>>>> ", event)
-#	print("| pos ", mouse_position)
+	print(event)
 	if event is InputPuzzleForceExitEvent:
 		if puzzle_line != null:
 			on_confirm(true)
@@ -118,13 +104,17 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 #		can start ?
 		var start_vertice : Vertice = PuzzleFunction.pick_start_vertice(puzzle_data, current_position)
 		if start_vertice != null:
-			puzzle_line = LineData.new(start_vertice)
-			current_position = start_vertice.position
-			var mouse_pos : Vector2 = base_puzzle_renderer.puzzle_to_panel(current_position)
-			GlobalData.set_mouse_position_from_world(mouse_to_global(Vector3(mouse_pos.x, mouse_pos.y, 0)))
-			GlobalData.set_active_puzzle_panel(self)
-			GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
-			puzzle_started.emit()
+			var pos := start_vertice.position
+			var _mouse_pos : Vector2 = base_puzzle_renderer.puzzle_to_panel(pos)
+			var mouse_pos : Vector3 = Vector3(_mouse_pos.x, _mouse_pos.y, 0)
+			var world_pos : Vector3 = mouse_to_global(Vector3(mouse_pos.x, mouse_pos.y, 0))
+			if GlobalData.is_position_in_view(world_pos):
+				current_position = pos
+				puzzle_line = LineData.new(start_vertice)
+				GlobalData.set_mouse_position_from_world(world_pos)
+				GlobalData.set_active_puzzle_panel(self)
+				GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
+				puzzle_started.emit(current_position, mouse_pos, world_pos)
 	pass
 
 func get_current_mouse_position() -> Vector3:
@@ -218,7 +208,7 @@ func on_puzzle_answered(correct : bool) -> void:
 		GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	pass
 
-func on_puzzle_started() -> void:
+func on_puzzle_started(puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
 	is_waiting_for_comfirm = false
 	set_puzzle_line(puzzle_line)
 	base_puzzle_renderer.create_start_tween()
@@ -229,8 +219,7 @@ func on_puzzle_exited() -> void:
 	play_sound("error")
 	pass
 
-func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
-	set_puzzle_line(line_data)
+func update_confirm_state(line_data : LineData) -> void:
 	var current_vertice : Vertice = line_data.get_current_vertice()
 	var current_percentage : float = line_data.get_current_percentage()
 	if current_vertice.type == Vertice.VerticeType.END and current_percentage > 0.9:
@@ -241,6 +230,14 @@ func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_pos
 		if is_waiting_for_comfirm:
 			is_waiting_for_comfirm = false
 			on_waiting_to_confirm_changed(false)
+
+func _on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
+	update_confirm_state(line_data)
+	on_move_finished(line_data, puzzle_position, mouse_position, world_position)
+	pass
+
+func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
+	set_puzzle_line(line_data)
 	pass
 
 func on_waiting_to_confirm_changed(is_waiting : bool) -> void:

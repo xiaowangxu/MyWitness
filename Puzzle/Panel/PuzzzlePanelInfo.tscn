@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cq1ibp6niqfbl" path="res://Puzzle/Panel/TestPainting.png" id="3_4ojac"]
 
 [node name="PuzzlePanelInfo" type="Control"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( "1_nv4y1" )

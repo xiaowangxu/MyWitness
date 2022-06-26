@@ -5,6 +5,7 @@ const PuzzleGroupName : StringName = &"PuzzleGroup"
 const PuzzleSoundEffectsBus : StringName = &"PuzzleSoundEffect"
 const PuzzleViewportSizes : Dictionary = {
 	"regular": Vector2(800, 800),
+	"large": Vector2(2048, 2048),
 }
 const AllPuzzleJsons : Dictionary = {
 	"first_try": preload("res://Puzzle/Json/Json.json"),
@@ -16,7 +17,12 @@ var AllPuzzleData : Dictionary = {
 	"second": PuzzleData.new(AllPuzzleJsons.second),
 	"hello_world": PuzzleData.new(AllPuzzleJsons.hello_world),
 }
-const PhysicsLayerCurrentPuzzle : int = 0b00000000000000000000000000000010
+# Layers: Puzzles | CurrentPuzzle | ... | Player | Interactable | Visual | Normal
+const PhysicsLayerPuzzles : int = 0b10000000000000000000000000000000
+const PhysicsLayerCurrentPuzzle : int = 0b01000000000000000000000000000000
+const PhysicsLayerInteractables : int = 0b00000000000000000000000000000100
+const PhysicsLayerObstacles : int = 0b10000000000000000000000000000111
+const PhysicsLayerPlayer : int = 0b00000000000000000000000000001000
 
 # Cursor Movement
 enum CursorState {
@@ -27,15 +33,18 @@ enum CursorState {
 
 signal mouse_moved(normalized_position : Vector2, border_percent : float)
 signal cursor_state_changed(state : CursorState, old_state : CursorState)
+signal rotate_camera_interact(event : InputEvent)
+signal rotate_camera_on_edge(rotation : Quaternion, from : Vector3, to : Vector3)
 
-var cursor_state : CursorState = CursorState.PICKING
-const Mouse2DSensitivity : float = 2.5
-const CameraEdgeMovementSensitivity : float = 0.85
+var cursor_state : CursorState = CursorState.DISABLED
+const Mouse2DSensitivity : float = 3.0
+const Mouse3DSensitivity : float = 0.1
+const CameraEdgeMovementSensitivity : float = 0.5
 var mouse_position : Vector2 = Vector2.ZERO
 var border_percent : float = 0.0
 const BorderFadeStep : float = 0.1
 const BorderPowerFactor : float = 8.0
-const BorderPercent : float = 0.0005
+const BorderPercent : float = 0.0
 
 func set_cursor_state(state : CursorState) -> void:
 	var old_state := cursor_state
@@ -46,6 +55,7 @@ func set_cursor_state(state : CursorState) -> void:
 		if cursor_state == CursorState.DISABLED:
 			set_active_puzzle_panel(null)
 		cursor_state_changed.emit(cursor_state, old_state)
+	pass
 
 func get_mouse_position_from_world(_position : Vector3) -> Vector2:
 	var vp := get_viewport()
@@ -72,6 +82,10 @@ func set_mouse_position(_position : Vector2 = Vector2.ZERO) -> void:
 	mouse_moved.emit(mouse_position, border_percent)
 	pass
 
+func is_position_in_view(_position : Vector3) -> bool:
+	var camera : Camera3D = get_viewport().get_camera_3d()	
+	return camera.is_position_in_frustum(_position)
+
 func calcu_border_value(pos : Vector2) -> float:
 	var viewport_size := get_viewport().get_visible_rect().size
 	var w := viewport_size.x / 2.0;
@@ -86,19 +100,32 @@ func calcu_border_value(pos : Vector2) -> float:
 	return smoothstep(BorderFadeStep, 1.0, distance)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if cursor_state == CursorState.DISABLED: return
 	var viewport_size := get_viewport().get_visible_rect().size
 	if event as InputEventMouseMotion and (event as InputEventMouseMotion).relative != Vector2.ZERO:
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED: 
-			mouse_position += (event as InputEventMouseMotion).relative / (viewport_size) * Mouse2DSensitivity
-			set_mouse_position(mouse_position)
+			if cursor_state == CursorState.DISABLED:
+				rotate_camera_interact.emit(event)
+			else:
+				mouse_position += (event as InputEventMouseMotion).relative / (viewport_size) * Mouse2DSensitivity
+				set_mouse_position(mouse_position)
+	elif cursor_state == CursorState.DISABLED:
+		if event is InputEventMouseButton and event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+			set_mouse_position()
+			set_cursor_state(CursorState.PICKING)
+			return
 	elif cursor_state == CursorState.PICKING:
+		if event is InputEventMouseButton and event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
+			set_cursor_state(CursorState.DISABLED)
+			return
 		var ans := pick_interactable(mouse_position)
+		print(ans)
 		if not ans.is_empty():
 			var obj = ans.collider
 			var normal : Vector3 = ans.normal
 			var _position : Vector3 = ans.position
 			var parent = obj.get_parent()
+#			print(">>> ", obj.get_path())
+#			print(parent.get_path())
 			if parent != null:
 				if parent is Interactable:
 					(parent as Interactable).input_event(event,
@@ -122,33 +149,32 @@ func _physics_process(delta: float) -> void:
 		var ans := pick_interactable(mouse_position, PhysicsLayerCurrentPuzzle)
 		var new_mouse_position = null
 		if not ans.is_empty():
-			var obj : Area3D = ans.collider
+			var obj : CollisionObject3D = ans.collider
 			var normal : Vector3 = ans.normal
 			var _position : Vector3 = ans.position
 			new_mouse_position = last_puzzle_panel.on_mouse_moved(_position)
 		else:
-			var camera : Camera3D = get_viewport().get_camera_3d()
 			var current := (last_puzzle_panel as Interactable).get_current_mouse_position()
 			var from = get_mouse_position_from_world(current)
 			var pos = get_viewport_position_from_mouse(from)
 			get_node("/root/World/GameUI/TestCursor").position = pos
 			var farest := get_farrest_reachable(from, mouse_position, PhysicsLayerCurrentPuzzle)
 			if not farest.is_empty():
-				var obj : Area3D = farest.collider
+				var obj : CollisionObject3D = farest.collider
 				var normal : Vector3 = farest.normal
 				var _position : Vector3 = farest.position
-				if not camera.is_position_in_frustum(_position):
+				if not is_position_in_view(_position):
 					(last_puzzle_panel as Interactable).input_event(InputPuzzleForceExitEvent.new(), Vector3.ZERO, Vector3.ZERO)
 				else:
 					new_mouse_position = last_puzzle_panel.on_mouse_moved(_position)
 					var _pos = get_viewport_position_from_mouse(get_mouse_position_from_world(_position))
 					get_node("/root/World/GameUI/TestCursor2").position = _pos
 			else:
-				if camera.is_position_in_frustum(current):
+				if not is_position_in_view(current):
+					(last_puzzle_panel as Interactable).input_event(InputPuzzleForceExitEvent.new(), Vector3.ZERO, Vector3.ZERO)
+				else:
 					new_mouse_position = last_puzzle_panel.on_mouse_moved(current)
 					get_node("/root/World/GameUI/TestCursor2").position = pos
-				else:
-					(last_puzzle_panel as Interactable).input_event(InputPuzzleForceExitEvent.new(), Vector3.ZERO, Vector3.ZERO)
 		if new_mouse_position != null:
 			set_mouse_position_from_world(new_mouse_position)
 		move_camera_on_edge(delta)
@@ -157,7 +183,7 @@ func _physics_process(delta: float) -> void:
 	pass
 
 @onready var physics : PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
-func pick_interactable(mouse_pos : Vector2, collision_layer : int = 0xFFFFFFFF) -> Dictionary:
+func pick_interactable(mouse_pos : Vector2, collision_layer : int = PhysicsLayerObstacles) -> Dictionary:
 	var vp := get_viewport()
 	var camera := vp.get_camera_3d()
 	var length := camera.far
@@ -165,32 +191,33 @@ func pick_interactable(mouse_pos : Vector2, collision_layer : int = 0xFFFFFFFF) 
 	mouse_pos = (mouse_pos + Vector2.ONE) / 2.0 * size
 	var query : PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
 	query.collide_with_areas = true
-	query.collide_with_bodies = false
+	query.collide_with_bodies = true
 	query.collision_mask = collision_layer
+	query.hit_from_inside = true
 	var from := camera.project_ray_origin(mouse_pos)
 	var project_normal := camera.project_ray_normal(mouse_pos)
 	query.from = from
 	query.to = from + project_normal * length
 	return physics.intersect_ray(query)
 
-func pick_first_obstacle(from : Vector3, target : Area3D, self_distance : float = 0.001, collision_layer : int = 0xFFFFFFFF) -> Dictionary:
+func pick_first_obstacle(from : Vector3, target : CollisionObject3D, self_distance : float = 0.001, collision_layer : int = PhysicsLayerObstacles) -> Dictionary:
 	var query : PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
 	query.collision_mask = collision_layer
 	query.exclude = [target]
+	query.hit_from_inside = true
 	var _from := get_viewport().get_camera_3d().global_transform.origin
 	var _normal := (_from - from).normalized()
 	query.to = from - _normal * self_distance
 	query.from = _from
 	return physics.intersect_ray(query)
 
-func check_reachable(from : Vector3, target : Area3D, self_distance : float = 0.001, collision_layer : int = 0xFFFFFFFF) -> bool:
+func check_reachable(from : Vector3, target : CollisionObject3D, self_distance : float = 0.001, collision_layer : int = PhysicsLayerObstacles) -> bool:
 	return pick_first_obstacle(from, target, self_distance, collision_layer).is_empty()
 
-func get_farrest_reachable(from : Vector2, to : Vector2, collision_layer : int = 0xFFFFFFFF, interval : float = 0.005) -> Dictionary:
+func get_farrest_reachable(from : Vector2, to : Vector2, collision_layer : int = PhysicsLayerObstacles, interval : float = 0.005) -> Dictionary:
 	var ans : Dictionary = {}
-#	if from.x < -1 or from.x > 1 or from.y < -1 or from.y > 1: return ans
 	var length = from.distance_to(to)
 	var count = mini(floor(length / interval), 300)
 	if count <= 1: return ans
@@ -211,6 +238,8 @@ func move_camera_on_edge(delta: float) -> void:
 	if border_percent > 0.0:
 		var to : Vector3 = camera.project_ray_normal(_position)
 		var from : Vector3 = camera.project_ray_normal(viewport_size/2)
-		var quat := Quaternion(-from, -to)
-		camera.rotate(quat.get_axis(), quat.get_angle() * delta * CameraEdgeMovementSensitivity * border_percent)
-		camera.rotation.z = 0.0
+		var quat := Quaternion(from, to)
+		var axis := quat.get_axis()
+		var angle := quat.get_angle() * delta * CameraEdgeMovementSensitivity * border_percent
+		quat = Quaternion(axis, angle)
+		rotate_camera_on_edge.emit(quat, from, to)

@@ -5,7 +5,7 @@ var puzzle_data : PuzzleData = null
 var background_line : PuzzleBoardLine
 var line_render : LineSegment
 var decorator_renderitems_map : Dictionary = {}
-var show_element : int = 0b11
+var show_element : int = 0b1111
 var override_size : Vector2i = Vector2i.ZERO
 
 # children
