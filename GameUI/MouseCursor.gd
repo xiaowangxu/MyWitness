@@ -6,6 +6,11 @@ var mouse_position : Vector2
 @onready var Indicator : Panel = get_node(IndicatorNodePath)
 
 func _ready() -> void:
+	var points : PackedVector2Array = []
+	for i in range(36):
+		var point := Vector2.from_angle(i/36.0 * TAU) * 6
+		points.append(point)
+	polygon = points
 	GlobalData.mouse_moved.connect(on_mouse_moved)
 	GlobalData.cursor_state_changed.connect(on_cursor_state_changed)
 	pass

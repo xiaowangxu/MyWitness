@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cuftf8iel3754"]
 
-[sub_resource type="Shader" id="Shader_0rl6y"]
+[sub_resource type="Shader" id="Shader_wsugb"]
 code = "shader_type spatial;
 render_mode cull_disabled;
 
@@ -23,5 +23,5 @@ void light() {
 
 [resource]
 render_priority = 0
-shader = SubResource( "Shader_0rl6y" )
+shader = SubResource( "Shader_wsugb" )
 shader_param/color = Color(0.537255, 0.556863, 0.141176, 1)

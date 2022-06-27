@@ -5,7 +5,7 @@
 		"background_line_color": [0.25,0.12,0.04,1.0],
 		"start_radius": 60.0,
 		"normal_radius": 22.0,
-		"line_correct_color": [0.0,0.26,0.9,1.0],
+		"line_correct_color": [1.0,0.025,0.0,1.0],
 		"line_error_color": [0.0,0.005,0.02,1.0],
 		"line_drawing_color": [1.0,0.05,0.0,1.0],
 		"line_highlight_color": [1.0,0.12,0.0,1.0],
@@ -47,7 +47,12 @@
 			"type": 3
 		}, {
 			"position": [475.0,566.506],
-			"type": 1
+			"type": 1,
+			"tag": 1
+		}, {
+			"position": [412.5,458.253],
+			"type": 1,
+			"tag": 2
 		}],
 	"egdes": [{
 			"from": 0,
@@ -76,6 +81,9 @@
 		},{
 			"from": 1,
 			"to": 6
+		},{
+			"from": 1,
+			"to": 7
 		}],
 	"areas":[{
 		"srounds": [0,1,2,3,4,5],

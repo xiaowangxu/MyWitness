@@ -1,6 +1,8 @@
 class_name Interactable
 extends Node3D
 
+signal interact_result_changed(toggle : bool, tag : int)
+
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
 	pass
 

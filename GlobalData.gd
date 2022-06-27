@@ -2,6 +2,7 @@ extends Node3D
 
 # Puzzle Data
 const PuzzleGroupName : StringName = &"PuzzleGroup"
+const InteractableLinkerName : StringName = &"InteractableLinkerName"
 const PuzzleSoundEffectsBus : StringName = &"PuzzleSoundEffect"
 const PuzzleViewportSizes : Dictionary = {
 	"regular": Vector2(800, 800),
@@ -17,12 +18,15 @@ var AllPuzzleData : Dictionary = {
 	"second": PuzzleData.new(AllPuzzleJsons.second),
 	"hello_world": PuzzleData.new(AllPuzzleJsons.hello_world),
 }
-# Layers: Puzzles | CurrentPuzzle | ... | Player | Interactable | Visual | Normal
-const PhysicsLayerPuzzles : int = 0b10000000000000000000000000000000
-const PhysicsLayerCurrentPuzzle : int = 0b01000000000000000000000000000000
-const PhysicsLayerInteractables : int = 0b00000000000000000000000000000100
-const PhysicsLayerObstacles : int = 0b10000000000000000000000000000111
-const PhysicsLayerPlayer : int = 0b00000000000000000000000000001000
+# Layers: Puzzles | CurrentPuzzle | ... | InvisibleObstacles | Player | Interactable | Visual | Normal
+const PhysicsLayerNormal 				: int = 0b10000000000000000000000000000001
+const PhysicsLayerVisual 				: int = 0b00000000000000000000000000000010
+const PhysicsLayerInteractables 		: int = 0b00000000000000000000000000000100
+const PhysicsLayerPlayer 				: int = 0b00000000000000000000000000001000
+const PhysicsLayerInvisibleObstacles	: int = 0b00000000000000000000000000010000
+const PhysicsLayerPuzzles 				: int = 0b10000000000000000000000000000000
+const PhysicsLayerCurrentPuzzle			: int = 0b01000000000000000000000000000000
+const PhysicsLayerInteractObstacles 	: int = PhysicsLayerPuzzles | PhysicsLayerNormal | PhysicsLayerVisual | PhysicsLayerInteractables
 
 # Cursor Movement
 enum CursorState {
@@ -37,7 +41,7 @@ signal rotate_camera_interact(event : InputEvent)
 signal rotate_camera_on_edge(rotation : Quaternion, from : Vector3, to : Vector3)
 
 var cursor_state : CursorState = CursorState.DISABLED
-const Mouse2DSensitivity : float = 3.0
+const Mouse2DSensitivity : float = 3.25
 const Mouse3DSensitivity : float = 0.1
 const CameraEdgeMovementSensitivity : float = 0.5
 var mouse_position : Vector2 = Vector2.ZERO
@@ -118,7 +122,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_cursor_state(CursorState.DISABLED)
 			return
 		var ans := pick_interactable(mouse_position)
-		print(ans)
 		if not ans.is_empty():
 			var obj = ans.collider
 			var normal : Vector3 = ans.normal
@@ -143,7 +146,7 @@ func set_active_puzzle_panel(panel : PuzzlePanel) -> void:
 		if last_puzzle_panel != null:
 			last_puzzle_panel.area.collision_layer |= PhysicsLayerCurrentPuzzle
 
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	if cursor_state == CursorState.DISABLED: return
 	if cursor_state == CursorState.DRAWING and last_puzzle_panel != null:
 		var ans := pick_interactable(mouse_position, PhysicsLayerCurrentPuzzle)
@@ -179,11 +182,12 @@ func _physics_process(delta: float) -> void:
 			set_mouse_position_from_world(new_mouse_position)
 		move_camera_on_edge(delta)
 		if new_mouse_position != null:
-			set_mouse_position_from_world(new_mouse_position)
+			set_mouse_position_from_world.call_deferred(new_mouse_position)
+#			set_mouse_position_from_world(new_mouse_position)
 	pass
 
 @onready var physics : PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
-func pick_interactable(mouse_pos : Vector2, collision_layer : int = PhysicsLayerObstacles) -> Dictionary:
+func pick_interactable(mouse_pos : Vector2, collision_layer : int = PhysicsLayerInteractObstacles) -> Dictionary:
 	var vp := get_viewport()
 	var camera := vp.get_camera_3d()
 	var length := camera.far
@@ -200,7 +204,7 @@ func pick_interactable(mouse_pos : Vector2, collision_layer : int = PhysicsLayer
 	query.to = from + project_normal * length
 	return physics.intersect_ray(query)
 
-func pick_first_obstacle(from : Vector3, target : CollisionObject3D, self_distance : float = 0.001, collision_layer : int = PhysicsLayerObstacles) -> Dictionary:
+func pick_first_obstacle(from : Vector3, target : CollisionObject3D, self_distance : float = 0.001, collision_layer : int = PhysicsLayerInteractObstacles) -> Dictionary:
 	var query : PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
@@ -213,10 +217,10 @@ func pick_first_obstacle(from : Vector3, target : CollisionObject3D, self_distan
 	query.from = _from
 	return physics.intersect_ray(query)
 
-func check_reachable(from : Vector3, target : CollisionObject3D, self_distance : float = 0.001, collision_layer : int = PhysicsLayerObstacles) -> bool:
+func check_reachable(from : Vector3, target : CollisionObject3D, self_distance : float = 0.001, collision_layer : int = PhysicsLayerInteractObstacles) -> bool:
 	return pick_first_obstacle(from, target, self_distance, collision_layer).is_empty()
 
-func get_farrest_reachable(from : Vector2, to : Vector2, collision_layer : int = PhysicsLayerObstacles, interval : float = 0.005) -> Dictionary:
+func get_farrest_reachable(from : Vector2, to : Vector2, collision_layer : int = PhysicsLayerInteractObstacles, interval : float = 0.005) -> Dictionary:
 	var ans : Dictionary = {}
 	var length = from.distance_to(to)
 	var count = mini(floor(length / interval), 300)

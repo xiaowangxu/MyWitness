@@ -109,6 +109,8 @@ func calcu_puzzle(data : Dictionary) -> void:
 		var point : Dictionary = data.points[i]
 		var decorator : Decorator = null if not point.has("decorator") else create_decorator(decorators[int(point.decorator.id)], point.decorator.color, point.decorator.texture, point.decorator.rotation)
 		var vertice := Vertice.new(Vector2(point.position[0], point.position[1]), point.type, decorator)
+		if point.has("tag"):
+			vertice.tag = point.tag
 		vertices.append(vertice)
 		if point.type == Vertice.VerticeType.START:
 			vertices_start.append(vertice)
@@ -117,7 +119,10 @@ func calcu_puzzle(data : Dictionary) -> void:
 		var start := vertices[edge.from]
 		var end := vertices[edge.to]
 		var decorator : Decorator = null if not edge.has("decorator") else create_decorator(decorators[int(edge.decorator.id)], edge.decorator.color, edge.decorator.texture, edge.decorator.rotation)
-		edges.append(Edge.new(start, end, calcu_line_center(start, end), decorator))
+		var _edge := Edge.new(start, end, calcu_line_center(start, end), decorator)
+		if edge.has("tag"):
+			_edge.tag = edge.tag
+		edges.append(_edge)
 		start.add_neighbour(i)
 		end.add_neighbour(i)
 	for i in range(data.areas.size()):
@@ -139,7 +144,10 @@ func calcu_puzzle(data : Dictionary) -> void:
 			for edge in srounds:
 				points.append(edge.position)
 			center = calcu_area_center(points)
-		areas.append(Area.new(srounds, center, decorator))
+		var _area := Area.new(srounds, center, decorator)
+		areas.append(_area)
+		if area.has("tag"):
+			_area.tag = area.tag
 	calcu_egde_map()
 	pass
 

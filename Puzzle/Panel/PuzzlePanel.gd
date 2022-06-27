@@ -9,9 +9,10 @@ const AudioSoundEffects = {
 }
 
 signal move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
-signal puzzle_answered(correct : bool)
+signal puzzle_answered(correct : bool, tag : int)
 signal puzzle_started(puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_exited()
+signal puzzle_checked()
 
 @export var puzzle_name : String = ""
 @export var add_config : bool = false:
@@ -88,7 +89,6 @@ func set_viewports(config : Dictionary) -> void:
 
 var current_position : Vector2 = Vector2.ZERO
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
-	print(event)
 	if event is InputPuzzleForceExitEvent:
 		if puzzle_line != null:
 			on_confirm(true)
@@ -182,17 +182,24 @@ func on_confirm(force_cancel : bool = false) -> void:
 	if force_cancel or not is_waiting_for_comfirm:
 		exit_puzzle()
 	else:
-		puzzle_answered.emit(true)
+		var correct_tag := check_puzzle_ans()
+		puzzle_answered.emit(correct_tag >= 0, correct_tag)
+
+# -1 is wrong >= 0 means different correct ans's tags
+func check_puzzle_ans() -> int:
+	var last_vertice := puzzle_line.get_current_vertice()
+	return last_vertice.tag
 
 func exit_puzzle() -> void:
 	puzzle_line = null
 	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	base_puzzle_renderer.create_exit_tween()
 	puzzle_exited.emit()
+	interact_result_changed.emit(false, -1)
 	pass
 
-func on_puzzle_answered(correct : bool) -> void:
-	if correct:
+func on_puzzle_answered(correct : bool, tag : int) -> void:
+	if not correct:
 		play_sound("error")
 		puzzle_line.forward(1.0)
 		set_puzzle_line(puzzle_line)
@@ -206,6 +213,7 @@ func on_puzzle_answered(correct : bool) -> void:
 		puzzle_line = null
 		base_puzzle_renderer.create_correct_tween()
 		GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
+	interact_result_changed.emit(correct, tag)
 	pass
 
 func on_puzzle_started(puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:

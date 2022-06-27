@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://byfvksnrh8jr2"]
+[gd_scene load_steps=6 format=3 uid="uid://byfvksnrh8jr2"]
 
 [ext_resource type="Script" path="res://Player/Player.gd" id="1_2r417"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_chxod"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qdkhm"]
 
@@ -13,6 +15,12 @@ albedo_color = Color(0.184314, 0.592157, 0.639216, 1)
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource( "1_2r417" )
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 8
+cast_shadow = 0
+mesh = SubResource( "CapsuleMesh_chxod" )
 
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

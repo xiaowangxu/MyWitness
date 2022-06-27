@@ -169,7 +169,6 @@ static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector
 	var last_distance : float = INF
 	for vertice in puzzle_data.vertices_start:
 		var distance : float = vertice.position.distance_to(mouse_position)
-		printt(distance, puzzle_data.start_radius)
 		if distance <= puzzle_data.start_radius:
 			if last_vertice == null:
 				last_vertice = vertice
