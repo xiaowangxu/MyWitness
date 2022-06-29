@@ -31,13 +31,13 @@ func add_line_segemnt(to : Vertice, percentage : float = 1.0) -> LineData:
 
 func forward(percentage : float = 0.0) -> void:
 	if segments.size() == 0: print_debug("not able to forward on zero length line data")
-	var segment := segments[segments.size() - 1]
+	var segment := segments[-1]
 	segment.set_percentage(segment.percentage + percentage)
 	pass
 
 func backward(percentage : float = 0.0) -> void:
 	if segments.size() == 0: print_debug("not able to backward on zero length line data")
-	var segment := segments[segments.size() - 1]
+	var segment := segments[-1]
 	segment.set_percentage(segment.percentage - percentage)
 	if is_zero_approx(segment.percentage):
 		segments.pop_back()
@@ -51,19 +51,38 @@ func to_points() -> PackedVector2Array:
 		ans.append(point)
 	return ans
 
+# TODO: Array[Vertice]
+func to_vertices() -> Array:
+	var ans : Array[Vertice] = []
+	ans.append(start)
+	for segment in segments:
+		ans.append(segment.to)
+	return ans
+
 func get_points_with_interval(interval : float = 10.0) -> PackedVector2Array:
 	var ans : PackedVector2Array = []
 	return ans
 
 func is_complete() -> bool:
 	var size := segments.size()
-	return size == 0 or is_equal_approx(segments[size - 1].percentage, 1.0) or is_zero_approx(segments[size - 1].percentage)
+	return size == 0 or is_equal_approx(segments[-1].percentage, 1.0) or is_zero_approx(segments[-1].percentage)
 
 func is_empty() -> bool:
 	return segments.size() == 0
 
+func get_length(from : int = 0, to : int = segments.size()) -> float:
+	var length := 0.0
+	for i in range(from, to + 1):
+		length += get_nth_segment(i).get_length()
+	return length
+
 func get_segments_count() -> int:
 	return segments.size()+1
+
+func get_nth_segment(idx : int = 0) -> LineDataSegment:
+	if idx > segments.size(): return null
+	if idx == 0: return LineDataSegment.new(start, start)
+	return segments[idx - 1]
 
 func get_nth_segment_duplicated(idx : int = 0) -> LineDataSegment:
 	if idx > segments.size(): return null
@@ -72,31 +91,31 @@ func get_nth_segment_duplicated(idx : int = 0) -> LineDataSegment:
 
 func get_current_segment() -> LineDataSegment:
 	if segments.size() == 0: return LineDataSegment.new(start, start)
-	return segments[segments.size() - 1].duplicate()
+	return segments[-1].duplicate()
 
 func get_current_vertice() -> Vertice:
 	if segments.size() == 0: return start
-	return segments[segments.size() - 1].to
+	return segments[-1].to
 
 func get_current_segment_length() -> float:
 	if segments.size() == 0: return 0.0
-	return segments[segments.size() - 1].length
+	return segments[-1].length
 
 func get_current_position() -> Vector2:
 	if segments.size() == 0: return start.position
-	return segments[segments.size() - 1].get_position()
+	return segments[-1].get_position()
 
 func get_current_percentage() -> float:
 	if segments.size() == 0: return -1.0
-	return segments[segments.size() - 1].percentage
+	return segments[-1].percentage
 
 func get_from_vertice() -> Vertice:
 	if segments.size() == 0: return null
-	return segments[segments.size() - 1].from
+	return segments[-1].from
 
 func get_current_normal() -> Vector2:
 	if segments.size() == 0: return Vector2.ZERO
-	return segments[segments.size() - 1].normal
+	return segments[-1].normal
 
 func pass_through(vertice : Vertice, include_end : bool = false) -> bool:
 	if start == vertice:
@@ -110,7 +129,7 @@ func pass_through(vertice : Vertice, include_end : bool = false) -> bool:
 
 func clamp_line_end(line_radius : float, start_radius : float) -> void:
 	if segments.size() == 0: return
-	var end_segment := segments[segments.size() - 1]
+	var end_segment := segments[-1]
 	var to_vertice := end_segment.to
 	if pass_through(to_vertice):
 		end_segment.percentage = clampf(end_segment.percentage, 0.0, 

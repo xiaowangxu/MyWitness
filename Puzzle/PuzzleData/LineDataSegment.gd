@@ -19,7 +19,10 @@ func set_percentage(percentage : float) -> void:
 	
 func get_position() -> Vector2:
 	return from.position.lerp(to.position, percentage)
-	
+
+func get_length() -> float:
+	return length * percentage
+
 func duplicate() -> LineDataSegment:
 	return LineDataSegment.new(self.from, self.to, self.percentage)
 

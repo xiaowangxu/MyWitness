@@ -54,7 +54,7 @@
 			"type": 1,
 			"tag": 2
 		}],
-	"egdes": [{
+	"edges": [{
 			"from": 0,
 			"to": 1
 		},{

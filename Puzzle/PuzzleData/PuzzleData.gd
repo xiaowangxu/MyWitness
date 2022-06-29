@@ -19,7 +19,7 @@ var normal_radius : float
 
 var edge_map = null
 
-func _init(res : JsonResource) -> void:
+func _init(res : ) -> void:
 	calcu_puzzle(res.data)
 
 func calcu_line_center(from : Vertice, to : Vertice) -> Vector2:
@@ -109,17 +109,19 @@ func calcu_puzzle(data : Dictionary) -> void:
 		var point : Dictionary = data.points[i]
 		var decorator : Decorator = null if not point.has("decorator") else create_decorator(decorators[int(point.decorator.id)], point.decorator.color, point.decorator.texture, point.decorator.rotation)
 		var vertice := Vertice.new(Vector2(point.position[0], point.position[1]), point.type, decorator)
+		vertice.id = i
 		if point.has("tag"):
 			vertice.tag = point.tag
 		vertices.append(vertice)
 		if point.type == Vertice.VerticeType.START:
 			vertices_start.append(vertice)
-	for i in range(data.egdes.size()):
-		var edge : Dictionary = data.egdes[i]
+	for i in range(data.edges.size()):
+		var edge : Dictionary = data.edges[i]
 		var start := vertices[edge.from]
 		var end := vertices[edge.to]
 		var decorator : Decorator = null if not edge.has("decorator") else create_decorator(decorators[int(edge.decorator.id)], edge.decorator.color, edge.decorator.texture, edge.decorator.rotation)
 		var _edge := Edge.new(start, end, calcu_line_center(start, end), decorator)
+		_edge.id = i
 		if edge.has("tag"):
 			_edge.tag = edge.tag
 		edges.append(_edge)
@@ -145,6 +147,7 @@ func calcu_puzzle(data : Dictionary) -> void:
 				points.append(edge.position)
 			center = calcu_area_center(points)
 		var _area := Area.new(srounds, center, decorator)
+		_area.id = i
 		areas.append(_area)
 		if area.has("tag"):
 			_area.tag = area.tag

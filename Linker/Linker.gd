@@ -9,6 +9,7 @@ func _ready() -> void:
 	add_to_group(GlobalData.InteractableLinkerName)
 	if interactable != null:
 		interactable.interact_result_changed.connect(_on_interact_result_changed)
+	load_save()
 
 func _on_interact_result_changed(correct : bool, tag : int) -> void:
 	if acceptable_tags.has(tag):
@@ -18,8 +19,8 @@ func _on_interact_result_changed(correct : bool, tag : int) -> void:
 func on_interact_result_changed(correct : bool, tag : int) -> void:
 	print(correct, ", ", tag)
 
-func save() -> Dictionary:
-	return {}
+func save() -> void:
+	return
 
-func load_save(save : Dictionary) -> void:
+func load_save() -> void:
 	pass

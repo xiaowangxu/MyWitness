@@ -4,7 +4,7 @@
 		"background_color": [0.12,0.0,0.12,1.0],
 		"background_line_color": [0.1,0.1,0.1,1.0],
 		"start_radius": 60.0,
-		"normal_radius": 22.0,
+		"normal_radius": 23.0,
 		"line_drawing_color": [0.8,0.1,0.8,1.0],
 		"line_correct_color": [0.9,0.0,0.8,1.0],
 	},
@@ -12,7 +12,7 @@
 		"type": 0,
 		"data":{
 			"edge_count": 6,
-			"radius": 18,
+			"radius": 19,
 			"round_cornor": 3,
 			"uv": false
 		}
@@ -64,7 +64,7 @@
 			"position": [630,580],
 			"type": 1
 		}],
-	"egdes": [{
+	"edges": [{
 			"from": 0,
 			"to": 1
 		},{

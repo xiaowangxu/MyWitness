@@ -5,18 +5,20 @@ const PuzzleGroupName : StringName = &"PuzzleGroup"
 const InteractableLinkerName : StringName = &"InteractableLinkerName"
 const PuzzleSoundEffectsBus : StringName = &"PuzzleSoundEffect"
 const PuzzleViewportSizes : Dictionary = {
-	"regular": Vector2(800, 800),
+	"regular": Vector2(600, 600),
 	"large": Vector2(2048, 2048),
 }
 const AllPuzzleJsons : Dictionary = {
 	"first_try": preload("res://Puzzle/Json/Json.json"),
 	"second": preload("res://Puzzle/Json/Json2.json"),
 	"hello_world": preload("res://Puzzle/Json/Json3.json"),
+	"generator": preload("res://PuzzleDataJson/Puzzle.json")
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),
 	"second": PuzzleData.new(AllPuzzleJsons.second),
 	"hello_world": PuzzleData.new(AllPuzzleJsons.hello_world),
+	"generator": PuzzleData.new(AllPuzzleJsons.generator),
 }
 # Layers: Puzzles | CurrentPuzzle | ... | InvisibleObstacles | Player | Interactable | Visual | Normal
 const PhysicsLayerNormal 				: int = 0b10000000000000000000000000000001
@@ -32,13 +34,16 @@ const PhysicsLayerInteractObstacles 	: int = PhysicsLayerPuzzles | PhysicsLayerN
 enum CursorState {
 	DISABLED,
 	PICKING,
-	DRAWING
+	DRAWING,
 }
 
 signal mouse_moved(normalized_position : Vector2, border_percent : float)
 signal cursor_state_changed(state : CursorState, old_state : CursorState)
 signal rotate_camera_interact(event : InputEvent)
-signal rotate_camera_on_edge(rotation : Quaternion, from : Vector3, to : Vector3)
+signal rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to : Vector3)
+
+func _init() -> void:
+	process_mode = Node.PROCESS_MODE_PAUSABLE
 
 var cursor_state : CursorState = CursorState.DISABLED
 const Mouse2DSensitivity : float = 3.25
@@ -104,6 +109,13 @@ func calcu_border_value(pos : Vector2) -> float:
 	return smoothstep(BorderFadeStep, 1.0, distance)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		if last_puzzle_panel != null:
+			(last_puzzle_panel as Interactable).input_event(InputPuzzleForceExitEvent.new(), Vector3.ZERO, Vector3.ZERO)
+		set_cursor_state(CursorState.DISABLED)
+		get_viewport().set_input_as_handled()
+		get_tree().paused = true
+		pass
 	var viewport_size := get_viewport().get_visible_rect().size
 	if event as InputEventMouseMotion and (event as InputEventMouseMotion).relative != Vector2.ZERO:
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED: 
@@ -127,8 +139,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			var normal : Vector3 = ans.normal
 			var _position : Vector3 = ans.position
 			var parent = obj.get_parent()
-#			print(">>> ", obj.get_path())
-#			print(parent.get_path())
 			if parent != null:
 				if parent is Interactable:
 					(parent as Interactable).input_event(event,
@@ -245,5 +255,19 @@ func move_camera_on_edge(delta: float) -> void:
 		var quat := Quaternion(from, to)
 		var axis := quat.get_axis()
 		var angle := quat.get_angle() * delta * CameraEdgeMovementSensitivity * border_percent
-		quat = Quaternion(axis, angle)
-		rotate_camera_on_edge.emit(quat, from, to)
+		rotate_camera_on_edge.emit(axis, angle, from, to)
+
+# ready
+# develop only
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_end"):
+		get_tree().quit()
+
+func _ready() -> void:
+#	cursor_state_changed.connect(try_save_game)
+	pass
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		await GameSaver.save_game_save_data_resource()
+		get_tree().quit()

@@ -1,0 +1,131 @@
+[gd_resource type="VisualShader" load_steps=12 format=3 uid="uid://dtihorpsnxdvt"]
+
+[sub_resource type="VisualShaderNodeVectorOp" id="137"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFresnel" id="138"]
+
+[sub_resource type="VisualShaderNodeVectorOp" id="139"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="140"]
+function = 31
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="141"]
+default_input_values = [0, 0.0, 1, 0.25, 2, 0.0]
+
+[sub_resource type="VisualShaderNodeColorUniform" id="142"]
+uniform_name = "LightColor"
+
+[sub_resource type="VisualShaderNodeFloatUniform" id="144"]
+uniform_name = "LightStrength"
+
+[sub_resource type="VisualShaderNodeVectorOp" id="145"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeColorUniform" id="146"]
+output_port_for_preview = 1
+uniform_name = "CableColor"
+
+[sub_resource type="VisualShaderNodeFloatUniform" id="147"]
+uniform_name = "CableStrength"
+
+[sub_resource type="VisualShaderNodeFloatUniform" id="VisualShaderNodeFloatUniform_66hgc"]
+uniform_name = "Smooth"
+hint = 1
+min = 0.001
+default_value_enabled = true
+default_value = 0.5
+
+[resource]
+code = "shader_type spatial;
+uniform float Smooth : hint_range(0.0010000000475, 1) = 0.5;
+uniform float CableStrength;
+uniform vec4 CableColor : source_color;
+uniform vec4 LightColor : source_color;
+uniform float LightStrength;
+
+
+
+void fragment() {
+// FloatUniform:26
+	float n_out26p0 = Smooth;
+
+
+// FloatUniform:25
+	float n_out25p0 = CableStrength;
+
+
+// Fresnel:12
+	float n_out12p0 = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), n_out25p0);
+
+
+// SmoothStep:18
+	float n_in18p0 = 0.00000;
+	float n_out18p0 = smoothstep(n_in18p0, n_out26p0, n_out12p0);
+
+
+// ColorUniform:24
+	vec4 n_out24p0 = CableColor;
+
+
+// VectorOp:10
+	vec3 n_out10p0 = vec3(n_out18p0) * vec3(n_out24p0.xyz);
+
+
+// FloatFunc:17
+	float n_out17p0 = 1.0 - n_out18p0;
+
+
+// ColorUniform:19
+	vec4 n_out19p0 = LightColor;
+
+
+// VectorOp:16
+	vec3 n_out16p0 = vec3(n_out17p0) * vec3(n_out19p0.xyz);
+
+
+// FloatUniform:22
+	float n_out22p0 = LightStrength;
+
+
+// VectorOp:23
+	vec3 n_out23p0 = n_out16p0 * vec3(n_out22p0);
+
+
+// Output:0
+	ALBEDO = n_out10p0;
+	EMISSION = n_out23p0;
+
+
+}
+"
+graph_offset = Vector2(146.659, -243.862)
+engine_version = {
+"major": 4,
+"minor": 0
+}
+nodes/fragment/0/position = Vector2(3120, -160)
+nodes/fragment/10/node = SubResource( "137" )
+nodes/fragment/10/position = Vector2(2040, -260)
+nodes/fragment/12/node = SubResource( "138" )
+nodes/fragment/12/position = Vector2(1160, -220)
+nodes/fragment/16/node = SubResource( "139" )
+nodes/fragment/16/position = Vector2(2340, 140)
+nodes/fragment/17/node = SubResource( "140" )
+nodes/fragment/17/position = Vector2(2000, 140)
+nodes/fragment/18/node = SubResource( "141" )
+nodes/fragment/18/position = Vector2(1640, -340)
+nodes/fragment/19/node = SubResource( "142" )
+nodes/fragment/19/position = Vector2(1700, 300)
+nodes/fragment/22/node = SubResource( "144" )
+nodes/fragment/22/position = Vector2(2260, 500)
+nodes/fragment/23/node = SubResource( "145" )
+nodes/fragment/23/position = Vector2(2680, 200)
+nodes/fragment/24/node = SubResource( "146" )
+nodes/fragment/24/position = Vector2(1340, 40)
+nodes/fragment/25/node = SubResource( "147" )
+nodes/fragment/25/position = Vector2(680, -80)
+nodes/fragment/26/node = SubResource( "VisualShaderNodeFloatUniform_66hgc" )
+nodes/fragment/26/position = Vector2(1100, -720)
+nodes/fragment/connections = PackedInt32Array(17, 0, 16, 0, 12, 0, 18, 2, 18, 0, 17, 0, 22, 0, 23, 1, 24, 0, 10, 1, 25, 0, 12, 3, 18, 0, 10, 0, 23, 0, 0, 5, 19, 0, 16, 1, 16, 0, 23, 0, 10, 0, 0, 0, 26, 0, 18, 1)

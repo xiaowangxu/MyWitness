@@ -3,6 +3,9 @@ extends Node3D
 
 signal interact_result_changed(toggle : bool, tag : int)
 
+func _init() -> void:
+	add_to_group("GameSave")
+
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
 	pass
 

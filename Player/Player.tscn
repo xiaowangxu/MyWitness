@@ -13,7 +13,8 @@ size = Vector3(0.05, 0.05, 2)
 shading_mode = 0
 albedo_color = Color(0.184314, 0.592157, 0.639216, 1)
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D" groups=["Player"]]
+collision_layer = 21
 script = ExtResource( "1_2r417" )
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -31,8 +32,9 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="Rotator" type="MeshInstance3D" parent="Rotator"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.45056)
 visible = false
+layers = 8
 mesh = SubResource( "BoxMesh_wrc6g" )
 skeleton = NodePath("../../CollisionShape")
 surface_material_override/0 = SubResource( "StandardMaterial3D_bm2x0" )
@@ -43,3 +45,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="Camera" type="Camera3D" parent="Neck"]
 unique_name_in_owner = true
+cull_mask = 1048567

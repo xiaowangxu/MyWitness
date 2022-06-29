@@ -177,3 +177,40 @@ static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector
 				last_vertice = vertice
 				last_distance = distance
 	return last_vertice
+
+static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array) -> LineData:
+	var start_idx := idxs[0]
+	var line := LineData.new(puzzle_data.vertices[start_idx])
+	for i in range(1, idxs.size()):
+		line.add_line_segemnt(puzzle_data.vertices[idxs[i]])
+	return line
+
+# get the percentage of a portion of the path
+static func get_base_path_percentage(line_data : LineData, base_path : LineData, strict : bool = true, ) -> float:
+	var vertices_base : Array[Vertice] = base_path.to_vertices()
+	var vertices_line : Array[Vertice] = line_data.to_vertices()
+	var vertices_base_size := vertices_base.size()
+	var vertices_line_size := vertices_line.size()
+	var start_vertice := vertices_base[0]
+	var start_idx : int = 0
+	while true:
+		if start_idx >= vertices_line_size: return -1.0
+		if vertices_line[start_idx] == start_vertice:
+			break
+		else: start_idx += 1
+	var end_idx : int = 1
+	if start_idx >= vertices_line_size - 1: return -1.0
+	while true:
+		if start_idx + end_idx >= vertices_line_size or end_idx >= vertices_base_size: break
+		if vertices_line[start_idx + end_idx] != vertices_base[end_idx]:
+			if strict: return -1.0
+			else: break
+		else: end_idx += 1
+#	print(start_idx, end_idx)
+	if start_idx + 1 > start_idx + end_idx - 1 : return -1.0
+	var base_length : float = base_path.get_length()
+	var line_length : float = line_data.get_length(start_idx + 1, start_idx + end_idx - 1)
+#	printt(base_length, line_length, start_idx + 1, start_idx + end_idx - 1)
+	if is_zero_approx(base_length):
+		return 1.0
+	return line_length / base_length

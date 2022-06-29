@@ -18,14 +18,14 @@ signal puzzle_checked()
 @export var add_config : bool = false:
 	set(val):
 		add_config = false
-		ViewportConfigs.append({
+		viewport_configs.append({
 			"name": "base",
 			"visual": 0b1111,
 			"targets": PackedStringArray(["surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"]),
 			"transparent": false,
 			"update": true
 		})
-@export var ViewportConfigs : Array[Dictionary] = [{
+@export var viewport_configs : Array[Dictionary] = [{
 	"name": "base",
 	"visual": 0b1111,
 	"targets": PackedStringArray(["surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"]),
@@ -56,12 +56,14 @@ func _ready() -> void:
 	area.collision_layer |= GlobalData.PhysicsLayerInteractables | GlobalData.PhysicsLayerPuzzles
 	audio.bus = GlobalData.PuzzleSoundEffectsBus
 	
-	for config in ViewportConfigs:
+	for config in viewport_configs:
 		set_viewports(config)
 	
 	base_viewport.add_child(test_info)
 	base_puzzle_renderer.state_changed.connect(on_puzzle_state_changed)
 	test_info.puzzle_name = puzzle_name
+	
+	load_save()
 	pass
 
 func set_viewports(config : Dictionary) -> void:
@@ -192,6 +194,7 @@ func check_puzzle_ans() -> int:
 
 func exit_puzzle() -> void:
 	puzzle_line = null
+	save()
 	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	base_puzzle_renderer.create_exit_tween()
 	puzzle_exited.emit()
@@ -203,16 +206,16 @@ func on_puzzle_answered(correct : bool, tag : int) -> void:
 		play_sound("error")
 		puzzle_line.forward(1.0)
 		set_puzzle_line(puzzle_line)
-		puzzle_line = null
 		base_puzzle_renderer.create_error_tween()
 		GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	else:
 		play_sound("start")
 		puzzle_line.forward(1.0)
 		set_puzzle_line(puzzle_line)
-		puzzle_line = null
 		base_puzzle_renderer.create_correct_tween()
 		GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
+	save()
+	puzzle_line = null
 	interact_result_changed.emit(correct, tag)
 	pass
 
@@ -262,4 +265,23 @@ func play_sound(stream_name : String = "") -> void:
 		audio.play()
 
 func set_puzzle_line(line_data : LineData, idx : int = 0) -> void:
-	base_puzzle_renderer.set_puzzle_line(idx, puzzle_line)
+	base_puzzle_renderer.set_puzzle_line(idx, line_data)
+
+# save load
+func save() -> void:
+	if puzzle_line == null:
+		GameSaver.clear_puzzle(puzzle_name)
+	else:
+		var line_vertice_id : Array = PackedInt32Array([puzzle_line.start.id])
+		for i in puzzle_line.segments:
+			line_vertice_id.append(i.to.id)
+		var save_data : Dictionary = {
+			"line": line_vertice_id
+		}
+		GameSaver.save_puzzle(puzzle_name, save_data)
+
+func load_save() -> void:
+	var data = GameSaver.get_puzzle(puzzle_name)
+	if data == null: return
+	var line : LineData = PuzzleFunction.generate_line_from_idxs(puzzle_data, data.line)
+	set_puzzle_line(line)

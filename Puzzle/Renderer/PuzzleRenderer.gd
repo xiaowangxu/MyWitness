@@ -26,6 +26,7 @@ func _ready() -> void:
 		viewport_size = get_viewport_rect().size
 	else:
 		viewport_size = override_size
+	minimum_size = puzzle_data.base_size
 	size = puzzle_data.base_size
 	scale = viewport_size / size
 	
@@ -57,7 +58,7 @@ func _ready() -> void:
 		line_canvas_group = CanvasGroup.new()
 		line_canvas_group.z_index = 1
 		line_render = LineSegment.new([], puzzle_data.normal_radius, puzzle_data.start_radius)
-		line_render.self_modulate = Color.DEEP_PINK
+		line_render.self_modulate = puzzle_data.line_correct_color
 		line_canvas_group.add_child(line_render)
 		add_child(line_canvas_group)
 
