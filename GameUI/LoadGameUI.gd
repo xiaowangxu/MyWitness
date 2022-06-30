@@ -91,7 +91,8 @@ func _ready() -> void:
 			},
 			{
 				"position": [250,780],
-				"type": 1
+				"type": 1,
+				"tag": 666
 			}
 		]
 	})
@@ -111,6 +112,8 @@ func _input(event: InputEvent) -> void:
 		get_tree().paused = false
 		visible = false
 		return
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		on_confirm()
 	if event is InputEventMouseMotion:
 		relative += event.relative
 
@@ -142,6 +145,18 @@ func on_menu_open() -> void:
 	puzzle_renderer.create_start_tween()
 	%GameSaveDataList.offset_top = %GameSaveDataList.size.y
 
+func on_confirm(force_cancel : bool = false) -> void:
+	if force_cancel or not is_waiting_for_comfirm:
+		return
+	else:
+		var correct_tag := check_puzzle_ans()
+		on_puzzle_answered(correct_tag)
+
+# -1 is wrong >= 0 means different correct ans's tags
+func check_puzzle_ans() -> int:
+	var last_vertice := puzzle_line.get_current_vertice()
+	return last_vertice.tag
+
 func update_confirm_state(line_data : LineData) -> void:
 	var current_vertice : Vertice = line_data.get_current_vertice()
 	var current_percentage : float = line_data.get_current_percentage()
@@ -159,3 +174,9 @@ func on_waiting_to_confirm_changed(is_waiting : bool) -> void:
 		puzzle_renderer.create_highlight_tween()
 	else:
 		puzzle_renderer.create_exit_highlight_tween()
+
+func on_puzzle_answered(tag : int) -> void:
+	match tag:
+		666:
+			await GameSaver.save_game_save_data_resource()
+			get_tree().quit()

@@ -22,8 +22,12 @@ var edge_map = null
 func _init(res : ) -> void:
 	calcu_puzzle(res.data)
 
-func calcu_line_center(from : Vertice, to : Vertice) -> Vector2:
-	return (from.position + to.position) / 2.0
+func calcu_line_center(from : Vertice, to : Vertice, radius : float = normal_radius) -> Vector2:
+	var normal := (to.position - from.position).normalized()
+	var extends_length := normal * radius
+	var from_position : Vector2 = from.position + (-extends_length if from.type == Vertice.VerticeType.STOP else Vector2.ZERO) 
+	var to_position   : Vector2 = to.position + (extends_length if to.type == Vertice.VerticeType.STOP else Vector2.ZERO) 
+	return (from_position + to_position) / 2.0
 
 func calcu_area_center(points : PackedVector2Array) -> Vector2:
 	var center : Vector2 = Vector2.ZERO

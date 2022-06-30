@@ -138,6 +138,19 @@ func clamp_line_end(line_radius : float, start_radius : float) -> void:
 			segments.pop_back()
 	pass
 
+func clamp_to_segment(segment : LineDataSegment, forward : bool = true) -> void:
+	if segment.from == segment.to:
+		if segment.to == start:
+			segments.clear()
+			return
+	for i in (range(segments.size()) if forward else range(segments.size() - 1, -1, -1)):
+		var cnt_segment := segments[i]
+		if cnt_segment.from == segment.from and cnt_segment.to == segment.to:
+			cnt_segment.set_percentage(segment.percentage)
+			segments.resize(i+1)
+			return
+	pass
+
 func duplicate() -> LineData:
 	var line : LineData = LineData.new(self.start)
 	for segment in self.segments:
@@ -189,4 +202,87 @@ func difference(old_line : LineData) -> Dictionary:
 	return {
 		"forward": true,
 		"difference": diff
+	}
+
+func calcu_forward_or_backward_line(base_line : LineData) -> Dictionary:
+	var vertices_base : Array[Vertice] = base_line.to_vertices()
+	var vertices_line : Array[Vertice] = self.to_vertices()
+	var vertices_base_size := vertices_base.size()
+	var vertices_line_size := vertices_line.size()
+	var start_idx : int = 0
+	while true:
+		if start_idx >= vertices_base_size or start_idx >= vertices_line_size: return {}
+		if vertices_line[start_idx] != vertices_base[start_idx]:
+			break
+		elif start_idx >= vertices_base_size - 1 or start_idx >= vertices_line_size - 1:
+			break
+		else: start_idx += 1
+#	print(">>> split : ", start_idx, " old: ", vertices_base_size-1, " new: ", vertices_line_size - 1)
+
+	var has_forward  : bool = false 
+	var has_backward : bool = false 
+#	check if is forward
+#	        | start_idx		      | start_idx
+#	        |				      | |
+#	o---a---b				o---a-b |
+#	o---a---b---c			o---a---b
+#
+	if start_idx >= vertices_base_size - 1:
+		if vertices_base_size == vertices_line_size:
+#			may be in a same segment, so needs to compare their percentage
+			var base_end_percentage := base_line.get_current_percentage()
+			var line_end_percentage := self.get_current_percentage()
+			if base_end_percentage < line_end_percentage:
+				has_backward = false
+				has_forward = true
+			elif base_end_percentage == line_end_percentage:
+				has_backward = false
+				has_forward = false
+			else:
+				has_backward = true
+				has_forward = false
+		else:
+			has_backward = false
+			has_forward = true
+#	
+#	    | start_idx		    | start_idx
+#	    |				    |
+#	o---a---b			o---a---b
+#	    |
+#	    c---d			o---a
+#
+	else:
+		has_backward = true
+		if start_idx >= vertices_line_size - 1:
+			has_forward = false
+		else:
+			has_forward = true
+	
+#	if has_backward and has_forward:
+#		print("<-- backward --> forward")
+#	elif has_backward:
+#		print("<-- backward")
+#	elif has_forward:
+#		print("--> forward")
+	
+	var forward_segments  : Array[LineDataSegment] = []
+	var backward_segments : Array[LineDataSegment] = []
+	if has_forward:
+#		if start_idx != 0:
+		var last_segment := base_line.get_nth_segment_duplicated(start_idx)
+		forward_segments.append(last_segment)
+		for i in range(start_idx, vertices_line_size):
+			var cnt_segment := self.get_nth_segment_duplicated(i)
+			if last_segment.is_same_segment(cnt_segment) and i < vertices_line_size - 1: continue
+			forward_segments.append(cnt_segment)
+			last_segment = cnt_segment
+	if has_backward:
+		for i in range(vertices_base_size - 1, start_idx - 1, -1):
+			if i == 0: continue
+			backward_segments.append(base_line.get_nth_segment_duplicated(i))
+		backward_segments.append(self.get_nth_segment_duplicated(start_idx))
+	
+	return {
+		"forward" : forward_segments,
+		"backward": backward_segments
 	}

@@ -6,7 +6,7 @@ uid="uid://d1pxvxwq13i4y"
 path.etc2="res://.godot/imported/World.exr-1f151d3a8755edbe5f1dc38562c3513c.etc2.ctexarray"
 path.s3tc="res://.godot/imported/World.exr-1f151d3a8755edbe5f1dc38562c3513c.s3tc.ctexarray"
 metadata={
-"imported_formats": ["etc2", "s3tc"],
+"imported_formats": ["bptc", "etc2", "s3tc"],
 "vram_texture": true
 }
 

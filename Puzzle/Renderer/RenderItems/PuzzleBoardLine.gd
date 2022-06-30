@@ -33,5 +33,8 @@ func _draw() -> void:
 			_:
 				RenderingServer.canvas_item_add_circle(_rid, vertice.position, normal_radius, WHITE)
 	for edge in puzzle_board.edges:
-		RenderingServer.canvas_item_add_line(_rid, edge.from.position, edge.to.position, WHITE, normal_radius*2)
+		var extends_length := edge.normal * normal_radius
+		var from_position : Vector2 = edge.from.position + (-extends_length if edge.from.type == Vertice.VerticeType.STOP else Vector2.ZERO) 
+		var to_position   : Vector2 = edge.to.position + (extends_length if edge.to.type == Vertice.VerticeType.STOP else Vector2.ZERO) 
+		RenderingServer.canvas_item_add_line(_rid, from_position, to_position, WHITE, normal_radius*2)
 	pass

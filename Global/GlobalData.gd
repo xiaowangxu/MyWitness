@@ -9,9 +9,9 @@ const PuzzleViewportSizes : Dictionary = {
 	"large": Vector2(2048, 2048),
 }
 const AllPuzzleJsons : Dictionary = {
-	"first_try": preload("res://Puzzle/Json/Json.json"),
-	"second": preload("res://Puzzle/Json/Json2.json"),
-	"hello_world": preload("res://Puzzle/Json/Json3.json"),
+	"first_try": preload("res://PuzzleDataJson/Json.json"),
+	"second": preload("res://PuzzleDataJson/Json2-1.json"),
+	"hello_world": preload("res://PuzzleDataJson/Json3.json"),
 	"generator": preload("res://PuzzleDataJson/Puzzle.json")
 }
 var AllPuzzleData : Dictionary = {
@@ -46,7 +46,7 @@ func _init() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 
 var cursor_state : CursorState = CursorState.DISABLED
-const Mouse2DSensitivity : float = 3.25
+const Mouse2DSensitivity : float = 3.0
 const Mouse3DSensitivity : float = 0.1
 const CameraEdgeMovementSensitivity : float = 0.5
 var mouse_position : Vector2 = Vector2.ZERO
@@ -167,7 +167,7 @@ func _process(delta: float) -> void:
 			var _position : Vector3 = ans.position
 			new_mouse_position = last_puzzle_panel.on_mouse_moved(_position)
 		else:
-			var current := (last_puzzle_panel as Interactable).get_current_mouse_position()
+			var current := (last_puzzle_panel as Interactable).get_current_world_position()
 			var from = get_mouse_position_from_world(current)
 			var pos = get_viewport_position_from_mouse(from)
 			get_node("/root/World/GameUI/TestCursor").position = pos
@@ -219,15 +219,16 @@ func pick_first_obstacle(from : Vector3, target : CollisionObject3D, self_distan
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
 	query.collision_mask = collision_layer
-	query.exclude = [target]
+#	query.exclude = [target]
 	query.hit_from_inside = true
 	var _from := get_viewport().get_camera_3d().global_transform.origin
 	var _normal := (_from - from).normalized()
-	query.to = from - _normal * self_distance
+	query.to = from + _normal * self_distance
 	query.from = _from
 	return physics.intersect_ray(query)
 
 func check_reachable(from : Vector3, target : CollisionObject3D, self_distance : float = 0.001, collision_layer : int = PhysicsLayerInteractObstacles) -> bool:
+#	var ans = pick_first_obstacle(from, target, self_distance, collision_layer)
 	return pick_first_obstacle(from, target, self_distance, collision_layer).is_empty()
 
 func get_farrest_reachable(from : Vector2, to : Vector2, collision_layer : int = PhysicsLayerInteractObstacles, interval : float = 0.005) -> Dictionary:

@@ -29,8 +29,15 @@ func duplicate() -> LineDataSegment:
 func _to_string() -> String:
 	return "(%s) - %.4f -> (%s)" % [from.position, percentage, to.position]
 
+func is_same_segment(b : LineDataSegment) -> bool:
+	return self.from == b.from and self.to == b.to
+
 func is_equal_approx(b : LineDataSegment) -> bool:
 	if self.from == b.from and self.to == b.to:
 		return is_equal_approx(self.percentage, b.percentage)
 	else:
 		return false
+
+func get_percentage(position : Vector2) -> float:
+	var sub_length := (position - from.position).length()
+	return sub_length / length

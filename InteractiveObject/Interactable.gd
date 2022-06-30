@@ -17,3 +17,6 @@ func mouse_to_global(pos : Vector3) -> Vector3:
 
 func get_current_mouse_position() -> Vector3:
 	return Vector3.ZERO
+
+func get_current_world_position() -> Vector3:
+	return Vector3.ZERO

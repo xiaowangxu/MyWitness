@@ -32,7 +32,7 @@ static func _calcu_remain_movement(movement_length : float, current_percentage :
 			var used_length : float = total_length * used
 			return movement_length - used_length
 	else:
-		if current_percentage - current_percentage >= 0.0: return 0.0
+		if current_percentage - percentage >= 0.0: return 0.0
 		else:
 			var used : float = current_percentage
 			var used_length : float = total_length * used

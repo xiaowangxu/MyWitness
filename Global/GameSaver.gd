@@ -5,6 +5,7 @@ var cover_texture : ImageTexture
 #var dirty : bool = false
 
 func _init() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	if ResourceLoader.exists("user://GameSave.res"):
 		game_save_data = ResourceLoader.load("user://GameSave.res")
 		print(">>>> load")
@@ -66,6 +67,7 @@ func get_interactable(tag : String):
 
 func save_game_save_data_resource() -> void:
 #	if not dirty: return
+	print(">>>> save")
 	var start_time := Time.get_ticks_msec()
 	var player : Player = get_tree().get_first_node_in_group("Player")
 	player.save()

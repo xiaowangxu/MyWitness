@@ -171,7 +171,7 @@ _global_script_class_icons={
 [application]
 
 config/name="MyWitness"
-run/main_scene="res://World.tscn"
+run/main_scene="res://World/World.tscn"
 boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 1)
 config/auto_accept_quit=false
 config/quit_on_go_back=false
@@ -268,10 +268,17 @@ common/enable_object_picking=false
 
 [rendering]
 
+textures/vram_compression/import_bptc=true
+textures/vram_compression/import_etc=true
 shadows/directional_shadow/size=8192
 shadows/directional_shadow/soft_shadow_quality=4
+shadows/directional_shadow/16_bits=false
 shadows/shadows/soft_shadow_quality=4
 reflections/reflection_atlas/reflection_size=1024
+environment/ssao/half_size=false
+anti_aliasing/screen_space_roughness_limiter/enabled=false
+environment/glow/use_high_quality=true
+environment/subsurface_scattering/subsurface_scattering_quality=2
 anti_aliasing/quality/msaa=2
 anti_aliasing/quality/use_debanding=true
 occlusion_culling/use_occlusion_culling=true

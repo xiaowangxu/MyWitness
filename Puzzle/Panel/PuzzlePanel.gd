@@ -32,6 +32,7 @@ signal puzzle_checked()
 	"transparent": false,
 	"update": true
 }]
+@export var min_delta_length : float = 2.0
 var puzzle_renderer_viewport_map : Dictionary = {}
 var update_viewport_list : Array[SubViewport] = []
 
@@ -113,6 +114,11 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 			if GlobalData.is_position_in_view(world_pos):
 				current_position = pos
 				puzzle_line = LineData.new(start_vertice)
+#				puzzle_line.add_line_segemnt(puzzle_data.vertices[1])
+#				puzzle_line.add_line_segemnt(puzzle_data.vertices[2])
+#				puzzle_line.add_line_segemnt(puzzle_data.vertices[5])
+#				puzzle_line.add_line_segemnt(puzzle_data.vertices[8])
+#				puzzle_line.add_line_segemnt(puzzle_data.vertices[9])
 				GlobalData.set_mouse_position_from_world(world_pos)
 				GlobalData.set_active_puzzle_panel(self)
 				GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
@@ -121,24 +127,27 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 
 func get_current_mouse_position() -> Vector3:
 	var panel_position : Vector2 = base_puzzle_renderer.puzzle_to_panel(current_position)
-	return mouse_to_global(Vector3(panel_position.x, panel_position.y, 0.0))
+	return Vector3(panel_position.x, panel_position.y, 0.0)
+
+func get_current_world_position() -> Vector3:
+	return mouse_to_global(get_current_mouse_position())
 
 func on_mouse_moved(pos : Vector3) -> Vector3:
+	if not GlobalData.check_reachable(get_current_world_position(), area):
+		var back_line : LineData = LineData.new(puzzle_line.start)
+		puzzle_line = clamp_puzzle_line(back_line, puzzle_line, true)
 	var local = mouse_to_local(pos)
 	var new_pos : Vector2 = base_puzzle_renderer.panel_to_puzzle(Vector2(local.x, local.y))
 	var delta := new_pos - current_position
+#	if is_zero_approx(delta.length_squared()): return get_current_world_position()
 	test_info.puzzle_movement = delta
 	current_position = new_pos
 #	test_cursor.position = puzzlerenderer.puzzle_to_panel(current_position)
-
+	
 	var new_line : LineData = PuzzleFunction.move_line(puzzle_data, puzzle_line, delta)
-#	var diff := puzzle_line.difference(new_line)
-#	print("============================================")
-#	print("old  ", puzzle_line)
-#	print("new  ", new_line)
-#	print("diff ", diff.difference)
-	puzzle_line = new_line
-	var end_position : Vector2 = new_line.get_current_position()
+	var ans_line : LineData = clamp_puzzle_line(new_line, puzzle_line)
+	puzzle_line = ans_line 
+	var end_position : Vector2 = puzzle_line.get_current_position()
 	var mouse_pos : Vector2 = base_puzzle_renderer.puzzle_to_panel(end_position)
 	current_position = end_position
 	var mouse_position : Vector3 = Vector3(mouse_pos.x, mouse_pos.y, 0)
@@ -164,6 +173,112 @@ func mouse_to_global(pos : Vector3) -> Vector3:
 	scaled.y *= -1
 	var ans := trans * scaled
 	return ans
+
+func clamp_puzzle_line(new_line : LineData, old_line : LineData, invert : bool = false) -> LineData:
+	var diff : Dictionary = new_line.calcu_forward_or_backward_line(old_line)
+	var forward : Array[LineDataSegment] = diff.forward
+	var backward : Array[LineDataSegment] = diff.backward
+	if not backward.is_empty():
+		if backward.size() == 2 and backward[0].to == backward[1].to:
+			var segment := backward[1]
+			var start_pos : Vector2 = backward[0].get_position()
+			var end_pos : Vector2 = segment.get_position()
+			var length := (end_pos - start_pos).length()
+			var count : int = ceil(length / min_delta_length)
+			var last_pos := start_pos
+			for i in range(count):
+				var weight : float = float(i)/float(count - 1)
+				var point := start_pos.lerp(end_pos, weight)
+				var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
+				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
+				var reachable := GlobalData.check_reachable(world_position, area)
+				if (not invert and reachable) or (invert and not reachable):
+					last_pos = point
+					pass
+				else:
+					var percentage : float = segment.get_percentage(last_pos if not invert else point)
+					segment.percentage = percentage
+					old_line.clamp_to_segment(segment, false)
+					return old_line
+		else:
+			for idx in range(backward.size()):
+				var segment := backward[idx]
+				var start_pos : Vector2
+				var end_pos : Vector2
+				if idx == backward.size()-1:
+					start_pos = segment.to.position
+					end_pos = segment.get_position()
+				else:
+					start_pos = segment.get_position()
+					end_pos = segment.from.position
+				var length := (end_pos - start_pos).length()
+				var count : int = ceil(length / min_delta_length)
+				var last_pos := start_pos
+				for i in range(count):
+					var weight : float = float(i)/float(count - 1)
+					var point := start_pos.lerp(end_pos, weight)
+					var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
+					var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
+					var reachable := GlobalData.check_reachable(world_position, area)
+					if (not invert and reachable) or (invert and not reachable):
+						last_pos = point
+						pass
+					else:
+						var percentage : float = segment.get_percentage(last_pos if not invert else point)
+						segment.percentage = percentage
+						old_line.clamp_to_segment(segment, false)
+						return old_line
+	if not forward.is_empty():
+		if forward.size() == 2 and forward[0].from == forward[1].from:
+			var segment := forward[1]
+			var start_pos : Vector2 = forward[0].get_position()
+			var end_pos : Vector2 = segment.get_position()
+			var length := (end_pos - start_pos).length()
+			var count : int = ceil(length / min_delta_length)
+			var last_pos := start_pos
+			for i in range(count):
+				var weight : float = float(i)/float(count - 1)
+				var point := start_pos.lerp(end_pos, weight)
+				var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
+				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
+				var reachable := GlobalData.check_reachable(world_position, area)
+				if (not invert and reachable) or (invert and not reachable):
+					last_pos = point
+					pass
+				else:
+					var percentage : float = segment.get_percentage(last_pos if not invert else point)
+					segment.percentage = percentage
+					new_line.clamp_to_segment(segment)
+					return new_line
+		else:
+			for idx in range(forward.size()):
+				var segment := forward[idx]
+				var start_pos : Vector2
+				var end_pos : Vector2
+				if idx == 0:
+					start_pos = segment.get_position()
+					end_pos = segment.to.position
+				else:
+					start_pos = segment.from.position
+					end_pos = segment.get_position()
+				var length := (end_pos - start_pos).length()
+				var count : int = ceil(length / min_delta_length)
+				var last_pos := start_pos
+				for i in range(count):
+					var weight : float = float(i)/float(count - 1)
+					var point := start_pos.lerp(end_pos, weight)
+					var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
+					var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
+					var reachable := GlobalData.check_reachable(world_position, area)
+					if (not invert and reachable) or (invert and not reachable):
+						last_pos = point
+						pass
+					else:
+						var percentage : float = segment.get_percentage(last_pos if not invert else point)
+						segment.percentage = percentage
+						new_line.clamp_to_segment(segment)
+						return new_line
+	return new_line
 
 # puzzle logic
 func on_puzzle_state_changed(state : PuzzleRenderer.State) -> void:
