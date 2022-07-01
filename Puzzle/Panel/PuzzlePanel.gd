@@ -32,7 +32,7 @@ signal puzzle_checked()
 	"transparent": false,
 	"update": true
 }]
-@export var min_delta_length : float = 2.0
+@export var min_delta_length : float = 1.0
 var puzzle_renderer_viewport_map : Dictionary = {}
 var update_viewport_list : Array[SubViewport] = []
 
@@ -134,8 +134,14 @@ func get_current_world_position() -> Vector3:
 
 func on_mouse_moved(pos : Vector3) -> Vector3:
 	if not GlobalData.check_reachable(get_current_world_position(), area):
+		if puzzle_line.is_empty():
+			on_confirm(true)
+			return get_current_world_position()
 		var back_line : LineData = LineData.new(puzzle_line.start)
 		puzzle_line = clamp_puzzle_line(back_line, puzzle_line, true)
+		if puzzle_line.is_empty():
+			on_confirm(true)
+			return get_current_world_position()
 	var local = mouse_to_local(pos)
 	var new_pos : Vector2 = base_puzzle_renderer.panel_to_puzzle(Vector2(local.x, local.y))
 	var delta := new_pos - current_position
@@ -174,15 +180,15 @@ func mouse_to_global(pos : Vector3) -> Vector3:
 	var ans := trans * scaled
 	return ans
 
-func clamp_puzzle_line(new_line : LineData, old_line : LineData, invert : bool = false) -> LineData:
+func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop : bool = false) -> LineData:
 	var diff : Dictionary = new_line.calcu_forward_or_backward_line(old_line)
 	var forward : Array[LineDataSegment] = diff.forward
 	var backward : Array[LineDataSegment] = diff.backward
+	backward.reverse()
 	if not backward.is_empty():
-		if backward.size() == 2 and backward[0].to == backward[1].to:
-			var segment := backward[1]
-			var start_pos : Vector2 = backward[0].get_position()
-			var end_pos : Vector2 = segment.get_position()
+		for segment in backward:
+			var start_pos : Vector2 = segment.get_position()
+			var end_pos : Vector2 = segment.get_from_position()
 			var length := (end_pos - start_pos).length()
 			var count : int = ceil(length / min_delta_length)
 			var last_pos := start_pos
@@ -192,46 +198,17 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, invert : bool =
 				var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
 				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
 				var reachable := GlobalData.check_reachable(world_position, area)
-				if (not invert and reachable) or (invert and not reachable):
+				if (not reachable_stop and reachable) or (reachable_stop and not reachable):
 					last_pos = point
 					pass
 				else:
-					var percentage : float = segment.get_percentage(last_pos if not invert else point)
+					var percentage : float = segment.get_percentage(point if reachable_stop else last_pos)
 					segment.percentage = percentage
-					old_line.clamp_to_segment(segment, false)
+					old_line.clamp_to_segment(segment)
 					return old_line
-		else:
-			for idx in range(backward.size()):
-				var segment := backward[idx]
-				var start_pos : Vector2
-				var end_pos : Vector2
-				if idx == backward.size()-1:
-					start_pos = segment.to.position
-					end_pos = segment.get_position()
-				else:
-					start_pos = segment.get_position()
-					end_pos = segment.from.position
-				var length := (end_pos - start_pos).length()
-				var count : int = ceil(length / min_delta_length)
-				var last_pos := start_pos
-				for i in range(count):
-					var weight : float = float(i)/float(count - 1)
-					var point := start_pos.lerp(end_pos, weight)
-					var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
-					var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
-					var reachable := GlobalData.check_reachable(world_position, area)
-					if (not invert and reachable) or (invert and not reachable):
-						last_pos = point
-						pass
-					else:
-						var percentage : float = segment.get_percentage(last_pos if not invert else point)
-						segment.percentage = percentage
-						old_line.clamp_to_segment(segment, false)
-						return old_line
 	if not forward.is_empty():
-		if forward.size() == 2 and forward[0].from == forward[1].from:
-			var segment := forward[1]
-			var start_pos : Vector2 = forward[0].get_position()
+		for segment in forward:
+			var start_pos : Vector2 = segment.get_from_position()
 			var end_pos : Vector2 = segment.get_position()
 			var length := (end_pos - start_pos).length()
 			var count : int = ceil(length / min_delta_length)
@@ -242,42 +219,14 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, invert : bool =
 				var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
 				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
 				var reachable := GlobalData.check_reachable(world_position, area)
-				if (not invert and reachable) or (invert and not reachable):
+				if (not reachable_stop and reachable) or (reachable_stop and not reachable):
 					last_pos = point
 					pass
 				else:
-					var percentage : float = segment.get_percentage(last_pos if not invert else point)
+					var percentage : float = segment.get_percentage(point if reachable_stop else last_pos)
 					segment.percentage = percentage
 					new_line.clamp_to_segment(segment)
 					return new_line
-		else:
-			for idx in range(forward.size()):
-				var segment := forward[idx]
-				var start_pos : Vector2
-				var end_pos : Vector2
-				if idx == 0:
-					start_pos = segment.get_position()
-					end_pos = segment.to.position
-				else:
-					start_pos = segment.from.position
-					end_pos = segment.get_position()
-				var length := (end_pos - start_pos).length()
-				var count : int = ceil(length / min_delta_length)
-				var last_pos := start_pos
-				for i in range(count):
-					var weight : float = float(i)/float(count - 1)
-					var point := start_pos.lerp(end_pos, weight)
-					var puzzle_position := base_puzzle_renderer.puzzle_to_panel(point)
-					var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
-					var reachable := GlobalData.check_reachable(world_position, area)
-					if (not invert and reachable) or (invert and not reachable):
-						last_pos = point
-						pass
-					else:
-						var percentage : float = segment.get_percentage(last_pos if not invert else point)
-						segment.percentage = percentage
-						new_line.clamp_to_segment(segment)
-						return new_line
 	return new_line
 
 # puzzle logic

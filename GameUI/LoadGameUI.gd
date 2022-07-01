@@ -15,7 +15,7 @@ func _ready() -> void:
 		"board": {
 			"background_color": [ 1.0, 0.0, 0.0, 0 ],
 			"background_line_color": [ 0.35, 0.35, 0.35, 1 ],
-			"base_size": [350, 900],
+			"base_size": [450, 900],
 			"line_correct_color": [ 1.0, 0.2, 0.0, 1 ],
 			"line_drawing_color": [ 1, 0.75, 0.00, 1 ],
 			"normal_radius": 18,
@@ -54,50 +54,59 @@ func _ready() -> void:
 			{
 				"from": 7,
 				"to": 8
+			},
+			{
+				"from": 0,
+				"to": 9
 			}
 		],
 		"points": [
 			{
-				"position": [100,100],
+				"position": [200,100],
 				"type": 0
 			},
 			{
-				"position": [210,100],
+				"position": [310,100],
 				"type": 1
 			},
 			{
-				"position": [100,700],
+				"position": [200,700],
 				"type": 3
 			},
 			{
-				"position": [175,700],
+				"position": [275,700],
 				"type": 1
 			},
 			{
-				"position": [100,780],
+				"position": [200,780],
 				"type": 1
 			},
 			{
-				"position": [175,780],
+				"position": [275,780],
 				"type": 3
 			},
 			{
-				"position": [225,830],
+				"position": [325,830],
 				"type": 3
 			},
 			{
-				"position": [300,830],
+				"position": [400,830],
 				"type": 3
 			},
 			{
-				"position": [250,780],
+				"position": [350,780],
 				"type": 1,
 				"tag": 666
+			},
+			{
+				"position": [90,100],
+				"type": 1,
+				"tag": 233
 			}
 		]
 	})
 	puzzle_data = PuzzleData.new(puzzle_json)
-	puzzle_renderer = PuzzleRenderer.new(puzzle_data, Vector2i(350, 900))
+	puzzle_renderer = PuzzleRenderer.new(puzzle_data, Vector2i(450, 900))
 	%CenterContainer.add_child(puzzle_renderer)
 	exit_base_path = LineData.new(puzzle_data.vertices[0])
 	exit_base_path.add_line_segemnt(puzzle_data.vertices[2])
@@ -180,3 +189,9 @@ func on_puzzle_answered(tag : int) -> void:
 		666:
 			await GameSaver.save_game_save_data_resource()
 			get_tree().quit()
+		233:
+			match Input.get_mouse_mode():
+				Input.MOUSE_MODE_CAPTURED:
+					Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+				Input.MOUSE_MODE_VISIBLE:
+					Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
