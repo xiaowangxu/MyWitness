@@ -613,13 +613,13 @@ light_bake_mode = 0
 shadow_enabled = true
 shadow_blur = 0.5
 
-[node name="Player" parent="." instance=ExtResource( "5_sayar" )]
-unique_name_in_owner = true
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -3.1, 0, 0.5)
-
 [node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
 occluder = ExtResource( "4_oegm4" )
 bake_mask = 4294443008
+
+[node name="Player" parent="." instance=ExtResource( "5_sayar" )]
+unique_name_in_owner = true
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -3.66597, 0, 1.37013)
 
 [node name="Ground" type="MeshInstance3D" parent="."]
 transform = Transform3D(500, 0, 0, 0, 1, 0, 0, 0, 500, 0.0169484, 0, -0.00641288)
@@ -816,9 +816,9 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource( "StandardMaterial3D_4qfhp" )
 
 [node name="TestPuzzle" parent="." instance=ExtResource( "6_gar0n" )]
-transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -4.45086, 3.32821, -1.65065)
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -11.471, 4, -2.551)
 script = ExtResource( "7_cy246" )
-puzzle_name = "second"
+puzzle_name = "second2"
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"),
@@ -831,6 +831,7 @@ metadata/_edit_group_ = true
 [node name="Mesh" type="MeshInstance3D" parent="TestPuzzle"]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
 layers = 524289
+ignore_occlusion_culling = true
 mesh = ExtResource( "8_2bnqd" )
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource( "StandardMaterial3D_j24ti" )

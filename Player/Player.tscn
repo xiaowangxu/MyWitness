@@ -13,7 +13,7 @@ size = Vector3(0.05, 0.05, 2)
 shading_mode = 0
 albedo_color = Color(0.184314, 0.592157, 0.639216, 1)
 
-[node name="Player" type="CharacterBody3D" groups=["Player"]]
+[node name="Player" type="CharacterBody3D"]
 collision_layer = 8
 collision_mask = 2147483669
 script = ExtResource( "1_2r417" )

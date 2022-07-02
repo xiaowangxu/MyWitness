@@ -166,46 +166,6 @@ func _to_string() -> String:
 		ans += ' -> (%.1f,%.1f,%.2f)' % [segment.to.position.x, segment.to.position.y, segment.percentage]
 	return ans
 
-func difference(old_line : LineData) -> Dictionary:
-	print("======== diffing ==========================================================")
-	var diff : LineData = LineData.new(null)
-	var a_line := self
-	var b_line := old_line
-	var a_count := a_line.get_segments_count()
-	var b_count := b_line.get_segments_count()
-	if a_count < b_count:
-		var tmp := a_count
-		a_count = b_count
-		b_count = tmp
-		a_line = old_line
-		b_line = self
-	
-	var same_end := b_count
-	
-	for i in range(b_count):
-		var a_segment := a_line.get_nth_segment_duplicated(i)
-		var b_segment := b_line.get_nth_segment_duplicated(i)
-		printt(a_segment, ",", b_segment)
-		if a_segment.is_equal_approx(b_segment):
-			continue
-		else:
-			same_end = i
-			break
-		pass
-	
-	print(same_end, " ", b_count)
-	if same_end == b_count:
-		diff.segments.append(b_line.get_nth_segment_duplicated(same_end - 1))
-	
-	for i in range(same_end, a_count):
-		var a_segment := a_line.get_nth_segment_duplicated(i)
-		diff.segments.append(a_segment)
-	
-	return {
-		"forward": true,
-		"difference": diff
-	}
-
 func calcu_forward_or_backward_line(base_line : LineData) -> Dictionary:
 	var vertices_base : Array[Vertice] = base_line.to_vertices()
 	var vertices_line : Array[Vertice] = self.to_vertices()

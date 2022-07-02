@@ -47,6 +47,9 @@ func set_cover_image(image : Image) -> void:
 	update_saved_time()
 	pass
 
+func get_cover_image() -> Image:
+	return cover_image
+
 func update_saved_time() -> void:
 	saved_time = Time.get_datetime_string_from_system(false, true)
 

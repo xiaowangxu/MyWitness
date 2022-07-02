@@ -65,11 +65,14 @@ func clear_interactable(tag : String) -> void:
 func get_interactable(tag : String):
 	return game_save_data.get_interactable(tag)
 
+func get_cover_image() -> Image:
+	return game_save_data.get_cover_image()
+
 func save_game_save_data_resource() -> void:
 #	if not dirty: return
 	print(">>>> save")
 	var start_time := Time.get_ticks_msec()
-	var player : Player = get_tree().get_first_node_in_group("Player")
+	var player : Player = GlobalData.get_player()
 	player.save()
 	var _camera := get_viewport().get_camera_3d()
 	camera.global_transform = _camera.global_transform

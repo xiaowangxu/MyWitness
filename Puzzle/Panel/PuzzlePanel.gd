@@ -10,7 +10,7 @@ const AudioSoundEffects = {
 
 signal move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_answered(correct : bool, tag : int)
-signal puzzle_started(puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
+signal puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_exited()
 signal puzzle_checked()
 
@@ -111,18 +111,8 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 			var _mouse_pos : Vector2 = base_puzzle_renderer.puzzle_to_panel(pos)
 			var mouse_pos : Vector3 = Vector3(_mouse_pos.x, _mouse_pos.y, 0)
 			var world_pos : Vector3 = mouse_to_global(Vector3(mouse_pos.x, mouse_pos.y, 0))
-			if GlobalData.is_position_in_view(world_pos):
-				current_position = pos
-				puzzle_line = LineData.new(start_vertice)
-#				puzzle_line.add_line_segemnt(puzzle_data.vertices[1])
-#				puzzle_line.add_line_segemnt(puzzle_data.vertices[2])
-#				puzzle_line.add_line_segemnt(puzzle_data.vertices[5])
-#				puzzle_line.add_line_segemnt(puzzle_data.vertices[8])
-#				puzzle_line.add_line_segemnt(puzzle_data.vertices[9])
-				GlobalData.set_mouse_position_from_world(world_pos)
-				GlobalData.set_active_puzzle_panel(self)
-				GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
-				puzzle_started.emit(current_position, mouse_pos, world_pos)
+			if GlobalData.is_position_in_view(world_pos) and GlobalData.check_reachable(world_pos, area):
+				puzzle_started.emit(start_vertice, pos, mouse_pos, world_pos)
 	pass
 
 func get_current_mouse_position() -> Vector3:
@@ -131,6 +121,13 @@ func get_current_mouse_position() -> Vector3:
 
 func get_current_world_position() -> Vector3:
 	return mouse_to_global(get_current_mouse_position())
+
+func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
+	var pos := global_transform.origin
+	var quat := global_transform.basis.get_rotation_quaternion()
+	pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 2
+	pos.y = global_transform.origin.y - 4.0
+	return Transform3D(Basis(Quaternion(Vector3(0,global_transform.basis.get_euler().y,0))), pos)
 
 func on_mouse_moved(pos : Vector3) -> Vector3:
 	if not GlobalData.check_reachable(get_current_world_position(), area):
@@ -283,8 +280,18 @@ func on_puzzle_answered(correct : bool, tag : int) -> void:
 	interact_result_changed.emit(correct, tag)
 	pass
 
-func on_puzzle_started(puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
+func on_puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
 	is_waiting_for_comfirm = false
+	current_position = puzzle_position
+	puzzle_line = LineData.new(start_vertice)
+#	puzzle_line.add_line_segemnt(puzzle_data.vertices[1])
+#	puzzle_line.add_line_segemnt(puzzle_data.vertices[2])
+#	puzzle_line.add_line_segemnt(puzzle_data.vertices[5])
+#	puzzle_line.add_line_segemnt(puzzle_data.vertices[8])
+#	puzzle_line.add_line_segemnt(puzzle_data.vertices[9])
+	GlobalData.set_mouse_position_from_world(world_position)
+	GlobalData.set_active_puzzle_panel(self)
+	GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
 	set_puzzle_line(puzzle_line)
 	base_puzzle_renderer.create_start_tween()
 	play_sound("start")

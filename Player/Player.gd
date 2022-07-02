@@ -5,18 +5,21 @@ const SPEED = 5.0
 const RUN_SPEED = 10.0
 const JUMP_VELOCITY = 4.5
 
-@onready var Body : CharacterBody3D = self
-@onready var Neck : Node3D = %Neck
-@onready var Rotator : Node3D = %Rotator
-@onready var Camera : Camera3D = %Camera
+@onready var body : CharacterBody3D = self
+@onready var neck : Node3D = %Neck
+@onready var rotator : Node3D = %Rotator
+@onready var camera : Camera3D = %Camera
 
 # Get the gravity from the project settings to be synced with RigidDynamicBody nodes.
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready() -> void:
+	rotation = Vector3.ZERO
+	add_to_group(GlobalData.PlayerGroupName)
 	load_save()
 	GlobalData.rotate_camera_on_edge.connect(rotate_camera_on_edge)
 	GlobalData.rotate_camera_interact.connect(rotate_camera_on_interact)
+	GlobalData.cursor_state_changed.connect(on_cursor_state_changed)
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -33,7 +36,7 @@ func _physics_process(delta: float) -> void:
 		var speed := SPEED
 		if Input.is_action_pressed("shift"): speed = RUN_SPEED
 		var input_dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-		var direction := (Neck.global_transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		var direction := (neck.global_transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		if direction:
 			velocity.x = direction.x * speed
 			velocity.z = direction.z * speed
@@ -46,32 +49,80 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-func rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to : Vector3)-> void:
-	Rotator.rotation.x = Camera.rotation.x
-	Rotator.rotation.y = Neck.rotation.y
-	Rotator.rotation.z = 0.0
-	Rotator.rotate(axis.normalized(), angle)
-	Rotator.rotation.z = 0.0
-	Camera.rotation.x = Rotator.rotation.x
-	Neck.rotation.y = Rotator.rotation.y
+func on_cursor_state_changed(new_state : GlobalData.CursorState, old_state : GlobalData.CursorState) -> void:
+	if old_state == GlobalData.CursorState.DISABLED and new_state == GlobalData.CursorState.PICKING:
+		var panel := pick_nearest_panel()
+		if panel != null:
+			move_and_rotate_to_panel(panel)
 	pass
+
+const NearestReachableLength = 4.0
+func pick_nearest_panel() -> PuzzlePanel:
+	var ans := GlobalData.pick_interactable(Vector2.ZERO, GlobalData.PhysicsLayerInteractObstacles, NearestReachableLength)
+	if not ans.is_empty():
+		var parent = ans.collider.get_parent()
+		if parent != null and parent is PuzzlePanel:
+			return parent
+	return null
+
+func rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to : Vector3)-> void:
+	rotator.rotation.x = camera.rotation.x
+	rotator.rotation.y = neck.rotation.y
+	rotator.rotation.z = 0.0
+	rotator.rotate(axis.normalized(), angle)
+	rotator.rotation.z = 0.0
+	camera.rotation.x = rotator.rotation.x
+	neck.rotation.y = rotator.rotation.y
+	clamp_camera_angle()
+	pass
+
+func get_current_transform() -> Transform3D:
+	return Transform3D(Basis(Quaternion(Vector3(camera.rotation.x, neck.rotation.y, 0))), global_transform.origin)
 
 var mouse_sensitivity = 0.1
-func rotate_camera_on_interact(event : InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		Neck.rotate_y(deg2rad(-event.relative.x * GlobalData.Mouse3DSensitivity))
-		Camera.rotate_x(deg2rad(-event.relative.y * GlobalData.Mouse3DSensitivity))
-		Camera.rotation.x = clamp(Camera.rotation.x, deg2rad(-89), deg2rad(89))
+var up_max_deg = 85
+var down_max_deg = 50
+func clamp_camera_angle() -> void:
+	var up_max_rad := deg2rad(up_max_deg)
+	var down_max_rad := deg2rad(-down_max_deg)
+	camera.rotation.x = clamp(camera.rotation.x, down_max_rad, up_max_rad)
 	pass
 
+func rotate_camera_on_interact(event : InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		neck.rotate_y(deg2rad(-event.relative.x * GlobalData.Mouse3DSensitivity))
+		camera.rotate_x(deg2rad(-event.relative.y * GlobalData.Mouse3DSensitivity))
+		var up_max_rad := deg2rad(up_max_deg)
+		var down_max_rad := deg2rad(-down_max_deg)
+		clamp_camera_angle()
+	pass
+
+func move_and_rotate_to_transform(trans : Transform3D) -> void:
+	global_transform.origin = trans.origin
+	camera.transform.basis = Basis(Quaternion(Vector3(trans.basis.get_euler().x, 0, 0)))
+	neck.transform.basis = Basis(Quaternion(Vector3(0, trans.basis.get_euler().y, 0)))
+	clamp_camera_angle()
+
+const MoveAndRotateDuration : float = 0.5
+func create_move_and_rotate_tween(target_transform : Transform3D) -> void:
+	var tween := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	tween.tween_method(move_and_rotate_to_transform, get_current_transform(), target_transform, MoveAndRotateDuration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+func move_and_rotate_to_panel(panel : PuzzlePanel) -> void:
+	GlobalData.set_preferred_puzzle_panel(panel)
+	var current_transform := get_current_transform()
+	var preferred_transform : Transform3D = panel.get_preferred_transform(current_transform)
+	if not preferred_transform.is_equal_approx(current_transform):
+		create_move_and_rotate_tween(preferred_transform)
+
 func save() -> void:
-	GameSaver.save_player(position, Camera.rotation.x, Neck.rotation.y)
+	GameSaver.save_player(position, camera.rotation.x, neck.rotation.y)
 	pass
 
 func load_save() -> void:
 	var pos : Vector3 = GameSaver.get_player_position()
 	var lookat : Vector2= GameSaver.get_player_lookat()
 	position = pos
-	Camera.rotation.x = lookat.x
-	Neck.rotation.y = lookat.y
+	camera.rotation.x = lookat.x
+	neck.rotation.y = lookat.y
 	pass

@@ -2,7 +2,8 @@ extends Node3D
 
 # Puzzle Data
 const PuzzleGroupName : StringName = &"PuzzleGroup"
-const InteractableLinkerName : StringName = &"InteractableLinkerName"
+const InteractableLinkerGroupName : StringName = &"InteractableLinkerGroup"
+const PlayerGroupName : StringName = &"PlayerGroup"
 const PuzzleSoundEffectsBus : StringName = &"PuzzleSoundEffect"
 const PuzzleViewportSizes : Dictionary = {
 	"regular": Vector2(600, 600),
@@ -10,13 +11,15 @@ const PuzzleViewportSizes : Dictionary = {
 }
 const AllPuzzleJsons : Dictionary = {
 	"first_try": preload("res://PuzzleDataJson/Json.json"),
-	"second": preload("res://PuzzleDataJson/Json2-1.json"),
+	"second": preload("res://PuzzleDataJson/Json2.json"),
+	"second2": preload("res://PuzzleDataJson/Json2-1.json"),
 	"hello_world": preload("res://PuzzleDataJson/Json3.json"),
 	"generator": preload("res://PuzzleDataJson/Puzzle.json")
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),
 	"second": PuzzleData.new(AllPuzzleJsons.second),
+	"second2": PuzzleData.new(AllPuzzleJsons.second2),
 	"hello_world": PuzzleData.new(AllPuzzleJsons.hello_world),
 	"generator": PuzzleData.new(AllPuzzleJsons.generator),
 }
@@ -45,6 +48,9 @@ signal rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to :
 func _init() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 
+func get_player() -> Player:
+	return get_tree().get_first_node_in_group(PlayerGroupName)
+
 var cursor_state : CursorState = CursorState.DISABLED
 const Mouse2DSensitivity : float = 3.0
 const Mouse3DSensitivity : float = 0.1
@@ -63,6 +69,7 @@ func set_cursor_state(state : CursorState) -> void:
 			set_mouse_position()
 		if cursor_state == CursorState.DISABLED:
 			set_active_puzzle_panel(null)
+			set_preferred_puzzle_panel(null)
 		cursor_state_changed.emit(cursor_state, old_state)
 	pass
 
@@ -141,14 +148,22 @@ func _unhandled_input(event: InputEvent) -> void:
 			var parent = obj.get_parent()
 			if parent != null:
 				if parent is Interactable:
-					(parent as Interactable).input_event(event,
-						(parent as Interactable).mouse_to_local(_position), _position)
+					if preferred_puzzle_panel != null and parent is PuzzlePanel and parent != preferred_puzzle_panel:
+						var player := get_player()
+						player.move_and_rotate_to_panel(parent)
+					else:
+						(parent as Interactable).input_event(event, (parent as Interactable).mouse_to_local(_position), _position)
 	elif cursor_state == CursorState.DRAWING and last_puzzle_panel != null:
 		(last_puzzle_panel as Interactable).input_event(event, Vector3.ZERO, Vector3.ZERO)
 	pass
 
+var preferred_puzzle_panel : PuzzlePanel = null
+func set_preferred_puzzle_panel(panel : PuzzlePanel = null) -> void:
+	preferred_puzzle_panel = panel
+	pass
+
 var last_puzzle_panel : PuzzlePanel = null
-func set_active_puzzle_panel(panel : PuzzlePanel) -> void:
+func set_active_puzzle_panel(panel : PuzzlePanel = null) -> void:
 	if last_puzzle_panel != panel:
 		if last_puzzle_panel != null:
 			last_puzzle_panel.area.collision_layer &= ~PhysicsLayerCurrentPuzzle
@@ -197,10 +212,10 @@ func _process(delta: float) -> void:
 	pass
 
 @onready var physics : PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
-func pick_interactable(mouse_pos : Vector2, collision_layer : int = PhysicsLayerInteractObstacles) -> Dictionary:
+func pick_interactable(mouse_pos : Vector2, collision_layer : int = PhysicsLayerInteractObstacles, ray_length : float = -1.0) -> Dictionary:
 	var vp := get_viewport()
 	var camera := vp.get_camera_3d()
-	var length := camera.far
+	var length := camera.far if ray_length <= 0 else ray_length
 	var size := vp.get_visible_rect().size
 	mouse_pos = (mouse_pos + Vector2.ONE) / 2.0 * size
 	var query : PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
@@ -265,6 +280,7 @@ func _input(event: InputEvent) -> void:
 		get_tree().quit()
 
 func _ready() -> void:
+#	process_priority = INF
 #	cursor_state_changed.connect(try_save_game)
 	pass
 

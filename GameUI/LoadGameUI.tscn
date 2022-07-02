@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cn4flf268frdp"]
+[gd_scene load_steps=6 format=3 uid="uid://cn4flf268frdp"]
 
 [ext_resource type="Script" path="res://GameUI/LoadGameUI.gd" id="1_3mr0b"]
 [ext_resource type="Texture2D" uid="uid://lnrb2gidfbl2" path="res://test.webp" id="1_v0obm"]
@@ -6,6 +6,17 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwlta"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tcfxw"]
+
+[sub_resource type="GDScript" id="GDScript_pnmsd"]
+script/source = "extends HBoxContainer
+
+func _ready() -> void:
+	var image : Image = GameSaver.get_cover_image()
+	var texture : ImageTexture = ImageTexture.new()
+	texture.create_from_image(image)
+	$TextureRect.texture = texture
+	pass
+"
 
 [node name="LoadGameUI" type="Control"]
 process_mode = 2
@@ -88,6 +99,7 @@ size_flags_horizontal = 0
 mouse_filter = 2
 theme_override_constants/separation = 50
 alignment = 1
+script = SubResource( "GDScript_pnmsd" )
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer"]
 minimum_size = Vector2(250, 140)

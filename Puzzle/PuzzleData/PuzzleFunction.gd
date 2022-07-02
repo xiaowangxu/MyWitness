@@ -156,11 +156,10 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement : Vector2) -> LineData:
 	if is_zero_approx(movement.length_squared()): return line_data
 	var new_line : LineData = line_data.duplicate()
-#	var count := 0
-	while not is_zero_approx(movement.length_squared()):
+	var count := 0
+	while not is_zero_approx(movement.length_squared()) and count < 100:
 		movement = _move_line(puzzle_data, new_line, movement)
-#		count += 1
-#		movement = Vector2.ZERO
+		count += 1
 #	print(count)
 	return new_line
 
