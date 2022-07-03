@@ -23,7 +23,7 @@ process_mode = 2
 clip_contents = true
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( "1_3mr0b" )
+script = ExtResource("1_3mr0b")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
@@ -44,7 +44,6 @@ metadata/_edit_use_custom_anchors = true
 
 [node name="PuzzlePanel" type="Panel" parent="HBoxContainer"]
 unique_name_in_owner = true
-minimum_size = Vector2(300, 500)
 offset_right = 506.0
 offset_bottom = 1080.0
 grow_horizontal = 2
@@ -52,13 +51,12 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 mouse_filter = 2
-theme_override_styles/panel = SubResource( "StyleBoxEmpty_uwlta" )
+theme_override_styles/panel = SubResource("StyleBoxEmpty_uwlta")
 metadata/_edit_layout_mode = 1
 metadata/_edit_use_custom_anchors = true
 
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/PuzzlePanel"]
 unique_name_in_owner = true
-minimum_size = Vector2(200, 500)
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -75,7 +73,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-theme_override_styles/panel = SubResource( "StyleBoxEmpty_tcfxw" )
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tcfxw")
 metadata/_edit_layout_mode = 1
 metadata/_edit_use_custom_anchors = true
 
@@ -93,325 +91,28 @@ metadata/_edit_layout_mode = 1
 metadata/_edit_use_custom_anchors = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_right = 773.0
-offset_bottom = 140.0
+offset_right = 923.0
+offset_bottom = 200.0
 size_flags_horizontal = 0
 mouse_filter = 2
 theme_override_constants/separation = 50
 alignment = 1
-script = SubResource( "GDScript_pnmsd" )
+script = SubResource("GDScript_pnmsd")
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
+custom_minimum_size = Vector2(400, 200)
+offset_right = 400.0
+offset_bottom = 200.0
 mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
+texture = ExtResource("1_v0obm")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 180.0
-offset_right = 773.0
-offset_bottom = 320.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer2"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer2"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 360.0
-offset_right = 773.0
-offset_bottom = 500.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer3"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer3"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 540.0
-offset_right = 773.0
-offset_bottom = 680.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer4"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer4"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer5" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 720.0
-offset_right = 773.0
-offset_bottom = 860.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer5"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer5"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer6" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 900.0
-offset_right = 773.0
-offset_bottom = 1040.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer6"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer6"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer7" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 1080.0
-offset_right = 773.0
-offset_bottom = 1220.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer7"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer7"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer8" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 1260.0
-offset_right = 773.0
-offset_bottom = 1400.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer8"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer8"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer9" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 1440.0
-offset_right = 773.0
-offset_bottom = 1580.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer9"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer9"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer10" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 1620.0
-offset_right = 773.0
-offset_bottom = 1760.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer10"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer10"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer11" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 1800.0
-offset_right = 773.0
-offset_bottom = 1940.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer11"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer11"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2
-
-[node name="HBoxContainer12" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_top = 1980.0
-offset_right = 773.0
-offset_bottom = 2120.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer12"]
-minimum_size = Vector2(250, 140)
-offset_right = 250.0
-offset_bottom = 140.0
-mouse_filter = 2
-texture = ExtResource( "1_v0obm" )
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer12"]
-offset_left = 300.0
-offset_top = 37.0
-offset_right = 773.0
-offset_bottom = 103.0
+offset_left = 450.0
+offset_top = 67.0
+offset_right = 923.0
+offset_bottom = 133.0
 theme_override_font_sizes/font_size = 45
 text = "HelloWorld 2022/6/29"
 horizontal_alignment = 2

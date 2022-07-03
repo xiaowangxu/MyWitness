@@ -18,9 +18,13 @@ var start_radius : float
 var normal_radius : float
 
 var edge_map = null
+var area_neighbour_map = {}
 
-func _init(res : ) -> void:
+func _init(res : JsonResource) -> void:
 	calcu_puzzle(res.data)
+	calcu_egde_map()
+	calcu_area_neighbour_map()
+	pass
 
 func calcu_line_center(from : Vertice, to : Vertice, radius : float = normal_radius) -> Vector2:
 	var normal := (to.position - from.position).normalized()
@@ -133,9 +137,9 @@ func calcu_puzzle(data : Dictionary) -> void:
 		end.add_neighbour(i)
 	for i in range(data.areas.size()):
 		var area : Dictionary = data.areas[i]
-		var srounds : Array[Edge] = []
+		var srounds : PackedInt32Array = []
 		for edge_idx in area.srounds:
-			srounds.append(edges[edge_idx])
+			srounds.append(edge_idx)
 		var decorator : Decorator = null if not area.has("decorator") else create_decorator(decorators[int(area.decorator.id)], area.decorator.color, area.decorator.texture, area.decorator.rotation)
 		var center : Vector2
 		if area.has("position"):
@@ -147,7 +151,8 @@ func calcu_puzzle(data : Dictionary) -> void:
 			center = calcu_area_center(points)
 		else:
 			var points : PackedVector2Array = []
-			for edge in srounds:
+			for edge_idx in srounds:
+				var edge : Edge = edges[edge_idx]
 				points.append(edge.position)
 			center = calcu_area_center(points)
 		var _area := Area.new(srounds, center, decorator)
@@ -155,7 +160,15 @@ func calcu_puzzle(data : Dictionary) -> void:
 		areas.append(_area)
 		if area.has("tag"):
 			_area.tag = area.tag
-	calcu_egde_map()
+	pass
+
+func calcu_area_neighbour_map() -> void:
+	for area in areas:
+		for i in area.srounds:
+			if area_neighbour_map.has(i):
+				area_neighbour_map[i].append(area)
+			else:
+				area_neighbour_map[i] = [area]
 	pass
 
 func calcu_egde_map() -> void:

@@ -11,7 +11,7 @@ var override_size : Vector2i = Vector2i.ZERO
 # children
 var line_canvas_group : CanvasGroup = null
 
-enum State { DRAWING, ANIMATING, STOPPED}
+enum State { DRAWING, STOPPED}
 signal state_changed(state : State)
 
 func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, show_element : int = 0b1111) -> void:
@@ -26,7 +26,8 @@ func _ready() -> void:
 		viewport_size = get_viewport_rect().size
 	else:
 		viewport_size = override_size
-	minimum_size = puzzle_data.base_size
+	custom_minimum_size = puzzle_data.base_size
+#	minimum_size = puzzle_data.base_size
 	size = puzzle_data.base_size
 	scale = viewport_size / size
 	
@@ -61,15 +62,6 @@ func _ready() -> void:
 		line_render.self_modulate = puzzle_data.line_correct_color
 		line_canvas_group.add_child(line_render)
 		add_child(line_canvas_group)
-
-#	var data := PuzzleFunction.line_to_edges(puzzle_data, line)
-#	print(data.map(func (i : DirectionedEdge): return i.edge))
-#	print(puzzle_data.edges)
-#	print(PuzzleFunction.around_area_edges_count(data, puzzle_data.areas[0]))
-	
-#	await RenderingServer.frame_post_draw
-	
-#	get_viewport().get_texture().get_image().save_png("res://test.png")
 	
 	pass
 

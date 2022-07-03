@@ -46,6 +46,9 @@ func is_equal_approx(b : LineDataSegment) -> bool:
 	else:
 		return false
 
+func is_edge(edge : Edge) -> bool:
+	return (self.from == edge.from and self.to == edge.to) or (self.from == edge.to and self.to == edge.from)
+
 func get_percentage(position : Vector2) -> float:
 	var sub_length := (position - from.position).length()
 	return sub_length / length

@@ -172,10 +172,10 @@ _global_script_class_icons={
 
 config/name="MyWitness"
 run/main_scene="res://World/World.tscn"
+config/features=PackedStringArray("4.0", "Vulkan Clustered")
 boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 1)
 config/auto_accept_quit=false
 config/quit_on_go_back=false
-config/features=PackedStringArray("4.0", "Vulkan Clustered")
 
 [audio]
 
@@ -185,6 +185,7 @@ buses/default_bus_layout="res://SoundEffects/default_bus_layout.tres"
 
 GameSaver="*res://Global/GameSaver.gd"
 GlobalData="*res://Global/GlobalData.gd"
+Debugger="*res://Global/Debugger.gd"
 
 [debug]
 

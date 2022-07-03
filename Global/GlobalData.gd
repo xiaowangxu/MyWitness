@@ -44,6 +44,7 @@ signal mouse_moved(normalized_position : Vector2, border_percent : float)
 signal cursor_state_changed(state : CursorState, old_state : CursorState)
 signal rotate_camera_interact(event : InputEvent)
 signal rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to : Vector3)
+signal unfocus_preferred_panel()
 
 func _init() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -149,8 +150,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			if parent != null:
 				if parent is Interactable:
 					if preferred_puzzle_panel != null and parent is PuzzlePanel and parent != preferred_puzzle_panel:
-						var player := get_player()
-						player.move_and_rotate_to_panel(parent)
+						if event is InputEventMouseButton and event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+							var player := get_player()
+							player.move_and_rotate_to_panel(parent)
 					else:
 						(parent as Interactable).input_event(event, (parent as Interactable).mouse_to_local(_position), _position)
 	elif cursor_state == CursorState.DRAWING and last_puzzle_panel != null:
@@ -158,8 +160,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	pass
 
 var preferred_puzzle_panel : PuzzlePanel = null
-func set_preferred_puzzle_panel(panel : PuzzlePanel = null) -> void:
+func set_preferred_puzzle_panel(panel : PuzzlePanel) -> void:
+	if panel != preferred_puzzle_panel:
+		if preferred_puzzle_panel != null:
+			unfocus_preferred_panel.emit()
 	preferred_puzzle_panel = panel
+	if preferred_puzzle_panel != null:
+		preferred_puzzle_panel.on_preferred()
+		unfocus_preferred_panel.connect(preferred_puzzle_panel.on_unpreferred, CONNECT_ONESHOT)
 	pass
 
 var last_puzzle_panel : PuzzlePanel = null

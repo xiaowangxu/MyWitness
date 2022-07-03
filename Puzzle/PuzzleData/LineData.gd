@@ -239,3 +239,8 @@ func calcu_forward_or_backward_line(base_line : LineData) -> Dictionary:
 		"forward" : forward_segments,
 		"backward": backward_segments
 	}
+
+func has_edge(edge : Edge) -> bool:
+	for segment in segments:
+		if segment.is_edge(edge): return true
+	return false

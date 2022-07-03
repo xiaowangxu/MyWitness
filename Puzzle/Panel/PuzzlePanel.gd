@@ -1,4 +1,4 @@
-@tool
+#@tool
 class_name PuzzlePanel
 extends Interactable
 
@@ -7,12 +7,19 @@ const AudioSoundEffects = {
 	"start": preload("res://SoundEffects/Puzzle/PuzzleError.wav"),
 	"error": preload("res://SoundEffects/Puzzle/PuzzleError2.wav"),
 }
+enum PuzzleInteractState {
+	PREFERRED,
+	PICKING,
+	DRAWING,
+	ANSWERED
+}
 
 signal move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_answered(correct : bool, tag : int)
 signal puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_exited()
 signal puzzle_checked()
+signal puzzle_interact_state_changed(state : PuzzleInteractState)
 
 @export var puzzle_name : String = ""
 @export var add_config : bool = false:
@@ -45,6 +52,7 @@ var base_viewport : SubViewport = null
 @onready var puzzle_data : PuzzleData = GlobalData.AllPuzzleData[puzzle_name]
 var base_puzzle_renderer : PuzzleRenderer = null
 var puzzle_line : LineData = null
+var is_answered : bool = false
 
 #var test_cursor := preload("res://Puzzle/TestCursor.tscn").instantiate()
 @onready var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
@@ -53,6 +61,7 @@ func _ready() -> void:
 	puzzle_answered.connect(on_puzzle_answered)
 	puzzle_started.connect(on_puzzle_started)
 	puzzle_exited.connect(on_puzzle_exited)
+	puzzle_interact_state_changed.connect(on_puzzle_interact_state_changed)
 	area.add_to_group(GlobalData.PuzzleGroupName)
 	area.collision_layer |= GlobalData.PhysicsLayerInteractables | GlobalData.PhysicsLayerPuzzles
 	audio.bus = GlobalData.PuzzleSoundEffectsBus
@@ -61,7 +70,7 @@ func _ready() -> void:
 		set_viewports(config)
 	
 	base_viewport.add_child(test_info)
-	base_puzzle_renderer.state_changed.connect(on_puzzle_state_changed)
+	base_puzzle_renderer.state_changed.connect(on_puzzle_render_state_changed)
 	test_info.puzzle_name = puzzle_name
 	
 	load_save()
@@ -112,7 +121,9 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 			var mouse_pos : Vector3 = Vector3(_mouse_pos.x, _mouse_pos.y, 0)
 			var world_pos : Vector3 = mouse_to_global(Vector3(mouse_pos.x, mouse_pos.y, 0))
 			if GlobalData.is_position_in_view(world_pos) and GlobalData.check_reachable(world_pos, area):
+				is_answered = false
 				puzzle_started.emit(start_vertice, pos, mouse_pos, world_pos)
+				puzzle_interact_state_changed.emit(PuzzleInteractState.DRAWING)
 	pass
 
 func get_current_mouse_position() -> Vector3:
@@ -226,18 +237,44 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 					return new_line
 	return new_line
 
-# puzzle logic
-func on_puzzle_state_changed(state : PuzzleRenderer.State) -> void:
-#	print(state)
-	match state:
-		0: # PuzzleRenderer.State.DRAWING
-			for viewport in update_viewport_list:
-				viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-			pass
-		2: # PuzzleRenderer.State.STOPPED
-			for viewport in update_viewport_list:
-				viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-			pass
+func on_preferred() -> void:
+	_is_preferred = true
+	puzzle_interact_state_changed.emit(PuzzleInteractState.PREFERRED)
+	Debugger.print_tag(puzzle_name, "preferred", puzzle_data.background_color)
+	pass
+
+func on_unpreferred() -> void:
+	_is_preferred = false
+	Debugger.print_tag(puzzle_name, "unpreferred", puzzle_data.background_color)
+	pass
+
+func on_puzzle_interact_state_changed(state : PuzzleInteractState) -> void:
+	Debugger.print_tag(puzzle_name + " interact state", str(state) + (" Answered" if is_answered else ""))
+
+var _puzzle_state : int = PuzzleRenderer.State.STOPPED :
+	set(val):
+		_puzzle_state = val
+		match _puzzle_state:
+			0: # PuzzleRenderer.State.DRAWING
+				request_viewport_mode(true)
+			2: # PuzzleRenderer.State.STOPPED
+				request_viewport_mode(false)
+var _is_preferred : bool = false :
+	set(val):
+		_is_preferred = val
+		request_viewport_mode(_is_preferred)
+func request_viewport_mode(should_render : bool) -> void:
+	if should_render:
+		Debugger.print_tag(puzzle_name, "rendering", Color.GREEN)
+		for viewport in update_viewport_list:
+			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	elif _puzzle_state == PuzzleRenderer.State.STOPPED and not _is_preferred:
+		Debugger.print_tag(puzzle_name, "render disabled", Color.RED)
+		for viewport in update_viewport_list:
+			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if should_render else SubViewport.UPDATE_DISABLED
+
+func on_puzzle_render_state_changed(state : PuzzleRenderer.State) -> void:
+	_puzzle_state = state
 	pass
 
 var is_waiting_for_comfirm : bool = false
@@ -246,7 +283,9 @@ func on_confirm(force_cancel : bool = false) -> void:
 		exit_puzzle()
 	else:
 		var correct_tag := check_puzzle_ans()
-		puzzle_answered.emit(correct_tag >= 0, correct_tag)
+		is_answered = correct_tag >= 0
+		puzzle_answered.emit(is_answered, correct_tag)
+		puzzle_interact_state_changed.emit(PuzzleInteractState.ANSWERED)
 
 # -1 is wrong >= 0 means different correct ans's tags
 func check_puzzle_ans() -> int:
@@ -258,6 +297,7 @@ func exit_puzzle() -> void:
 	save()
 	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	base_puzzle_renderer.create_exit_tween()
+	puzzle_interact_state_changed.emit(PuzzleInteractState.PICKING)
 	puzzle_exited.emit()
 	interact_result_changed.emit(false, -1)
 	pass
@@ -354,5 +394,6 @@ func save() -> void:
 func load_save() -> void:
 	var data = GameSaver.get_puzzle(puzzle_name)
 	if data == null: return
+	is_answered = true
 	var line : LineData = PuzzleFunction.generate_line_from_idxs(puzzle_data, data.line)
 	set_puzzle_line(line)

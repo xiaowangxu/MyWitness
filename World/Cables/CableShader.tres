@@ -24,7 +24,6 @@ uniform_name = "LightStrength"
 operator = 2
 
 [sub_resource type="VisualShaderNodeColorUniform" id="146"]
-output_port_for_preview = 1
 uniform_name = "CableColor"
 
 [sub_resource type="VisualShaderNodeFloatUniform" id="147"]
@@ -100,32 +99,28 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(146.659, -243.862)
-engine_version = {
-"major": 4,
-"minor": 0
-}
+graph_offset = Vector2(361.042, -252.864)
 nodes/fragment/0/position = Vector2(3120, -160)
-nodes/fragment/10/node = SubResource( "137" )
-nodes/fragment/10/position = Vector2(2040, -260)
-nodes/fragment/12/node = SubResource( "138" )
+nodes/fragment/10/node = SubResource("137")
+nodes/fragment/10/position = Vector2(2340, -380)
+nodes/fragment/12/node = SubResource("138")
 nodes/fragment/12/position = Vector2(1160, -220)
-nodes/fragment/16/node = SubResource( "139" )
+nodes/fragment/16/node = SubResource("139")
 nodes/fragment/16/position = Vector2(2340, 140)
-nodes/fragment/17/node = SubResource( "140" )
+nodes/fragment/17/node = SubResource("140")
 nodes/fragment/17/position = Vector2(2000, 140)
-nodes/fragment/18/node = SubResource( "141" )
+nodes/fragment/18/node = SubResource("141")
 nodes/fragment/18/position = Vector2(1640, -340)
-nodes/fragment/19/node = SubResource( "142" )
+nodes/fragment/19/node = SubResource("142")
 nodes/fragment/19/position = Vector2(1700, 300)
-nodes/fragment/22/node = SubResource( "144" )
+nodes/fragment/22/node = SubResource("144")
 nodes/fragment/22/position = Vector2(2260, 500)
-nodes/fragment/23/node = SubResource( "145" )
+nodes/fragment/23/node = SubResource("145")
 nodes/fragment/23/position = Vector2(2680, 200)
-nodes/fragment/24/node = SubResource( "146" )
+nodes/fragment/24/node = SubResource("146")
 nodes/fragment/24/position = Vector2(1340, 40)
-nodes/fragment/25/node = SubResource( "147" )
+nodes/fragment/25/node = SubResource("147")
 nodes/fragment/25/position = Vector2(680, -80)
-nodes/fragment/26/node = SubResource( "VisualShaderNodeFloatUniform_66hgc" )
+nodes/fragment/26/node = SubResource("VisualShaderNodeFloatUniform_66hgc")
 nodes/fragment/26/position = Vector2(1100, -720)
 nodes/fragment/connections = PackedInt32Array(17, 0, 16, 0, 12, 0, 18, 2, 18, 0, 17, 0, 22, 0, 23, 1, 24, 0, 10, 1, 25, 0, 12, 3, 18, 0, 10, 0, 23, 0, 0, 5, 19, 0, 16, 1, 16, 0, 23, 0, 10, 0, 0, 0, 26, 0, 18, 1)

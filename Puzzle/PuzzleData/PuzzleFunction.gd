@@ -1,7 +1,7 @@
 class_name PuzzleFunction
 extends RefCounted
 
-static func line_to_edges(puzzle_data : PuzzleData, line : LineData) -> Array:
+static func line_to_directioned_edges(puzzle_data : PuzzleData, line : LineData) -> Array:
 	var ans : Array[DirectionedEdge] = []
 	var edge_map : Dictionary = puzzle_data.edge_map
 	for line_segment in line.segments:
@@ -13,15 +13,15 @@ static func line_to_edges(puzzle_data : PuzzleData, line : LineData) -> Array:
 				ans.append(DirectionedEdge.new(edge_map[from][to], false))
 		elif edge_map.has(to):
 			if edge_map[to].has(from):
-				ans.append(DirectionedEdge.new(edge_map[to][from], false))
+				ans.append(DirectionedEdge.new(edge_map[to][from], true))
 	return ans
 
-static func around_area_edges_count(directioned_edges : Array[DirectionedEdge], area : Area) -> int:
-	var edges : Array[Edge] = directioned_edges.map(func(i : DirectionedEdge):return i.edge)
-	var count : int = 0
-	for edge in area.srounds:
-		if edges.has(edge): count += 1
-	return count
+#static func around_area_edges_count(directioned_edges : Array[DirectionedEdge], area : Area) -> int:
+#	var edges : Array[Edge] = directioned_edges.map(func(i : DirectionedEdge):return i.edge)
+#	var count : int = 0
+#	for edge in area.srounds:
+#		if edges.has(edge): count += 1
+#	return count
 
 static func _calcu_remain_movement(movement_length : float, current_percentage : float, total_length : float, forward : bool = true) -> float:
 	var percentage : float = movement_length / total_length
@@ -213,3 +213,44 @@ static func get_base_path_percentage(line_data : LineData, base_path : LineData,
 	if is_zero_approx(base_length):
 		return 1.0
 	return line_length / base_length
+
+static func _get_area_neighbour_by_sround_edge_id(puzzle_data : PuzzleData, area : Area, edge_id : int) -> Array:
+	if not area.srounds.has(edge_id): return []
+	if not puzzle_data.area_neighbour_map.has(edge_id): return []
+	var sround_areas : Array[Area] = puzzle_data.area_neighbour_map[edge_id].duplicate()
+	sround_areas.erase(area)
+	return sround_areas
+
+static func _is_areas_neighbour(puzzle_data : PuzzleData, area1 : Area, area2 : Area) -> bool:
+	for area_sround in puzzle_data.area_neighbour_map:
+		if area_sround.has(area1) and area_sround.has(area2): return true
+	return false
+
+static func has_edge(puzzle_data : PuzzleData, segment : LineDataSegment) -> bool:
+	var normal : bool = puzzle_data.edge_map.has(segment.from) and puzzle_data.edge_map[segment.from].has(segment.to)
+	var invert : bool = puzzle_data.edge_map.has(segment.to) and puzzle_data.edge_map[segment.to].has(segment.from)
+	return normal or invert
+
+static func _reduce_linked_areas(puzzle_data : PuzzleData, line_data : LineData, area : Area, ans : Array[Area]) -> void:
+	for edge_id in area.srounds:
+		if line_data.has_edge(puzzle_data.edges[edge_id]): continue
+		var sround_areas : Array[Area] = _get_area_neighbour_by_sround_edge_id(puzzle_data, area, edge_id)
+#		printt(edge_id, line_data.has_edge(puzzle_data.edges[edge_id]), sround_areas)
+		for sub_area in sround_areas:
+			if ans.has(sub_area): continue
+			else:
+				ans.append(sub_area)
+				_reduce_linked_areas(puzzle_data, line_data, sub_area, ans)
+	pass
+
+static func get_isolated_areas(puzzle_data : PuzzleData, line_data : LineData) -> Array:
+	var areas : Array[Area] = puzzle_data.areas.duplicate()
+	var ans = []
+	while areas.size() > 0:
+		var area : Area = areas.pop_back()
+		var _ans : Array[Area] = [area]
+		_reduce_linked_areas(puzzle_data, line_data, area, _ans)
+		for sub_area in _ans:
+			areas.erase(sub_area)
+		ans.append(_ans)
+	return ans

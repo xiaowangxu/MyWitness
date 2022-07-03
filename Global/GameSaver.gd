@@ -70,7 +70,6 @@ func get_cover_image() -> Image:
 
 func save_game_save_data_resource() -> void:
 #	if not dirty: return
-	print(">>>> save")
 	var start_time := Time.get_ticks_msec()
 	var player : Player = GlobalData.get_player()
 	player.save()
@@ -83,5 +82,6 @@ func save_game_save_data_resource() -> void:
 	game_save_data.set_cover_image(image)
 	var ans := ResourceSaver.save("user://GameSave.res", game_save_data)
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	print("Game Saved ! in : ", Time.get_ticks_msec() - start_time, "ms")
+	print_rich('[b][color=white][bgcolor=#0002ee][font_size=30][code] Save Game [/code][/font_size][/bgcolor][/color][/b][b][color=white][bgcolor=#333333][font_size=30][code]  in %d ms [/code][/font_size][/bgcolor][/color][/b]' % [ Time.get_ticks_msec() - start_time])
+#	print("Game Saved ! in : ",, "ms")
 #	dirty = false

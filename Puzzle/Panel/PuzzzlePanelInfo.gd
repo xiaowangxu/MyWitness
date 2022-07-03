@@ -8,7 +8,7 @@ var puzzle_name : String = "unknown" :
 var puzzle_movement : Vector2 = Vector2.ZERO :
 	set(val):
 		puzzle_movement = val
-		%Movement.text = "MO: (%f,%f)" % [val.x, val.y]
+		%Movement.text = "MO: (%.3f,%.3f)" % [val.x, val.y]
 
 func _process(delta: float) -> void:
 	%Painting.rotate(0.05)

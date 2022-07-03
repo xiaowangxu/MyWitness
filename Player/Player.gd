@@ -58,12 +58,27 @@ func on_cursor_state_changed(new_state : GlobalData.CursorState, old_state : Glo
 
 const NearestReachableLength = 4.0
 func pick_nearest_panel() -> PuzzlePanel:
-	var ans := GlobalData.pick_interactable(Vector2.ZERO, GlobalData.PhysicsLayerInteractObstacles, NearestReachableLength)
-	if not ans.is_empty():
-		var parent = ans.collider.get_parent()
-		if parent != null and parent is PuzzlePanel:
-			return parent
-	return null
+	var detect_position : PackedVector2Array = [Vector2.ZERO, Vector2(0.25, 0), Vector2(0.5, 0), Vector2(-0.25, 0), Vector2(-0.5, 0), Vector2(0, 0.25), Vector2(0, 0.5), Vector2(0, -0.25), Vector2(0, -0.5)]
+	var ans : Dictionary = {}
+	for pos in detect_position:
+		var _ans := GlobalData.pick_interactable(pos, GlobalData.PhysicsLayerInteractObstacles, NearestReachableLength)
+		if not _ans.is_empty():
+			var parent = _ans.collider.get_parent()
+			if parent != null and parent is PuzzlePanel:
+				if ans.has(parent):
+					ans[parent].append(_ans.position)
+				else:
+					ans[parent] = [_ans.position]
+	if ans.is_empty(): return null
+	var panels : Array[PuzzlePanel] = ans.keys()
+	var target := panels[0]
+	var target_count : int = ans[target].size()
+	for i in range(1, panels.size()):
+		var _target := panels[i]
+		if ans[_target].size() > target_count:
+			target = _target
+			target_count = ans[_target].size()
+	return target
 
 func rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to : Vector3)-> void:
 	rotator.rotation.x = camera.rotation.x

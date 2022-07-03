@@ -1,7 +1,7 @@
 {
 	"board": {
 		"base_size": [700,700],
-		"background_color": [0.12,0.06,0.0,1.0],
+		"background_color": [0.22,0.16,0.0,1.0],
 		"background_line_color": [0.1,0.1,0.1,1.0],
 		"start_radius": 60.0,
 		"normal_radius": 23.0,
