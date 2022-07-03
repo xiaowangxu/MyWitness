@@ -44,7 +44,6 @@ signal mouse_moved(normalized_position : Vector2, border_percent : float)
 signal cursor_state_changed(state : CursorState, old_state : CursorState)
 signal rotate_camera_interact(event : InputEvent)
 signal rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to : Vector3)
-signal unfocus_preferred_panel()
 
 func _init() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -163,11 +162,10 @@ var preferred_puzzle_panel : PuzzlePanel = null
 func set_preferred_puzzle_panel(panel : PuzzlePanel) -> void:
 	if panel != preferred_puzzle_panel:
 		if preferred_puzzle_panel != null:
-			unfocus_preferred_panel.emit()
+			preferred_puzzle_panel.on_unpreferred()
 	preferred_puzzle_panel = panel
 	if preferred_puzzle_panel != null:
 		preferred_puzzle_panel.on_preferred()
-		unfocus_preferred_panel.connect(preferred_puzzle_panel.on_unpreferred, CONNECT_ONESHOT)
 	pass
 
 var last_puzzle_panel : PuzzlePanel = null

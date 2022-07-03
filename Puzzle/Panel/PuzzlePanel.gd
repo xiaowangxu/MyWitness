@@ -255,9 +255,9 @@ var _puzzle_state : int = PuzzleRenderer.State.STOPPED :
 	set(val):
 		_puzzle_state = val
 		match _puzzle_state:
-			0: # PuzzleRenderer.State.DRAWING
+			PuzzleRenderer.State.DRAWING:
 				request_viewport_mode(true)
-			2: # PuzzleRenderer.State.STOPPED
+			PuzzleRenderer.State.STOPPED:
 				request_viewport_mode(false)
 var _is_preferred : bool = false :
 	set(val):
