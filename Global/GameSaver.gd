@@ -29,10 +29,6 @@ func _ready() -> void:
 	camera.make_current()
 	camera.cull_mask = 0b11111111111111110111
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept"):
-		save_game_save_data_resource()
-
 func save_player(position : Vector3, lookat_x : float, lookat_y : float) -> void:
 	game_save_data.save_player(position, lookat_x, lookat_y)
 	pass

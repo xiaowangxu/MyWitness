@@ -67,7 +67,8 @@ func _ready() -> void:
 			},
 			{
 				"position": [310,100],
-				"type": 1
+				"type": 1,
+				"tag": 1024
 			},
 			{
 				"position": [200,700],

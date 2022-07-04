@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjd6sdw4txk25"]
+[gd_scene load_steps=3 format=3 uid="uid://cjd6sdw4txk25"]
 
 [ext_resource type="Script" path="res://Puzzle/PuzzleDataGenerator.gd" id="1_5voa5"]
+[ext_resource type="Texture2D" uid="uid://fkpkk10ihkwf" path="res://icon.png" id="2_821wx"]
 
 [node name="Control" type="ColorRect"]
 anchor_right = 0.365
@@ -8,9 +9,21 @@ anchor_bottom = 0.648
 offset_right = -0.800049
 offset_bottom = 0.159973
 color = Color(0.372549, 0.372549, 0.372549, 1)
-script = ExtResource( "1_5voa5" )
+script = ExtResource("1_5voa5")
 file_path = "res://PuzzleDataJson"
+file_name = "PuzzleTest"
 metadata/_edit_lock_ = true
 
 [node name="Line2D" type="Line2D" parent="."]
-points = PackedVector2Array(130, 190, 160, 180, 190, 160, 230, 140, 250, 140, 270, 140, 310, 140, 340, 140, 380, 130, 400, 100, 430, 80, 470, 80, 486.244, 92.1831, 520, 110, 550, 130, 570, 130, 590, 120, 610, 120, 620, 140, 610, 170, 600, 200, 570, 210, 500, 210, 470, 220, 450, 220, 390, 230, 380, 240, 350, 260, 340, 260, 310, 260, 280, 260, 260, 270, 240, 300, 230, 310, 210, 340, 210, 360, 220, 390, 230, 410, 250, 420, 280, 410, 310, 410, 340, 400, 370, 390, 380, 370, 410, 340, 440, 330, 500, 320, 510, 330, 520, 330, 530, 340, 560, 360, 580, 400, 590, 410, 590, 440, 590, 460, 530, 470, 500, 480, 480, 490, 410, 500, 390, 510, 380, 530, 330, 540, 270, 550, 220, 540, 190, 520, 160, 510, 140, 520, 110, 540, 100, 550, 100, 570, 110, 600, 130, 620, 160, 630, 180, 620, 220, 610, 260, 610, 300, 610, 330, 620, 370, 620, 410, 620, 440, 610, 470, 590, 510, 580, 550, 560, 560, 550, 600, 530, 610, 540, 630, 550, 640, 560)
+points = PackedVector2Array(230, 360, 120, 360, 120, 310, 80, 260, 140, 190, 180, 220, 220, 190, 220, 130, 290, 100, 320, 150, 370, 150, 400, 100, 480, 130, 480, 190, 520, 220, 560, 190, 620, 260, 580, 310, 580, 440, 530, 450, 490, 450, 490, 490, 440, 500, 400, 500, 400, 460, 300, 460, 300, 500, 260, 500, 210, 490, 210, 450, 170, 450, 120, 440, 120, 500, 150, 550, 230, 590, 310, 600, 400, 600, 480, 590, 560, 550, 580, 520)
+width = 24.0
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="Icon" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(348, 350)
+scale = Vector2(11, 10.9375)
+texture = ExtResource("2_821wx")
+metadata/_edit_lock_ = true

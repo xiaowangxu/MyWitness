@@ -58,12 +58,12 @@ var is_answered : bool = false
 #var test_cursor := preload("res://Puzzle/TestCursor.tscn").instantiate()
 @onready var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
 func _ready() -> void:
+	self.add_to_group(GlobalData.PuzzleGroupName)
 	move_finished.connect(_on_move_finished)
 	puzzle_answered.connect(on_puzzle_answered)
 	puzzle_started.connect(on_puzzle_started)
 	puzzle_exited.connect(on_puzzle_exited)
 	puzzle_interact_state_changed.connect(on_puzzle_interact_state_changed)
-	area.add_to_group(GlobalData.PuzzleGroupName)
 	area.collision_layer |= GlobalData.PhysicsLayerInteractables | GlobalData.PhysicsLayerPuzzles
 	audio.bus = GlobalData.PuzzleSoundEffectsBus
 	
@@ -72,6 +72,7 @@ func _ready() -> void:
 		if viewport_instance.config_name == "base":
 			base_viewport_instance = viewport_instance
 	
+	viewport_configs.clear()
 #	hint ring
 	hint_ring_render_item = StartEndHintRing.new(puzzle_data, viewport_size)
 	
@@ -82,6 +83,9 @@ func _ready() -> void:
 	test_info.puzzle_name = puzzle_name
 	
 	load_save()
+	
+	Debugger.print_tag("Puzzle Inited", puzzle_name, Color.CRIMSON)
+	
 	pass
 
 class ViewportInstance:
@@ -120,6 +124,7 @@ class ViewportInstance:
 	
 	func set_rendering(render : bool) -> void:
 		if viewport != null and need_update:
+			await RenderingServer.frame_post_draw
 			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if render else SubViewport.UPDATE_DISABLED
 	
 	func free_viewport(parent : Node, mesh : Node) -> void:
@@ -148,7 +153,7 @@ func set_viewports() -> void:
 	get_base_viewport_instance().viewport.add_child(test_info)
 	pass
 
-func free_viewport() -> void:
+func free_viewports() -> void:
 	get_base_viewport_instance().viewport.remove_child(hint_ring_render_item)
 	get_base_viewport_instance().viewport.remove_child(test_info)
 	for viewport_instance in viewport_instance_list:
@@ -304,16 +309,16 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 func on_preferred() -> void:
 	_is_preferred = true
 	puzzle_interact_state_changed.emit(PuzzleInteractState.PREFERRED)
-	Debugger.print_tag(puzzle_name, "preferred", puzzle_data.background_color)
+	Debugger.print_tag(puzzle_name, "preferred", Color.CHARTREUSE)
 	pass
 
 func on_unpreferred() -> void:
 	_is_preferred = false
-	Debugger.print_tag(puzzle_name, "unpreferred", puzzle_data.background_color)
+	Debugger.print_tag(puzzle_name, "unpreferred", Color.CHARTREUSE)
 	pass
 
 func on_puzzle_interact_state_changed(state : PuzzleInteractState) -> void:
-	Debugger.print_tag(puzzle_name + " interact state", str(state) + (" Answered" if is_answered else ""))
+	Debugger.print_tag(puzzle_name + " interact state", str(state) + (" Answered" if is_answered else ""), Color.SEA_GREEN)
 	if state == PuzzleInteractState.PREFERRED and not is_answered:
 		hint_ring_render_item.set_start_hint_enabled(true)
 	elif state == PuzzleInteractState.PICKING or state == PuzzleInteractState.ANSWERED:
@@ -337,11 +342,11 @@ var _is_preferred : bool = false :
 		request_viewport_mode(_is_preferred)
 func request_viewport_mode(should_render : bool) -> void:
 	if should_render:
-		Debugger.print_tag(puzzle_name, "rendering", Color.GREEN)
+		Debugger.print_tag(puzzle_name, "rendering", Color.DODGER_BLUE)
 		for viewport in viewport_instance_list:
 			viewport.set_rendering(true)
 	elif _puzzle_state == PuzzleRenderer.State.STOPPED and not _is_preferred:
-		Debugger.print_tag(puzzle_name, "render disabled", Color.RED)
+		Debugger.print_tag(puzzle_name, "render disabled", Color.DODGER_BLUE)
 		hint_ring_render_item.set_start_hint_enabled(false)
 		hint_ring_render_item.set_end_hint_enabled(false)
 		for viewport in viewport_instance_list:

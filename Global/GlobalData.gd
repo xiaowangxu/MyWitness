@@ -14,7 +14,7 @@ const AllPuzzleJsons : Dictionary = {
 	"second": preload("res://PuzzleDataJson/Json2.json"),
 	"second2": preload("res://PuzzleDataJson/Json2-1.json"),
 	"hello_world": preload("res://PuzzleDataJson/Json3.json"),
-	"generator": preload("res://PuzzleDataJson/Puzzle.json")
+	"generator": preload("res://PuzzleDataJson/PuzzleTest.json"),
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),
