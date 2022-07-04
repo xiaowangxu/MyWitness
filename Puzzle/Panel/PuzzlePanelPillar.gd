@@ -47,7 +47,7 @@ func on_puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse
 	GlobalData.set_active_puzzle_panel(self)
 	GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
 	set_puzzle_line(puzzle_line)
-	base_puzzle_renderer.create_start_tween()
+	base_viewport_instance.puzzle_renderer.create_start_tween()
 	play_sound("start")
 	var position_vec3 := (world_position - self.global_transform.origin).normalized()
 	last_angle = Vector2(position_vec3.x, position_vec3.z).angle()
