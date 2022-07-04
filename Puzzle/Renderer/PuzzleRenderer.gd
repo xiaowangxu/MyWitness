@@ -37,7 +37,7 @@ func _ready() -> void:
 		self.color = Color.TRANSPARENT
 	if show_element & 0b10:
 		# background
-		background_line = PuzzleBoardLine.new(puzzle_data, puzzle_data.normal_radius, puzzle_data.start_radius)
+		background_line = PuzzleBoardLine.new(puzzle_data)
 		background_line.self_modulate = puzzle_data.background_line_color
 		add_child(background_line)
 	if show_element & 0b100:

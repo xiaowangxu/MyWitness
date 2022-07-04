@@ -39,8 +39,6 @@ var length_percentage : float = 1.0 :
 			length_percentage = val
 			update()
 
-var last_point : Vector2 = Vector2.ZERO
-
 func _init(points : PackedVector2Array, normal_radius : float = 10.0, start_radius : float = 20.0) -> void:
 	self.points = points
 	self.start_radius = start_radius
@@ -68,7 +66,6 @@ func _draw() -> void:
 					end = start.lerp(end, weight)
 					RenderingServer.canvas_item_add_circle(_rid, end, circle_radius, WHITE)
 					RenderingServer.canvas_item_add_line(_rid, start, end, WHITE, line_width)
-					last_point = end
 					break
 				else:
 					remain_length -= length

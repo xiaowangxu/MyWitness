@@ -4,6 +4,7 @@ extends Resource
 var decorators : Array[TextureShapeResource] = []
 var vertices : Array[Vertice] = []
 var vertices_start : Array[Vertice] = []
+var vertices_end : Array[Vertice] = []
 var edges : Array[Edge] = []
 var areas : Array[Area] = []
 
@@ -123,6 +124,8 @@ func calcu_puzzle(data : Dictionary) -> void:
 		vertices.append(vertice)
 		if point.type == Vertice.VerticeType.START:
 			vertices_start.append(vertice)
+		elif point.type == Vertice.VerticeType.END:
+			vertices_end.append(vertice)
 	for i in range(data.edges.size()):
 		var edge : Dictionary = data.edges[i]
 		var start := vertices[edge.from]

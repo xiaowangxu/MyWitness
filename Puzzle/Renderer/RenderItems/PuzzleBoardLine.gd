@@ -18,10 +18,10 @@ var start_radius : float = 60.0 :
 			start_radius = val
 			update()
 
-func _init(puzzle_board : PuzzleData, normal_radius : float = 25.0, start_radius : float = 60.0) -> void:
+func _init(puzzle_board : PuzzleData) -> void:
 	self.puzzle_board = puzzle_board
-	self.normal_radius = normal_radius
-	self.start_radius = start_radius
+	self.normal_radius = puzzle_board.normal_radius
+	self.start_radius = puzzle_board.start_radius
 
 func _draw() -> void:
 	for vertice in puzzle_board.vertices:
