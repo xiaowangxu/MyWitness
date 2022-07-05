@@ -74,6 +74,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Puzzle/Renderer/RenderItems/LineSegment.gd"
 }, {
+"base": "InteractableLinker",
+"class": &"PanelInteractableLinker",
+"language": &"GDScript",
+"path": "res://Linker/PanelInteractableLinker.gd"
+}, {
 "base": "CharacterBody3D",
 "class": &"Player",
 "language": &"GDScript",
@@ -158,6 +163,7 @@ _global_script_class_icons={
 "LineData": "",
 "LineDataSegment": "",
 "LineSegment": "",
+"PanelInteractableLinker": "",
 "Player": "",
 "PuzzleBoardLine": "",
 "PuzzleData": "",
@@ -278,9 +284,7 @@ common/enable_object_picking=false
 textures/vram_compression/import_bptc=true
 textures/vram_compression/import_etc=true
 shadows/directional_shadow/size=8192
-shadows/directional_shadow/soft_shadow_quality=4
-shadows/directional_shadow/16_bits=false
-shadows/shadows/soft_shadow_quality=4
+shadows/directional_shadow/soft_shadow_quality=3
 reflections/reflection_atlas/reflection_size=1024
 environment/ssao/half_size=false
 anti_aliasing/screen_space_roughness_limiter/enabled=false

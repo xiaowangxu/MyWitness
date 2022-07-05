@@ -53,11 +53,14 @@ var viewport_size : Vector2 = GlobalData.PuzzleViewportSizes.regular
 @onready var puzzle_panel_scale : Vector2 = Vector2(viewport_size) / Vector2(puzzle_data.base_size)
 var base_viewport_instance : ViewportInstance = null
 var puzzle_line : LineData = null
+@export var initial_active : bool = false
+@onready var is_active : bool = initial_active
 var is_answered : bool = false
 
 #var test_cursor := preload("res://Puzzle/TestCursor.tscn").instantiate()
 @onready var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
 func _ready() -> void:
+	set_panel_active_percentage(1.0 if is_active else 0.0)
 	self.add_to_group(GlobalData.PuzzleGroupName)
 	move_finished.connect(_on_move_finished)
 	puzzle_answered.connect(on_puzzle_answered)
@@ -159,8 +162,25 @@ func free_viewports() -> void:
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.free_viewport(self, mesh)
 
+func set_panel_active_percentage(percentage : float) -> void:
+	var mat : Material = mesh.get_surface_override_material(0)
+	if mat is StandardMaterial3D:
+		mat.albedo_color = Color.BLACK.lerp(Color.WHITE, percentage)
+		mat.emission_energy = percentage
+
+func set_active_with_tween(active : bool) -> void:
+	if is_active != active:
+		is_active = active
+		save()
+		var tween := create_tween()
+		if is_active:
+			tween.tween_method(set_panel_active_percentage, 0.0, 1.0, 0.5).set_trans(Tween.TRANS_LINEAR)
+		else:
+			tween.tween_method(set_panel_active_percentage, 1.0, 0.0, 0.5).set_trans(Tween.TRANS_LINEAR)
+
 var current_position : Vector2 = Vector2.ZERO
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
+	if not is_active: return
 	if event is InputPuzzleForceExitEvent:
 		if puzzle_line != null:
 			on_confirm(true)
@@ -455,20 +475,31 @@ func set_puzzle_line(line_data : LineData, idx : int = 0) -> void:
 
 # save load
 func save() -> void:
-	if puzzle_line == null:
+	if puzzle_line == null and (not initial_active and not is_active):
 		GameSaver.clear_puzzle(puzzle_name)
 	else:
-		var line_vertice_id : Array = PackedInt32Array([puzzle_line.start.id])
-		for i in puzzle_line.segments:
-			line_vertice_id.append(i.to.id)
-		var save_data : Dictionary = {
-			"line": line_vertice_id
-		}
-		GameSaver.save_puzzle(puzzle_name, save_data)
+		if puzzle_line != null:
+			var line_vertice_id : Array = PackedInt32Array([puzzle_line.start.id])
+			for i in puzzle_line.segments:
+				line_vertice_id.append(i.to.id)
+			var save_data : Dictionary = {
+				"line": line_vertice_id,
+				"active": is_active
+			}
+			GameSaver.save_puzzle(puzzle_name, save_data)
+		else:
+			var save_data : Dictionary = {
+				"line": null,
+				"active": is_active
+			}
+			GameSaver.save_puzzle(puzzle_name, save_data)
 
 func load_save() -> void:
 	var data = GameSaver.get_puzzle(puzzle_name)
 	if data == null: return
-	is_answered = true
-	var line : LineData = PuzzleFunction.generate_line_from_idxs(puzzle_data, data.line)
-	set_puzzle_line(line)
+	if data.line != null:
+		is_answered = true
+		var line : LineData = PuzzleFunction.generate_line_from_idxs(puzzle_data, data.line)
+		set_puzzle_line(line)
+	is_active = initial_active or data.active
+	set_panel_active_percentage(1.0 if is_active else 0.0)

@@ -16,21 +16,26 @@ default_input_values = [0, 0.0, 1, 0.25, 2, 0.0]
 
 [sub_resource type="VisualShaderNodeColorUniform" id="142"]
 uniform_name = "LightColor"
+qualifier = 2
 
 [sub_resource type="VisualShaderNodeFloatUniform" id="144"]
 uniform_name = "LightStrength"
+qualifier = 2
 
 [sub_resource type="VisualShaderNodeVectorOp" id="145"]
 operator = 2
 
 [sub_resource type="VisualShaderNodeColorUniform" id="146"]
 uniform_name = "CableColor"
+qualifier = 2
 
 [sub_resource type="VisualShaderNodeFloatUniform" id="147"]
 uniform_name = "CableStrength"
+qualifier = 2
 
 [sub_resource type="VisualShaderNodeFloatUniform" id="VisualShaderNodeFloatUniform_66hgc"]
 uniform_name = "Smooth"
+qualifier = 2
 hint = 1
 min = 0.001
 default_value_enabled = true
@@ -38,11 +43,11 @@ default_value = 0.5
 
 [resource]
 code = "shader_type spatial;
-uniform float Smooth : hint_range(0.0010000000475, 1) = 0.5;
-uniform float CableStrength;
-uniform vec4 CableColor : source_color;
-uniform vec4 LightColor : source_color;
-uniform float LightStrength;
+instance uniform float Smooth : hint_range(0.0010000000475, 1) = 0.5;
+instance uniform float CableStrength;
+instance uniform vec4 CableColor : source_color;
+instance uniform vec4 LightColor : source_color;
+instance uniform float LightStrength;
 
 
 
@@ -99,7 +104,7 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(361.042, -252.864)
+graph_offset = Vector2(-171.185, -616.781)
 nodes/fragment/0/position = Vector2(3120, -160)
 nodes/fragment/10/node = SubResource("137")
 nodes/fragment/10/position = Vector2(2340, -380)
