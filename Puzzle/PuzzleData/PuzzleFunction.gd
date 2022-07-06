@@ -254,3 +254,17 @@ static func get_isolated_areas(puzzle_data : PuzzleData, line_data : LineData) -
 			areas.erase(sub_area)
 		ans.append(_ans)
 	return ans
+
+
+# check puzzle answer main function
+static func check_puzzle_answer(puzzle_data : PuzzleData, line_data : LineData) -> Array:
+	var ans : Array[Decorator] = []
+	for elem in puzzle_data.decorated_elements:
+		for rule in elem.decorator.rules:
+			if rule.get_handle_type() == PuzzleRule.RuleHandleType.SELF:
+				if not rule.check_rule(puzzle_data, line_data, elem):
+					if not ans.has(elem.decorator):
+						ans.append(elem.decorator)
+			elif not ans.has(elem.decorator):
+				ans.append(elem.decorator)
+	return ans

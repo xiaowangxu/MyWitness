@@ -14,6 +14,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Puzzle/PuzzleData/Area.gd"
 }, {
+"base": "PuzzleRule",
+"class": &"AreaSroundSegmentCountRule",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Rules/AreaSroundSegmentCountRule.gd"
+}, {
 "base": "RefCounted",
 "class": &"Decorator",
 "language": &"GDScript",
@@ -69,6 +74,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Puzzle/PuzzleData/LineDataSegment.gd"
 }, {
+"base": "PuzzleRule",
+"class": &"LinePassThroughRule",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Rules/LinePassThroughRule.gd"
+}, {
 "base": "RenderItem",
 "class": &"LineSegment",
 "language": &"GDScript",
@@ -114,6 +124,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Puzzle/Renderer/PuzzleRenderer.gd"
 }, {
+"base": "RefCounted",
+"class": &"PuzzleRule",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Rules/PuzzleRule.gd"
+}, {
 "base": "Node2D",
 "class": &"RenderItem",
 "language": &"GDScript",
@@ -151,6 +166,7 @@ _global_script_classes=[{
 }]
 _global_script_class_icons={
 "Area": "",
+"AreaSroundSegmentCountRule": "",
 "Decorator": "",
 "DirectionedEdge": "",
 "Edge": "",
@@ -162,6 +178,7 @@ _global_script_class_icons={
 "JsonResourceLoader": "",
 "LineData": "",
 "LineDataSegment": "",
+"LinePassThroughRule": "",
 "LineSegment": "",
 "PanelInteractableLinker": "",
 "Player": "",
@@ -171,6 +188,7 @@ _global_script_class_icons={
 "PuzzleFunction": "",
 "PuzzlePanel": "",
 "PuzzleRenderer": "",
+"PuzzleRule": "",
 "RenderItem": "",
 "StartEndHintRing": "",
 "TextureRegularShapeResource": "",

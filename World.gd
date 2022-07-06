@@ -16,4 +16,5 @@ func _input(event: InputEvent) -> void:
 		freed = not freed
 
 func _process(delta: float) -> void:
+#	print(get_tree().get_processed_tweens().size())
 	pass

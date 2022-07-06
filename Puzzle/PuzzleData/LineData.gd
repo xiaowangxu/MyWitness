@@ -91,7 +91,7 @@ func get_nth_segment_duplicated(idx : int = 0) -> LineDataSegment:
 
 func get_current_segment() -> LineDataSegment:
 	if segments.size() == 0: return LineDataSegment.new(start, start)
-	return segments[-1].duplicate()
+	return segments[-1]
 
 func get_current_vertice() -> Vertice:
 	if segments.size() == 0: return start

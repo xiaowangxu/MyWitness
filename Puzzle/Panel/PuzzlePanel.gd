@@ -14,8 +14,7 @@ enum PuzzleInteractState {
 	ANSWERED
 }
 
-signal move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
-signal puzzle_answered(correct : bool, tag : int)
+signal puzzle_answered(correct : bool, tag : int, errors : Array[Decorator])
 signal puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_exited()
 signal puzzle_checked()
@@ -62,7 +61,6 @@ var is_answered : bool = false
 func _ready() -> void:
 	set_panel_active_percentage(1.0 if is_active else 0.0)
 	self.add_to_group(GlobalData.PuzzleGroupName)
-	move_finished.connect(_on_move_finished)
 	puzzle_answered.connect(on_puzzle_answered)
 	puzzle_started.connect(on_puzzle_started)
 	puzzle_exited.connect(on_puzzle_exited)
@@ -152,8 +150,9 @@ func set_visual_instance(idx : int) -> ViewportInstance:
 func set_viewports() -> void:
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.set_viewport(self, mesh)
-	get_base_viewport_instance().viewport.add_child(hint_ring_render_item)
-	get_base_viewport_instance().viewport.add_child(test_info)
+	if hint_ring_render_item.get_parent() == null:
+		get_base_viewport_instance().viewport.add_child(hint_ring_render_item)
+		get_base_viewport_instance().viewport.add_child(test_info)
 	pass
 
 func free_viewports() -> void:
@@ -183,12 +182,12 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 	if not is_active: return
 	if event is InputPuzzleForceExitEvent:
 		if puzzle_line != null:
-			on_confirm(true)
+			_on_confirm(true)
 			return
 	if event is InputEventMouseButton and event.is_pressed():
 		if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT or (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 			if puzzle_line != null:
-				on_confirm((event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT)
+				_on_confirm((event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT)
 				return
 	if event is InputEventMouseButton and event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if puzzle_line != null: return
@@ -202,8 +201,15 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 			var world_pos : Vector3 = mouse_to_global(Vector3(mouse_pos.x, mouse_pos.y, 0))
 			if GlobalData.is_position_in_view(world_pos) and GlobalData.check_reachable(world_pos, area):
 				is_answered = false
+				is_waiting_for_comfirm = false
+				puzzle_line = LineData.new(start_vertice)
+				set_puzzle_line(puzzle_line)
+				current_position = pos
 				puzzle_started.emit(start_vertice, pos, mouse_pos, world_pos)
 				puzzle_interact_state_changed.emit(PuzzleInteractState.DRAWING)
+				GlobalData.set_mouse_position_from_world(world_pos)
+				GlobalData.set_active_puzzle_panel(self)
+				GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
 	pass
 
 func get_current_mouse_position() -> Vector3:
@@ -226,21 +232,19 @@ func get_base_viewport_instance() -> ViewportInstance:
 func on_mouse_moved(pos : Vector3) -> Vector3:
 	if not GlobalData.check_reachable(get_current_world_position(), area):
 		if puzzle_line.is_empty():
-			on_confirm(true)
+			_on_confirm(true)
 			return get_current_world_position()
 		var back_line : LineData = LineData.new(puzzle_line.start)
 		puzzle_line = clamp_puzzle_line(back_line, puzzle_line, true)
 		if puzzle_line.is_empty():
-			on_confirm(true)
+			_on_confirm(true)
 			return get_current_world_position()
 	var local = mouse_to_local(pos)
 	var new_pos : Vector2 = panel_to_puzzle(Vector2(local.x, local.y))
 	var delta := new_pos - current_position
-#	if is_zero_approx(delta.length_squared()): return get_current_world_position()
 	test_info.puzzle_movement = delta
 	current_position = new_pos
 #	test_cursor.position = puzzlerenderer.puzzle_to_panel(current_position)
-	
 	var new_line : LineData = PuzzleFunction.move_line(puzzle_data, puzzle_line, delta)
 	var ans_line : LineData = clamp_puzzle_line(new_line, puzzle_line)
 	puzzle_line = ans_line 
@@ -249,8 +253,9 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 	current_position = end_position
 	var mouse_position : Vector3 = Vector3(mouse_pos.x, mouse_pos.y, 0)
 	var world_position : Vector3 = mouse_to_global(mouse_position)
-	move_finished.emit(puzzle_line, end_position, mouse_position, world_position)
-	return world_position
+	var new_mouse_pos : Vector2 = puzzle_to_panel(_on_move_finished(puzzle_line, end_position, mouse_position, world_position))
+	var new_world_pos : Vector3 = mouse_to_global(Vector3(new_mouse_pos.x, new_mouse_pos.y, 0))
+	return new_world_pos
 
 func mouse_to_local(pos : Vector3) -> Vector3:
 	var trans := global_transform.affine_inverse()
@@ -377,65 +382,63 @@ func on_puzzle_render_state_changed(state : PuzzleRenderer.State) -> void:
 	pass
 
 var is_waiting_for_comfirm : bool = false
-func on_confirm(force_cancel : bool = false) -> void:
+func _on_confirm(force_cancel : bool = false) -> void:
 	if force_cancel or not is_waiting_for_comfirm:
-		exit_puzzle()
+		_exit_puzzle()
 	else:
-		var correct_tag := check_puzzle_ans()
-		is_answered = correct_tag >= 0
-		puzzle_answered.emit(is_answered, correct_tag)
-		puzzle_interact_state_changed.emit(PuzzleInteractState.ANSWERED)
+		_check_puzzle()
 
-# -1 is wrong >= 0 means different correct ans's tags
-func check_puzzle_ans() -> int:
-	var last_vertice := puzzle_line.get_current_vertice()
-	return last_vertice.tag
-
-func exit_puzzle() -> void:
+func _exit_puzzle() -> void:
 	puzzle_line = null
 	save()
 	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	get_base_viewport_instance().puzzle_renderer.create_exit_tween()
-	puzzle_interact_state_changed.emit(PuzzleInteractState.PICKING)
 	puzzle_exited.emit()
+	puzzle_interact_state_changed.emit(PuzzleInteractState.PICKING)
 	interact_result_changed.emit(false, -1)
 	pass
 
-func on_puzzle_answered(correct : bool, tag : int) -> void:
-	if not correct:
-		play_sound("error")
-		puzzle_line.forward(1.0)
-		set_puzzle_line(puzzle_line)
-		get_base_viewport_instance().puzzle_renderer.create_error_tween()
-		GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
-	else:
-		play_sound("start")
-		puzzle_line.forward(1.0)
-		set_puzzle_line(puzzle_line)
-		get_base_viewport_instance().puzzle_renderer.create_correct_tween()
-		GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
+func _check_puzzle() -> void:
+	puzzle_line.forward(1.0)
+	set_puzzle_line(puzzle_line)
+	var correct_dict := check_puzzle_answer()
+	is_answered = correct_dict.tag >= 0
 	save()
 	puzzle_line = null
-	interact_result_changed.emit(correct, tag)
+	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
+	puzzle_answered.emit(is_answered, correct_dict.tag, correct_dict.errors)
+	puzzle_interact_state_changed.emit(PuzzleInteractState.ANSWERED)
+	interact_result_changed.emit(is_answered,  correct_dict.tag)
 	pass
 
+# -1 is wrong >= 0 means different correct ans's tags
+func check_puzzle_answer() -> Dictionary:
+	var last_vertice := puzzle_line.get_current_vertice()
+	var errors : Array[Decorator] = PuzzleFunction.check_puzzle_answer(puzzle_data, puzzle_line)
+	if errors.size() <= 0: return {"tag":last_vertice.tag, "errors": []}
+	return {"tag":-1, "errors": errors}
+
 func on_puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
-	is_waiting_for_comfirm = false
-	current_position = puzzle_position
-	puzzle_line = LineData.new(start_vertice)
-	GlobalData.set_mouse_position_from_world(world_position)
-	GlobalData.set_active_puzzle_panel(self)
-	GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
-	set_puzzle_line(puzzle_line)
 	get_base_viewport_instance().puzzle_renderer.create_start_tween()
 	play_sound("start")
+	pass
+
+func on_puzzle_answered(correct : bool, tag : int, errors : Array) -> void:
+	if not correct:
+		play_sound("error")
+		for viewport_instance in viewport_instance_list:
+			viewport_instance.puzzle_renderer.create_error_tween(errors)
+#		get_base_viewport_instance().puzzle_renderer
+	else:
+		
+		get_base_viewport_instance().puzzle_renderer.create_correct_tween()
 	pass
 
 func on_puzzle_exited() -> void:
 	play_sound("error")
 	pass
 
-func update_confirm_state(line_data : LineData) -> void:
+func _update_confirm_state(line_data : LineData) -> void:
 	var current_vertice : Vertice = line_data.get_current_vertice()
 	var current_percentage : float = line_data.get_current_percentage()
 	if current_vertice.type == Vertice.VerticeType.END and current_percentage > 0.9:
@@ -448,14 +451,15 @@ func update_confirm_state(line_data : LineData) -> void:
 			on_waiting_to_confirm_changed(false)
 	hint_ring_render_item.set_end_hint_enabled(not is_waiting_for_comfirm)
 
-func _on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
-	update_confirm_state(line_data)
-	on_move_finished(line_data, puzzle_position, mouse_position, world_position)
-	pass
-
-func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
+func _on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> Vector2:
+	var new_puzzle_pos := on_move_finished(line_data, puzzle_position, mouse_position, world_position)
+	current_position = new_puzzle_pos
 	set_puzzle_line(line_data)
-	pass
+	_update_confirm_state(line_data)
+	return current_position
+
+func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> Vector2:
+	return puzzle_position
 
 func on_waiting_to_confirm_changed(is_waiting : bool) -> void:
 	if is_waiting_for_comfirm:
@@ -475,10 +479,10 @@ func set_puzzle_line(line_data : LineData, idx : int = 0) -> void:
 
 # save load
 func save() -> void:
-	if puzzle_line == null and (not initial_active and not is_active):
+	if not is_answered and (not initial_active and not is_active):
 		GameSaver.clear_puzzle(puzzle_name)
 	else:
-		if puzzle_line != null:
+		if is_answered and puzzle_line != null:
 			var line_vertice_id : Array = PackedInt32Array([puzzle_line.start.id])
 			for i in puzzle_line.segments:
 				line_vertice_id.append(i.to.id)

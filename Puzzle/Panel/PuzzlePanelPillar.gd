@@ -53,12 +53,11 @@ func on_puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse
 	last_angle = Vector2(position_vec3.x, position_vec3.z).angle()
 	pass
 
-func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
-	set_puzzle_line(line_data)
+func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> Vector2:
 	var position_vec3 := (world_position - self.global_transform.origin).normalized()
 	var angle := Vector2(position_vec3.x, -position_vec3.z).angle()
 	var angle2 := Vector2(position_vec3.x, position_vec3.z).angle()
 	var normalized_position := self.global_transform.origin + Vector3.RIGHT.rotated(Vector3.UP, angle) * 3
 	normalized_position.y = 0.0
 	GlobalData.get_player().move_and_rotate_to_transform(Transform3D(Basis(Quaternion(Vector3(0,PI/2+angle,0))), normalized_position))
-	pass
+	return puzzle_position

@@ -156,7 +156,13 @@
 					1.0
 				],
 				"texture": null,
-				"rotation": 0
+				"rotation": 0,
+				"rules": [
+					{
+						"name": "line_pass_through",
+						"data": 1
+					}
+				]
 			}
 		},
 		{
@@ -191,7 +197,8 @@
 					1.0
 				],
 				"texture": null,
-				"rotation": 0
+				"rotation": 0,
+				"rules": []
 			}
 		}
 	]

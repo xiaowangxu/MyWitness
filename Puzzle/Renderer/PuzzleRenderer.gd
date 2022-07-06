@@ -49,7 +49,7 @@ func _ready() -> void:
 		for elem in elements:
 			if elem.decorator != null:
 				var decorator_item : RenderItem = TextureShape.new(elem.decorator.base, elem.decorator.texture)
-				decorator_renderitems_map[elem] = decorator_item
+				decorator_renderitems_map[elem.decorator] = decorator_item
 				decorator_item.self_modulate = elem.decorator.color
 				decorator_item.position = elem.position
 				decorator_item.rotation = elem.decorator.transform.get_rotation()
@@ -79,7 +79,6 @@ var tween_scheduled : Tween = null
 func schedule_tween(tween : Tween = null) -> void:
 	if tween_scheduled != null:
 		tween_scheduled.kill()
-		
 	if tween != null:
 		tween.finished.connect(func ():
 #			print("tween end")
@@ -89,22 +88,25 @@ func schedule_tween(tween : Tween = null) -> void:
 	tween_scheduled = tween
 
 func create_start_tween() ->void:
+	if not show_element & 0b1100: return
 	var tween : Tween = create_tween()
-	tween.tween_callback(func ():
+	if show_element & 0b1000:
 		line_render.self_modulate = puzzle_data.line_drawing_color
 		line_canvas_group.self_modulate = Color.WHITE
-		for key in decorator_renderitems_map:
-			var decorator_item : RenderItem = decorator_renderitems_map[key]
-			decorator_item.self_modulate = key.decorator.color
-		pass
-	)
-	tween.tween_property(line_render, "percentage", 1.0, 0.2).from(0.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	if show_element & 0b100:
+		for decorator in decorator_renderitems_map:
+			var decorator_item : RenderItem = decorator_renderitems_map[decorator]
+			decorator_item.stop_scheduled_tween()
+			decorator_item.self_modulate = decorator.color
+	if show_element & 0b1000:
+		tween.tween_property(line_render, "percentage", 1.0, 0.2).from(0.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	state_changed.emit(State.DRAWING)
 	schedule_tween(tween)
 #	print(get_tree().get_processed_tweens())
 	pass
 
 func create_exit_tween() ->void:
+	if not (show_element & 0b1000): return
 	var tween : Tween = create_tween()
 	tween.tween_property(line_canvas_group, "self_modulate", Color.TRANSPARENT, 1.0).from_current().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
 	tween.tween_interval(0.1)
@@ -115,29 +117,33 @@ func create_exit_tween() ->void:
 	schedule_tween(tween)
 	pass
 
-func create_error_tween() ->void:
-	var tween : Tween = create_tween()
-	tween.tween_callback(func ():
+func create_error_tween(errors : Array) ->void:
+	if show_element & 0b100:
+		for decorator in errors:
+			if decorator_renderitems_map.has(decorator):
+				var decorator_item : RenderItem = decorator_renderitems_map[decorator]
+				var decorator_tween : Tween = decorator_item.create_scheduled_tween().set_loops(4)
+				decorator_tween.tween_property(decorator_item, "self_modulate", decorator.color, 0.75).from(Color.RED).set_trans(Tween.TRANS_LINEAR)
+				decorator_tween.tween_property(decorator_item, "self_modulate", Color.RED, 0.0)
+		pass
+	if show_element & 0b1000:
 		line_render.self_modulate = puzzle_data.line_error_color
 		line_canvas_group.self_modulate = Color.WHITE
-		for key in decorator_renderitems_map:
-			var decorator_item : RenderItem = decorator_renderitems_map[key]
-			decorator_item.self_modulate = Color.RED
-		pass
-	)
-	tween.tween_interval(1.0)
-	tween.set_parallel(true)
-	tween.tween_property(line_canvas_group, "self_modulate", Color.TRANSPARENT, 4.0).from_current().set_trans(Tween.TRANS_LINEAR)
-	tween.set_parallel(false)
-	tween.tween_interval(0.1)
-	tween.tween_callback(func ():
-		self.state_changed.emit(State.STOPPED)
-		pass
-	)
-	schedule_tween(tween)
+		var tween : Tween = create_tween()
+		tween.tween_interval(1.0)
+		tween.set_parallel(true)
+		tween.tween_property(line_canvas_group, "self_modulate", Color.TRANSPARENT, 4.0).from_current().set_trans(Tween.TRANS_LINEAR)
+		tween.set_parallel(false)
+		tween.tween_interval(0.1)
+		tween.tween_callback(func ():
+			self.state_changed.emit(State.STOPPED)
+			pass
+		)
+		schedule_tween(tween)
 	pass
 
 func create_correct_tween() ->void:
+	if not (show_element & 0b1000): return
 	var tween : Tween = create_tween()
 	tween.tween_property(line_render, "self_modulate", puzzle_data.line_correct_color, 0.15).from_current().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.tween_interval(0.1)
@@ -149,6 +155,7 @@ func create_correct_tween() ->void:
 	pass
 
 func create_highlight_tween() ->void:
+	if not (show_element & 0b1000): return
 	line_render.percentage = 1.0
 	var tween : Tween = create_tween().set_loops()
 	tween.tween_property(line_render, "self_modulate", puzzle_data.line_highlight_color, 0.3).from(puzzle_data.line_drawing_color).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CIRC)
@@ -157,6 +164,7 @@ func create_highlight_tween() ->void:
 	pass
 
 func create_exit_highlight_tween() ->void:
+	if not (show_element & 0b1000): return
 	if tween_scheduled != null:
 		tween_scheduled.loop_finished.connect(func (idx : int):
 			tween_scheduled.kill()
