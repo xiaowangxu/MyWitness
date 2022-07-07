@@ -222,7 +222,10 @@ func get_current_world_position() -> Vector3:
 func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
 	var pos := global_transform.origin
 	var quat := global_transform.basis.get_rotation_quaternion()
-	pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 2
+	if is_zero_approx(quat.get_axis().length_squared()):
+		pos -= Vector3.FORWARD * 2.5
+	else:
+		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 2.5
 	pos.y = global_transform.origin.y - 4.0
 	return Transform3D(Basis(Quaternion(Vector3(0,global_transform.basis.get_euler().y,0))), pos)
 
@@ -258,7 +261,7 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 	return new_world_pos
 
 func mouse_to_local(pos : Vector3) -> Vector3:
-	var trans := global_transform.affine_inverse()
+	var trans := area.global_transform.affine_inverse()
 	var ans := trans * pos
 	ans.y *= -1
 	var scaled := (ans + Vector3(0.5,0.5,0))
@@ -267,7 +270,7 @@ func mouse_to_local(pos : Vector3) -> Vector3:
 	return scaled
 
 func mouse_to_global(pos : Vector3) -> Vector3:
-	var trans := global_transform
+	var trans := area.global_transform
 	var scaled := pos
 	scaled.x /= viewport_size.x
 	scaled.y /= viewport_size.y
@@ -476,6 +479,13 @@ func play_sound(stream_name : String = "") -> void:
 
 func set_puzzle_line(line_data : LineData, idx : int = 0) -> void:
 	get_base_viewport_instance().puzzle_renderer.set_puzzle_line(idx, line_data)
+#	if puzzle_name == "second":
+#		var line := LineData.new(puzzle_data.vertices[8 - line_data.start.id])
+#		var vertices := line_data.to_vertices()
+#		for i in range(1, vertices.size()):
+#			var percentage := line_data.get_nth_segment(i).percentage
+#			line.add_line_segemnt(puzzle_data.vertices[8 - vertices[i].id], percentage)
+#		get_base_viewport_instance().puzzle_renderer.set_puzzle_line(1, line)
 
 # save load
 func save() -> void:

@@ -15,6 +15,7 @@ const AllPuzzleJsons : Dictionary = {
 	"second2": preload("res://PuzzleDataJson/Json2-1.json"),
 	"hello_world": preload("res://PuzzleDataJson/Json3.json"),
 	"generator": preload("res://PuzzleDataJson/PuzzleTest.json"),
+	"crt": preload("res://PuzzleDataJson/CRTTest.json"),
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),
@@ -22,6 +23,7 @@ var AllPuzzleData : Dictionary = {
 	"second2": PuzzleData.new(AllPuzzleJsons.second2),
 	"hello_world": PuzzleData.new(AllPuzzleJsons.hello_world),
 	"generator": PuzzleData.new(AllPuzzleJsons.generator),
+	"crt": PuzzleData.new(AllPuzzleJsons.crt),
 }
 # Layers: Puzzles | CurrentPuzzle | ... | InvisibleObstacles | Player | Interactable | Visual | Normal
 const PhysicsLayerNormal 				: int = 0b10000000000000000000000000000001
@@ -140,6 +142,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
 			set_cursor_state(CursorState.DISABLED)
 			return
+		elif has_preferred_puzzle_panel():
+			var target_direction : int = -1
+			if event.is_action_pressed("ui_up"):
+				target_direction = 0
+			elif event.is_action_pressed("ui_right"):
+				target_direction = 1
+			elif event.is_action_pressed("ui_down"):
+				target_direction = 2
+			elif event.is_action_pressed("ui_left"):
+				target_direction = 3
+			if target_direction != -1:
+				var next : Interactable = preferred_puzzle_panel.get_next_interactable(target_direction)
+				if next is PuzzlePanel:
+					var player := get_player()
+					player.move_and_rotate_to_panel(next)
+				return
 		var ans := pick_interactable(mouse_position)
 		if not ans.is_empty():
 			var obj = ans.collider
@@ -167,6 +185,9 @@ func set_preferred_puzzle_panel(panel : PuzzlePanel) -> void:
 	if preferred_puzzle_panel != null:
 		preferred_puzzle_panel.on_preferred()
 	pass
+
+func has_preferred_puzzle_panel() -> bool:
+	return preferred_puzzle_panel != null
 
 var last_puzzle_panel : PuzzlePanel = null
 func set_active_puzzle_panel(panel : PuzzlePanel = null) -> void:

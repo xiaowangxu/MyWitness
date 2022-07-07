@@ -121,7 +121,7 @@ func move_and_rotate_to_transform(trans : Transform3D) -> void:
 const MoveAndRotateDuration : float = 0.5
 func create_move_and_rotate_tween(target_transform : Transform3D) -> void:
 	var tween := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
-	tween.tween_method(move_and_rotate_to_transform, get_current_transform(), target_transform, MoveAndRotateDuration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_method(move_and_rotate_to_transform, get_current_transform(), target_transform, MoveAndRotateDuration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUART)
 
 func move_and_rotate_to_panel(panel : PuzzlePanel) -> void:
 	GlobalData.set_preferred_puzzle_panel(panel)
