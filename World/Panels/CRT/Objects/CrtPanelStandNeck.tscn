@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c6crhapaxy0ni"]
+
+[ext_resource type="ArrayMesh" uid="uid://diuwyjk0i64rm" path="res://World/Panels/CRT/Meshs/CRTPanelStand_立方体001.res" id="1_uk51c"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7t444"]
+size = Vector3(0.162943, 0.191809, 0.162451)
+
+[node name="CrtPanelStandNeck" type="MeshInstance3D"]
+mesh = ExtResource("1_uk51c")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2147483666
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.689198, -0.253877, 0)
+shape = SubResource("BoxShape3D_7t444")

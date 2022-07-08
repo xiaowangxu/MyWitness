@@ -5,16 +5,15 @@ type="CompressedTexture2D"
 uid="uid://bvxxveqvx7msr"
 path.s3tc="res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.s3tc.ctex"
 path.etc2="res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.etc2.ctex"
-path.etc="res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.etc.ctex"
 metadata={
-"imported_formats": ["bptc", "s3tc", "etc2", "etc"],
+"imported_formats": ["s3tc", "etc2"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://test.png"
-dest_files=["res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.s3tc.ctex", "res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.etc2.ctex", "res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.etc.ctex"]
+dest_files=["res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.s3tc.ctex", "res://.godot/imported/test.png-2b0b935732229e5bd5e655f2644b2498.etc2.ctex"]
 
 [params]
 

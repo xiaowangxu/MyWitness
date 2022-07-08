@@ -39,6 +39,7 @@ signal puzzle_interact_state_changed(state : PuzzleInteractState)
 	"update": true
 }]
 @export var min_delta_length : float = 1.0
+@export var puzzle_surface_material_id : int = 0
 var viewport_instance_map : Dictionary = {}
 var viewport_instance_list : Array[ViewportInstance] = []
 var hint_ring_render_item : StartEndHintRing
@@ -162,7 +163,8 @@ func free_viewports() -> void:
 		viewport_instance.free_viewport(self, mesh)
 
 func set_panel_active_percentage(percentage : float) -> void:
-	var mat : Material = mesh.get_surface_override_material(0)
+	if puzzle_surface_material_id >= mesh.get_surface_override_material_count(): return
+	var mat : Material = mesh.get_surface_override_material(puzzle_surface_material_id)
 	if mat is StandardMaterial3D:
 		mat.albedo_color = Color.BLACK.lerp(Color.WHITE, percentage)
 		mat.emission_energy = percentage
@@ -220,14 +222,14 @@ func get_current_world_position() -> Vector3:
 	return mouse_to_global(get_current_mouse_position())
 
 func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
-	var pos := global_transform.origin
-	var quat := global_transform.basis.get_rotation_quaternion()
+	var pos := area.global_transform.origin
+	var quat := area.global_transform.basis.get_rotation_quaternion()
 	if is_zero_approx(quat.get_axis().length_squared()):
 		pos -= Vector3.FORWARD * 2.5
 	else:
 		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 2.5
-	pos.y = global_transform.origin.y - 4.0
-	return Transform3D(Basis(Quaternion(Vector3(0,global_transform.basis.get_euler().y,0))), pos)
+	pos.y = area.global_transform.origin.y - 4.0
+	return Transform3D(Basis(Quaternion(Vector3(0,area.global_transform.basis.get_euler().y,0))), pos)
 
 func get_base_viewport_instance() -> ViewportInstance:
 	return base_viewport_instance

@@ -266,7 +266,7 @@
 				"rules": [
 					{
 						"name": "area_sround_segment_count",
-						"data": 1
+						"data": 3
 					}
 				]
 			}

@@ -40,7 +40,7 @@ func _to_string() -> String:
 func is_same_segment(b : LineDataSegment) -> bool:
 	return self.from == b.from and self.to == b.to
 
-func is_equal_approx(b : LineDataSegment) -> bool:
+func is_segment_equal_approx(b : LineDataSegment) -> bool:
 	if self.from == b.from and self.to == b.to:
 		return is_equal_approx(self.percentage, b.percentage) and is_equal_approx(self.from_percentage, b.from_percentage)
 	else:

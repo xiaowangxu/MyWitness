@@ -295,6 +295,7 @@ shift={
 
 [physics]
 
+3d/solver/solver_iterations=8
 common/enable_object_picking=false
 
 [rendering]

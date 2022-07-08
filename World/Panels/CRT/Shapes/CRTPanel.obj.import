@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bfioyauxk0qln"
+path="res://.godot/imported/CRTPanel.obj-406c21c2e51e92bd17721c52d11a37fe.mesh"
+
+[deps]
+
+files=["res://.godot/imported/CRTPanel.obj-406c21c2e51e92bd17721c52d11a37fe.mesh"]
+
+source_file="res://World/Panels/CRT/Shapes/CRTPanel.obj"
+dest_files=["res://.godot/imported/CRTPanel.obj-406c21c2e51e92bd17721c52d11a37fe.mesh", "res://.godot/imported/CRTPanel.obj-406c21c2e51e92bd17721c52d11a37fe.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

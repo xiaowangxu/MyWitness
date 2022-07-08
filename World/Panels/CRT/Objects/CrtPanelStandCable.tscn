@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://bf2mkpmwngm8g"]
+
+[ext_resource type="ArrayMesh" uid="uid://bh8jllw6viuef" path="res://World/Panels/CRT/Meshs/CRTPanelStand_柱体003.res" id="1_jpg22"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_4m3co"]
+height = 0.892325
+radius = 0.0617592
+
+[node name="CrtPanelStandCable" type="MeshInstance3D"]
+ignore_occlusion_culling = true
+mesh = ExtResource("1_jpg22")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.352785, 0.0962821, -0.950439)
+shape = SubResource("CylinderShape3D_4m3co")

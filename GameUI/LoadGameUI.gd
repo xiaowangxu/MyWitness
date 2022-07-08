@@ -190,6 +190,8 @@ func on_puzzle_answered(tag : int) -> void:
 		666:
 			await GameSaver.save_game_save_data_resource()
 			get_tree().quit()
+		1024:
+			GameSaver.clear_game_save_data_resource()
 		233:
 			match Input.get_mouse_mode():
 				Input.MOUSE_MODE_CAPTURED:

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cefyx5w7nw7xx"
-path="res://.godot/imported/CRTPanel.blend-dce8899fd723dd16ed1c5f7336667c64.scn"
+uid="uid://bbghxs5eh1g3i"
+path="res://.godot/imported/CRTPanelStand.blend-b165f6fe491391bf8566dd9bcc2de0bc.scn"
 
 [deps]
 
-source_file="res://World/Panel/CRTPanel.blend"
-dest_files=["res://.godot/imported/CRTPanel.blend-dce8899fd723dd16ed1c5f7336667c64.scn"]
+source_file="res://World/Panels/CRT/CRTPanelStand.blend"
+dest_files=["res://.godot/imported/CRTPanelStand.blend-b165f6fe491391bf8566dd9bcc2de0bc.scn"]
 
 [params]
 

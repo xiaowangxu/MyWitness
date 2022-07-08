@@ -78,6 +78,12 @@ func save_game_save_data_resource() -> void:
 	game_save_data.set_cover_image(image)
 	var ans := ResourceSaver.save("user://GameSave.res", game_save_data)
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	print_rich('[b][color=white][bgcolor=#0002ee][font_size=30][code] Save Game [/code][/font_size][/bgcolor][/color][/b][b][color=white][bgcolor=#333333][font_size=30][code]  in %d ms [/code][/font_size][/bgcolor][/color][/b]' % [ Time.get_ticks_msec() - start_time])
+	Debugger.print_tag('Save Game', 'in %d ms' % [ Time.get_ticks_msec() - start_time])
 #	print("Game Saved ! in : ",, "ms")
 #	dirty = false
+func clear_game_save_data_resource() -> void:
+	var dir := Directory.new()
+	dir.open("user://")
+	var err := dir.remove("user://GameSave.res")
+	print(err)
+	get_tree().quit()

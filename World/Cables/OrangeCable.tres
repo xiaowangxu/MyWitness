@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b5idi261ibcot"]
+
+[ext_resource type="Shader" uid="uid://dtihorpsnxdvt" path="res://World/Cables/CableShader.tres" id="1_b1jon"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_b1jon")
+shader_param/CableColor = Color(0, 0, 0, 1)
+shader_param/CableStrength = 0.818
+shader_param/LightColor = Color(0.235294, 1, 0, 1)
+shader_param/LightStrength = 2.946
+shader_param/Smooth = 1.0

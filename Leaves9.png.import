@@ -5,16 +5,15 @@ type="CompressedTexture2D"
 uid="uid://drux6fnjqnu8k"
 path.s3tc="res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.s3tc.ctex"
 path.etc2="res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.etc2.ctex"
-path.etc="res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.etc.ctex"
 metadata={
-"imported_formats": ["bptc", "s3tc", "etc2", "etc"],
+"imported_formats": ["s3tc", "etc2"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Leaves9.png"
-dest_files=["res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.s3tc.ctex", "res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.etc2.ctex", "res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.etc.ctex"]
+dest_files=["res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.s3tc.ctex", "res://.godot/imported/Leaves9.png-6b0b6b172eae095df53e911fc2c0a149.etc2.ctex"]
 
 [params]
 

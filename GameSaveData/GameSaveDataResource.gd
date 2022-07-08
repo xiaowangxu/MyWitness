@@ -3,7 +3,7 @@ extends Resource
 
 @export var saved_time : String = ""
 @export var cover_image : Image
-@export var player_position : Vector3
+@export var player_position : Vector3 = Vector3(10,0,10)
 @export var player_lookat : Vector2
 @export var puzzles_ans : Dictionary
 @export var interactable : Dictionary

@@ -1,0 +1,70 @@
+[gd_scene load_steps=10 format=3 uid="uid://bw1qfphklfn4t"]
+
+[ext_resource type="ArrayMesh" uid="uid://d3t57kkcqatcy" path="res://World/Panels/CRT/Meshs/CRTPanelStand_Cube004.res" id="1_rkuel"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_te5t4"]
+size = Vector3(0.199031, 0.426933, 0.2476)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pqsoq"]
+size = Vector3(0.0909484, 0.553463, 0.2476)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ayo4q"]
+size = Vector3(0.387222, 0.0874851, 0.2476)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qtbo7"]
+size = Vector3(0.0971661, 0.0885863, 0.2476)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aab7j"]
+size = Vector3(0.323752, 0.0936757, 0.118788)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0k72c"]
+size = Vector3(0.0611113, 0.373101, 0.323812)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_acdcb"]
+size = Vector3(0.0397671, 0.0174526, 0.046863)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_li4jk"]
+size = Vector3(0.861406, 0.767033, 0.332056)
+
+[node name="CrtPanelStandConnector" type="MeshInstance3D"]
+mesh = ExtResource("1_rkuel")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.891011, -0.346968, 0)
+shape = SubResource("BoxShape3D_te5t4")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.545586, -0.431532, -1.77636e-15)
+shape = SubResource("BoxShape3D_pqsoq")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.329739, -0.733784, -1.77636e-15)
+shape = SubResource("BoxShape3D_ayo4q")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0.525902, -0.712037, 8.57458e-09)
+shape = SubResource("BoxShape3D_qtbo7")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.631471, -0.201932, -3.55271e-15)
+shape = SubResource("BoxShape3D_aab7j")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.455455, -0.201574, 0)
+shape = SubResource("BoxShape3D_0k72c")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.689144, -0.147721, -3.55271e-15)
+shape = SubResource("BoxShape3D_acdcb")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.56431, -0.394229, 0)
+shape = SubResource("BoxShape3D_li4jk")
