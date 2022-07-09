@@ -85,8 +85,9 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> TextureShap
 func create_decorator(base : TextureShapeResource, color : Array, texture, rotation : float = 0.0, rules : Array = []) -> Decorator:
 	var decorator := Decorator.new(base, array_to_color(color), null if texture == null else load(texture), Transform2D(deg2rad(rotation), Vector2.ZERO)) #decorator
 	for rule_data in rules:
-		var rule := PuzzleRule.create_rule(rule_data.name, rule_data.data)
+		var rule : PuzzleRule = PuzzleRule.create_rule(rule_data.name, rule_data.data)
 		decorator.add_rule(rule)
+		pass
 #	var decorator := Decorator.new(base, Color(color[0], color[1], color[2], color[3]), texture)
 	return decorator
 

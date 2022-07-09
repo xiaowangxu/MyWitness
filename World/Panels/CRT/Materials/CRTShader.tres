@@ -1,0 +1,25 @@
+[gd_resource type="Shader" format=3 uid="uid://cvjb5tnriu5h1"]
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+instance uniform vec4 albedo : source_color;
+uniform sampler2D texture_puzzle : source_color, hint_default_black,filter_linear_mipmap,repeat_enable;
+instance uniform vec4 emission : source_color;
+instance uniform float emission_energy;
+instance uniform float black_range_a;
+instance uniform float black_range_b;
+instance uniform float pow_factor;
+instance uniform float black_factor;
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_puzzle,base_uv);
+	vec2 transformed_uv = (base_uv - vec2(0.5)) * 2.0;
+	float _dis = pow(abs(transformed_uv.x), pow_factor) + pow(abs(transformed_uv.y), pow_factor);
+	float dis = smoothstep(black_range_a, black_range_b, 1.0 - _dis) * (1.0 - black_factor) + black_factor;
+	ALBEDO = albedo.rgb * albedo_tex.rgb * dis;
+	vec3 emission_tex = texture(texture_puzzle,base_uv).rgb;
+	EMISSION = (emission.rgb + emission_tex) * emission_energy * dis;
+}
+"

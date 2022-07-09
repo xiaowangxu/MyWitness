@@ -3,7 +3,7 @@ extends RefCounted
 
 enum RuleHandleType {
 	SELF,
-	GROUP
+	GROUPED
 }
 
 func get_handle_type() -> int:
@@ -12,7 +12,7 @@ func get_handle_type() -> int:
 func _init(rule : String) -> void:
 	pass 
 
-func check_rule(puzzle_data : PuzzleData, line_data : LineData, puzzle_element : PuzzleElement) -> bool:
+func check_rule(puzzle_data : PuzzleData, line_data, puzzle_element : PuzzleElement) -> bool:
 	return true
 
 static func create_rule(name : String, data) -> PuzzleRule:

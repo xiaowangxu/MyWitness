@@ -5,7 +5,7 @@ var base : TextureShapeResource
 var color : Color
 var texture : Texture
 var transform : Transform2D
-var rules : Array[PuzzleRule]
+var rules : Array[PuzzleRule] = []
 
 func _init(base : TextureShapeResource, color : Color, texture : Texture, transform : Transform2D) -> void:
 	self.base = base
