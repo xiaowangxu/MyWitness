@@ -1,0 +1,35 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://c7wt1u1j6b0nr"
+path="res://.godot/imported/CRTPanelBox.glb-011b9aa371f16b7acef959d316ac7b37.scn"
+
+[deps]
+
+source_file="res://World/Panels/CRTBox/CRTPanelBox.glb"
+dest_files=["res://.godot/imported/CRTPanelBox.glb-011b9aa371f16b7acef959d316ac7b37.scn"]
+
+[params]
+
+nodes/root_type="Node3D"
+nodes/root_name="Scene Root"
+nodes/root_scale=1.0
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=false
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+skins/use_named_skins=false
+animation/import=false
+animation/fps=30
+import_script/path=""
+_subresources={
+"meshes": {
+"CRTPanelBox_立方体014": {
+"save_to_file/enabled": true,
+"save_to_file/path": "res://World/Panels/CRTBox/Meshs/CRTPanelBox_立方体014.res"
+}
+}
+}

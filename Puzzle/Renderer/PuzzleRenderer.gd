@@ -18,18 +18,17 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 	self.puzzle_data = puzzle_data
 	self.show_element = show_element
 	self.override_size = viewport_size
-
-func _ready() -> void:
+#func _ready() -> void:
 	# scale
-	var viewport_size : Vector2
+	var _viewport_size : Vector2
 	if override_size == Vector2i.ZERO:
-		viewport_size = get_viewport_rect().size
+		_viewport_size = get_viewport_rect().size
 	else:
-		viewport_size = override_size
+		_viewport_size = override_size
 	custom_minimum_size = puzzle_data.base_size
 #	minimum_size = puzzle_data.base_size
 	size = puzzle_data.base_size
-	scale = viewport_size / size
+	scale = _viewport_size / size
 	
 	if show_element & 0b1:
 		self.color = puzzle_data.background_color

@@ -54,6 +54,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Linker/Linker.gd"
 }, {
+"base": "Node3D",
+"class": &"InteractableNotifier",
+"language": &"GDScript",
+"path": "res://InteractiveObject/InteractableNotifier.gd"
+}, {
 "base": "Resource",
 "class": &"JsonResource",
 "language": &"GDScript",
@@ -174,6 +179,7 @@ _global_script_class_icons={
 "InputPuzzleForceExitEvent": "",
 "Interactable": "",
 "InteractableLinker": "",
+"InteractableNotifier": "",
 "JsonResource": "",
 "JsonResourceLoader": "",
 "LineData": "",

@@ -1,9 +1,12 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bklqvb86wcs8h"]
 
-[ext_resource type="Shader" uid="uid://cgn5ngldih8id" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="1_ig04v"]
+[ext_resource type="Shader" uid="uid://d3isofe4cg1cf" path="res://World/Panels/CRTBox/Materials/CRTBoxShader.tres" id="1_2i56v"]
 [ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="1_or77y"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_ig04v")
+shader = ExtResource("1_2i56v")
+shader_param/resolution = null
+shader_param/scanlines_opacity = null
+shader_param/scanlines_width = null
 shader_param/texture_puzzle = ExtResource("1_or77y")

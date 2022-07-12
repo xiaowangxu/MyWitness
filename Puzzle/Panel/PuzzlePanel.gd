@@ -36,6 +36,7 @@ signal puzzle_interact_state_changed(state : PuzzleInteractState)
 	"visual": 0b1111,
 	"targets": PackedStringArray(["surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"]),
 	"transparent": false,
+	"idle": 1,
 	"update": true
 }]
 @export var min_delta_length : float = 1.0
@@ -47,6 +48,7 @@ var hint_ring_render_item : StartEndHintRing
 @onready var mesh : MeshInstance3D = $Mesh
 @onready var area : CollisionObject3D = $Area
 @onready var audio : AudioStreamPlayer = $Audio
+@onready var interactable_notifier : InteractableNotifier = get_node_or_null("InteractableNotifier")
 
 @onready var puzzle_data : PuzzleData = GlobalData.AllPuzzleData[puzzle_name]
 var viewport_size : Vector2 = GlobalData.PuzzleViewportSizes.regular
@@ -60,6 +62,9 @@ var is_answered : bool = false
 #var test_cursor := preload("res://Puzzle/TestCursor.tscn").instantiate()
 @onready var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
 func _ready() -> void:
+	if interactable_notifier != null:
+		interactable_notifier.state_change.connect(on_visible_changed)
+	
 	set_panel_active_percentage(1.0 if is_active else 0.0)
 	self.add_to_group(GlobalData.PuzzleGroupName)
 	puzzle_answered.connect(on_puzzle_answered)
@@ -68,6 +73,7 @@ func _ready() -> void:
 	puzzle_interact_state_changed.connect(on_puzzle_interact_state_changed)
 	area.collision_layer |= GlobalData.PhysicsLayerInteractables | GlobalData.PhysicsLayerPuzzles
 	audio.bus = GlobalData.PuzzleSoundEffectsBus
+	hint_ring_render_item = StartEndHintRing.new(puzzle_data, viewport_size)
 	
 	for config_idx in range(viewport_configs.size()):
 		var viewport_instance := set_visual_instance(config_idx)
@@ -76,9 +82,14 @@ func _ready() -> void:
 	
 	viewport_configs.clear()
 #	hint ring
-	hint_ring_render_item = StartEndHintRing.new(puzzle_data, viewport_size)
 	
-	set_viewports()
+	if interactable_notifier != null:
+		if interactable_notifier.is_reachable:
+			set_viewports(true)
+		else:
+			free_viewports(true)
+	else:
+		set_viewports(true)
 	
 #	test info
 	get_base_viewport_instance().puzzle_renderer.state_changed.connect(on_puzzle_render_state_changed)
@@ -90,17 +101,26 @@ func _ready() -> void:
 	
 	pass
 
-class ViewportInstance:
+class ViewportInstance extends RefCounted:
+	const IDLE_TEXTURE_ATLAS : Dictionary = {
+		0: preload("res://World/Panels/IdleTextureAtlas/0.png"),
+		1: preload("res://World/Panels/IdleTextureAtlas/1.png"),
+		2: preload("res://World/Panels/IdleTextureAtlas/2.png"),
+		3: preload("res://World/Panels/IdleTextureAtlas/3.png"),
+		4: preload("res://World/Panels/IdleTextureAtlas/4.png"),
+	}
+	
 	var config_name : String
 	var config_idx : int
 	var puzzle_renderer : PuzzleRenderer
-	var viewport : SubViewport = null
+	var viewport : SubViewport = SubViewport.new()
 	var viewport_size : Vector2
 	var viewport_transparent : bool = false
 	var need_update : bool = false
 	var targets : PackedStringArray
+	var idle_texture : Texture2D
 	
-	func _init(config_idx : int, config : Dictionary, viewport_size : Vector2, puzzle_renderer : PuzzleRenderer) -> void:
+	func _init(config_idx : int, config : Dictionary, viewport_size : Vector2, puzzle_renderer : PuzzleRenderer, parent : PuzzlePanel) -> void:
 		self.config_idx = config_idx
 		self.puzzle_renderer = puzzle_renderer
 		self.viewport_size = viewport_size
@@ -108,59 +128,91 @@ class ViewportInstance:
 		self.need_update = config.update
 		self.targets = config.targets
 		self.config_name = config.name
+		self.idle_texture = IDLE_TEXTURE_ATLAS[config.idle]
+		self.viewport.transparent_bg = viewport_transparent
+		self.viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		self.viewport.size = Vector2i.ONE
+		parent.add_child(self.viewport)
+		self.viewport.add_child(self.puzzle_renderer)
+		if self.config_name == 'base':
+			self.viewport.add_child(parent.hint_ring_render_item)
+			self.viewport.add_child(parent.test_info)
+		var texture : ViewportTexture = viewport.get_texture()
+		set_texture(parent, texture)
 		pass
 	
-	func set_viewport(parent : Node, mesh : Node) -> void:
-		if viewport != null: return
+	func set_texture(parent : PuzzlePanel, texture : Texture2D) -> void:
+		if self.targets.size() != 0:
+			for target in targets:
+				parent.mesh.set_indexed(target, texture)
+		pass
+	
+	func set_viewport(parent : Node) -> void:
+		if viewport.size == Vector2i(viewport_size): return
 		else:
-			viewport = SubViewport.new()
-			viewport.size = viewport_size
-			viewport.transparent_bg = viewport_transparent
-			viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-			parent.add_child(viewport)
-			viewport.add_child(puzzle_renderer)
-			if targets.size() != 0:
-				var texture : ViewportTexture = viewport.get_texture()
-				for target in targets:
-					mesh.set_indexed(target, texture)
+			viewport.size = Vector2i(viewport_size)
+			if viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED or viewport.render_target_update_mode == SubViewport.UPDATE_ONCE:
+				viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+			var texture : ViewportTexture = viewport.get_texture()
+			set_texture(parent, texture)
+			return
+#		if viewport != null: return
+#		else:
+#			viewport = SubViewport.new()
+#			viewport.size = viewport_size
+#			viewport.transparent_bg = viewport_transparent
+#			viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+#			parent.add_child(viewport)
+#			viewport.add_child(puzzle_renderer)
+#			
 	
 	func set_rendering(render : bool) -> void:
 		if viewport != null and need_update:
 			await RenderingServer.frame_post_draw
 			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if render else SubViewport.UPDATE_DISABLED
 	
-	func free_viewport(parent : Node, mesh : Node) -> void:
-		if viewport != null:
-			for target in targets:
-				mesh.set_indexed(target, null)
-			viewport.remove_child(puzzle_renderer)
-			parent.remove_child(viewport)
-			viewport.queue_free()
-			viewport = null
+	func free_viewport(parent : Node) -> void:
+#		if viewport.size == Vector2i.ONE: return
+		viewport.size = Vector2i.ONE
+		set_texture(parent, idle_texture)
+		return
+#		if viewport != null:
+#			for target in targets:
+#				mesh.set_indexed(target, null)
+#			viewport.remove_child(puzzle_renderer)
+#			parent.remove_child(viewport)
+#			viewport.queue_free()
+#			viewport = null
 	
 	pass
 
 func set_visual_instance(idx : int) -> ViewportInstance:
 	var config : Dictionary = viewport_configs[idx]
 	var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size, config.visual)
-	var viewport_instance : ViewportInstance = ViewportInstance.new(idx, config, viewport_size, puzzle_renderer)
+	var viewport_instance : ViewportInstance = ViewportInstance.new(idx, config, viewport_size, puzzle_renderer, self)
 	viewport_instance_map[config.name] = viewport_instance
 	viewport_instance_list.append(viewport_instance)
 	return viewport_instance
 
-func set_viewports() -> void:
+var _is_viewports_instanced : bool = false
+func set_viewports(force : bool = false) -> void:
+	if not force and _is_viewports_instanced: return
 	for viewport_instance in viewport_instance_list:
-		viewport_instance.set_viewport(self, mesh)
-	if hint_ring_render_item.get_parent() == null:
-		get_base_viewport_instance().viewport.add_child(hint_ring_render_item)
-		get_base_viewport_instance().viewport.add_child(test_info)
+		viewport_instance.set_viewport(self)
+#	if hint_ring_render_item.get_parent() == null:
+#		get_base_viewport_instance().viewport.add_child(hint_ring_render_item)
+#		get_base_viewport_instance().viewport.add_child(test_info)
+	_is_viewports_instanced = true
 	pass
 
-func free_viewports() -> void:
-	get_base_viewport_instance().viewport.remove_child(hint_ring_render_item)
-	get_base_viewport_instance().viewport.remove_child(test_info)
+func free_viewports(force : bool = false) -> void:
+	if not force and not _is_viewports_instanced: return
+#	get_base_viewport_instance().viewport.remove_child(hint_ring_render_item)
+#	get_base_viewport_instance().viewport.remove_child(test_info)
 	for viewport_instance in viewport_instance_list:
-		viewport_instance.free_viewport(self, mesh)
+		viewport_instance.free_viewport(self)
+	_is_viewports_instanced = false
+	pass
 
 func set_panel_active_percentage(percentage : float) -> void:
 	if puzzle_surface_material_id >= mesh.get_surface_override_material_count(): return
@@ -178,6 +230,14 @@ func set_active_with_tween(active : bool) -> void:
 			tween.tween_method(set_panel_active_percentage, 0.0, 1.0, 0.5).set_trans(Tween.TRANS_LINEAR)
 		else:
 			tween.tween_method(set_panel_active_percentage, 1.0, 0.0, 0.5).set_trans(Tween.TRANS_LINEAR)
+
+func on_visible_changed(on_screen : bool) -> void:
+	print(">>>>> ", puzzle_name, " ", on_screen)
+	if on_screen:
+		set_viewports()
+	else:
+		free_viewports()
+	pass
 
 var current_position : Vector2 = Vector2.ZERO
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
@@ -202,6 +262,7 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 			var mouse_pos : Vector3 = Vector3(_mouse_pos.x, _mouse_pos.y, 0)
 			var world_pos : Vector3 = mouse_to_global(Vector3(mouse_pos.x, mouse_pos.y, 0))
 			if GlobalData.is_position_in_view(world_pos) and GlobalData.check_reachable(world_pos, area):
+				set_viewports()
 				is_answered = false
 				is_waiting_for_comfirm = false
 				puzzle_line = LineData.new(start_vertice)

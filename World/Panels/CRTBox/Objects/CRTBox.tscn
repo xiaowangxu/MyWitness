@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0vwm084ntxqm"]
+
+[ext_resource type="ArrayMesh" uid="uid://btmbaaoeunrdg" path="res://World/Panels/CRTBox/Meshs/CRTPanelBox_立方体014.res" id="1_bvgat"]
+[ext_resource type="ArrayOccluder3D" uid="uid://d4mmy26xj48yq" path="res://World/Panels/CRTBox/Objects/CRTBox.occ" id="4_wsb4w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7w7k4"]
+size = Vector3(2.25674, 2.14022, 1.90686)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dbwde"]
+size = Vector3(0.394932, 0.303294, 0.0525479)
+
+[node name="CRTBox" type="MeshInstance3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+mesh = ExtResource("1_bvgat")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 3
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.10913, -0.13759, 0)
+shape = SubResource("BoxShape3D_7w7k4")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0550835, -0.988344, -0.794558)
+shape = SubResource("BoxShape3D_dbwde")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.055, -0.988, 0.795)
+shape = SubResource("BoxShape3D_dbwde")
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
+occluder = ExtResource("4_wsb4w")
