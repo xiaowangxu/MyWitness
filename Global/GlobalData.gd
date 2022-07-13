@@ -6,7 +6,7 @@ const InteractableLinkerGroupName : StringName = &"InteractableLinkerGroup"
 const PlayerGroupName : StringName = &"PlayerGroup"
 const PuzzleSoundEffectsBus : StringName = &"PuzzleSoundEffect"
 const PuzzleViewportSizes : Dictionary = {
-	"regular": Vector2(512, 512),
+	"regular": Vector2(800, 800),
 	"large": Vector2(2048, 2048),
 }
 const AllPuzzleJsons : Dictionary = {

@@ -1,4 +1,4 @@
-[gd_resource type="Shader" format=3 uid="uid://bw15u7pvrvoqu"]
+[gd_resource type="Shader" format=3 uid="uid://bfr3lr5umbvw1"]
 
 [resource]
 code = "shader_type spatial;
@@ -12,6 +12,9 @@ instance uniform float black_range_b = 1.106;
 instance uniform float pow_factor = 4.0;
 instance uniform float black_factor = 0.489;
 
+instance uniform vec4 default_color : source_color = vec4(0.15, 0.65, 0.15, 1.0);
+instance uniform float fade_percentage = 1.0;
+
 uniform float scanlines_opacity : hint_range(0.0, 1.0) = 0.25;
 uniform float scanlines_width : hint_range(0.0, 0.5) = 0.5;
 uniform vec2 resolution = vec2(100.0, 100.0);
@@ -21,15 +24,17 @@ void fragment() {
 	
 	vec4 albedo_tex = texture(texture_puzzle, base_uv);
 	
+	albedo_tex = mix(albedo_tex, default_color, 1.0-fade_percentage);
+	
 	float scanlines = 0.5;
 	scanlines = smoothstep(scanlines_width, scanlines_width + 0.5, abs(sin(base_uv.y * (resolution.y * PI))));
-	albedo_tex.rgb = mix(albedo_tex.rgb, albedo_tex.rgb * vec3(scanlines), scanlines_opacity);
+	vec3 scan_line_tex = mix(albedo_tex.rgb, albedo_tex.rgb * vec3(scanlines), scanlines_opacity);
 	
 	vec2 transformed_uv = (base_uv - vec2(0.5)) * 2.0;
 	float _dis = pow(abs(transformed_uv.x), pow_factor) + pow(abs(transformed_uv.y), pow_factor);
 	float dis = smoothstep(black_range_a, black_range_b, 1.0 - _dis) * (1.0 - black_factor) + black_factor;
-	ALBEDO = albedo.rgb * albedo_tex.rgb * dis;
-	vec3 emission_tex = texture(texture_puzzle,base_uv).rgb;
+	ALBEDO = albedo.rgb * scan_line_tex * dis;
+	vec3 emission_tex = albedo_tex.rgb;
 	EMISSION = (emission.rgb + emission_tex) * emission_energy * dis;
 }
 

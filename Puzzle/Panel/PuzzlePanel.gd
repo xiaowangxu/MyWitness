@@ -49,6 +49,7 @@ var hint_ring_render_item : StartEndHintRing
 @onready var area : CollisionObject3D = $Area
 @onready var audio : AudioStreamPlayer = $Audio
 @onready var interactable_notifier : InteractableNotifier = get_node_or_null("InteractableNotifier")
+@onready var material : Material = mesh.get_surface_override_material(puzzle_surface_material_id)
 
 @onready var puzzle_data : PuzzleData = GlobalData.AllPuzzleData[puzzle_name]
 var viewport_size : Vector2 = GlobalData.PuzzleViewportSizes.regular
@@ -63,7 +64,8 @@ var is_answered : bool = false
 @onready var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
 func _ready() -> void:
 	if interactable_notifier != null:
-		interactable_notifier.state_change.connect(on_visible_changed)
+		interactable_notifier.reachable_change.connect(on_visible_changed)
+		interactable_notifier.fade_step.connect(on_visible_percentage_changed)
 	
 	set_panel_active_percentage(1.0 if is_active else 0.0)
 	self.add_to_group(GlobalData.PuzzleGroupName)
@@ -81,15 +83,17 @@ func _ready() -> void:
 			base_viewport_instance = viewport_instance
 	
 	viewport_configs.clear()
-#	hint ring
 	
 	if interactable_notifier != null:
+		_set_material_fade_percentage_param(interactable_notifier.percentage)
 		if interactable_notifier.is_reachable:
 			set_viewports(true)
 		else:
 			free_viewports(true)
 	else:
 		set_viewports(true)
+		_set_material_fade_percentage_param(1.0)
+	mesh.set_shader_instance_uniform(&"default_color", puzzle_data.background_color)
 	
 #	test info
 	get_base_viewport_instance().puzzle_renderer.state_changed.connect(on_puzzle_render_state_changed)
@@ -102,14 +106,6 @@ func _ready() -> void:
 	pass
 
 class ViewportInstance extends RefCounted:
-	const IDLE_TEXTURE_ATLAS : Dictionary = {
-		0: preload("res://World/Panels/IdleTextureAtlas/0.png"),
-		1: preload("res://World/Panels/IdleTextureAtlas/1.png"),
-		2: preload("res://World/Panels/IdleTextureAtlas/2.png"),
-		3: preload("res://World/Panels/IdleTextureAtlas/3.png"),
-		4: preload("res://World/Panels/IdleTextureAtlas/4.png"),
-	}
-	
 	var config_name : String
 	var config_idx : int
 	var puzzle_renderer : PuzzleRenderer
@@ -118,7 +114,6 @@ class ViewportInstance extends RefCounted:
 	var viewport_transparent : bool = false
 	var need_update : bool = false
 	var targets : PackedStringArray
-	var idle_texture : Texture2D
 	
 	func _init(config_idx : int, config : Dictionary, viewport_size : Vector2, puzzle_renderer : PuzzleRenderer, parent : PuzzlePanel) -> void:
 		self.config_idx = config_idx
@@ -128,7 +123,6 @@ class ViewportInstance extends RefCounted:
 		self.need_update = config.update
 		self.targets = config.targets
 		self.config_name = config.name
-		self.idle_texture = IDLE_TEXTURE_ATLAS[config.idle]
 		self.viewport.transparent_bg = viewport_transparent
 		self.viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 		self.viewport.size = Vector2i.ONE
@@ -174,7 +168,7 @@ class ViewportInstance extends RefCounted:
 	func free_viewport(parent : Node) -> void:
 #		if viewport.size == Vector2i.ONE: return
 		viewport.size = Vector2i.ONE
-		set_texture(parent, idle_texture)
+		set_texture(parent, null)
 		return
 #		if viewport != null:
 #			for target in targets:
@@ -232,11 +226,18 @@ func set_active_with_tween(active : bool) -> void:
 			tween.tween_method(set_panel_active_percentage, 1.0, 0.0, 0.5).set_trans(Tween.TRANS_LINEAR)
 
 func on_visible_changed(on_screen : bool) -> void:
-	print(">>>>> ", puzzle_name, " ", on_screen)
+#	print(">>>>> ", puzzle_name, " ", on_screen)
 	if on_screen:
 		set_viewports()
 	else:
 		free_viewports()
+	pass
+
+func on_visible_percentage_changed(percentage : float) -> void:
+	_set_material_fade_percentage_param(percentage)
+
+func _set_material_fade_percentage_param(percentage : float) -> void:
+	mesh.set_shader_instance_uniform(&"fade_percentage", percentage)
 	pass
 
 var current_position : Vector2 = Vector2.ZERO
