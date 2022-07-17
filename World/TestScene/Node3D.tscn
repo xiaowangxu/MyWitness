@@ -1,15 +1,16 @@
-[gd_scene load_steps=20 format=3 uid="uid://chj5gydaya3pw"]
+[gd_scene load_steps=21 format=3 uid="uid://chj5gydaya3pw"]
 
 [ext_resource type="PackedScene" uid="uid://ksg6ktkih5kr" path="res://World/Panels/CRT/Objects/CrtPanelStandBar.tscn" id="1_5w0eg"]
 [ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="2_3blej"]
 [ext_resource type="PackedScene" uid="uid://bw1qfphklfn4t" path="res://World/Panels/CRT/Objects/CrtPanelStandConnector.tscn" id="3_7qpuk"]
 [ext_resource type="PackedScene" uid="uid://8i2beujlsawi" path="res://World/Panels/CRT/Objects/CrtPanelStandPanel.tscn" id="4_rqiu4"]
 [ext_resource type="PackedScene" uid="uid://bf2mkpmwngm8g" path="res://World/Panels/CRT/Objects/CrtPanelStandCable.tscn" id="5_xs5cp"]
+[ext_resource type="Material" uid="uid://b5idi261ibcot" path="res://World/Cables/OrangeCable.tres" id="6_b0wx1"]
 [ext_resource type="PackedScene" uid="uid://c6crhapaxy0ni" path="res://World/Panels/CRT/Objects/CrtPanelStandNeck.tscn" id="6_crqbt"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="7_kbxjn"]
 [ext_resource type="Script" path="res://Linker/PanelInteractableLinker.gd" id="8_mbl52"]
 [ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="9_f4anv"]
-[ext_resource type="Shader" uid="uid://bcp8d8wlb8215" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
+[ext_resource type="Shader" uid="uid://6lttc6mp4j13" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
 [ext_resource type="Shader" uid="uid://bfr3lr5umbvw1" path="res://World/Panels/CRTBox/Materials/CRTBoxShader.tres" id="12_8wjxh"]
 [ext_resource type="PackedScene" uid="uid://c0vwm084ntxqm" path="res://World/Panels/CRTBox/Objects/CRTBox.tscn" id="12_knu8o"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="13_tdnaq"]
@@ -62,6 +63,7 @@ skeleton = NodePath("../..")
 [node name="CrtPanelStandCable" parent="CrtPanelStand" instance=ExtResource("5_xs5cp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("6_b0wx1")
 
 [node name="CrtPanelStandNeck" parent="." instance=ExtResource("6_crqbt")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.9, 4, 0)
@@ -122,6 +124,11 @@ NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnec
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"]
 script = ExtResource("13_tdnaq")
 
+[node name="CrtPanelStandCable2" parent="CrtPanelStandNeck" instance=ExtResource("5_xs5cp")]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("6_b0wx1")
+
 [node name="CrtPanelStand2" parent="." instance=ExtResource("2_3blej")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3.8, 0, 0)
 
@@ -178,6 +185,11 @@ NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnec
 
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2"]
 script = ExtResource("13_tdnaq")
+
+[node name="CrtPanelStandCable2" parent="CrtPanelStand2" instance=ExtResource("5_xs5cp")]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 4, 0)
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("6_b0wx1")
 
 [node name="CrtPanelStandNeck2" parent="." instance=ExtResource("6_crqbt")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -5.7, 4, 0)
@@ -242,6 +254,7 @@ script = ExtResource("13_tdnaq")
 [node name="CrtPanelStandCable2" parent="CrtPanelStandNeck2" instance=ExtResource("5_xs5cp")]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
 skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("6_b0wx1")
 
 [node name="CrtPanelStand3" parent="." instance=ExtResource("2_3blej")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7.6, 0, 0)
@@ -303,7 +316,7 @@ script = ExtResource("13_tdnaq")
 
 [node name="PuzzlePanel" parent="." instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.8, 4, -8.58307e-06)
-puzzle_name = "hello_world"
+puzzle_name = "second2"
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/1:shader_param/texture_puzzle"),

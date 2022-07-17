@@ -19,6 +19,16 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Puzzle/PuzzleData/Rules/AreaSroundSegmentCountRule.gd"
 }, {
+"base": "PuzzleRule",
+"class": &"ColorIsolate",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Rules/ColorIsolate.gd"
+}, {
+"base": "PuzzleRule",
+"class": &"ColorMatch",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Rules/ColorMatch.gd"
+}, {
 "base": "RefCounted",
 "class": &"Decorator",
 "language": &"GDScript",
@@ -35,9 +45,19 @@ _global_script_classes=[{
 "path": "res://Puzzle/PuzzleData/Edge.gd"
 }, {
 "base": "Resource",
+"class": &"GameSaveDataConfigResource",
+"language": &"GDScript",
+"path": "res://GameSaveData/GameSaveDataConfigResource.gd"
+}, {
+"base": "Resource",
 "class": &"GameSaveDataResource",
 "language": &"GDScript",
 "path": "res://GameSaveData/GameSaveDataResource.gd"
+}, {
+"base": "Resource",
+"class": &"GameSaveDataSummary",
+"language": &"GDScript",
+"path": "res://GameSaveData/GameSaveDataSummary.gd"
 }, {
 "base": "InputEventAction",
 "class": &"InputPuzzleForceExitEvent",
@@ -134,6 +154,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Puzzle/PuzzleData/Rules/PuzzleRule.gd"
 }, {
+"base": "RefCounted",
+"class": &"PuzzleRuleFunction",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Rules/PuzzleRuleFunction.gd"
+}, {
 "base": "Node2D",
 "class": &"RenderItem",
 "language": &"GDScript",
@@ -172,10 +197,14 @@ _global_script_classes=[{
 _global_script_class_icons={
 "Area": "",
 "AreaSroundSegmentCountRule": "",
+"ColorIsolate": "",
+"ColorMatch": "",
 "Decorator": "",
 "DirectionedEdge": "",
 "Edge": "",
+"GameSaveDataConfigResource": "",
 "GameSaveDataResource": "",
+"GameSaveDataSummary": "",
 "InputPuzzleForceExitEvent": "",
 "Interactable": "",
 "InteractableLinker": "",
@@ -195,6 +224,7 @@ _global_script_class_icons={
 "PuzzlePanel": "",
 "PuzzleRenderer": "",
 "PuzzleRule": "",
+"PuzzleRuleFunction": "",
 "RenderItem": "",
 "StartEndHintRing": "",
 "TextureRegularShapeResource": "",
@@ -219,9 +249,10 @@ buses/default_bus_layout="res://SoundEffects/default_bus_layout.tres"
 
 [autoload]
 
+Debugger="*res://Global/Debugger.gd"
 GameSaver="*res://Global/GameSaver.gd"
 GlobalData="*res://Global/GlobalData.gd"
-Debugger="*res://Global/Debugger.gd"
+GameUI="*res://Global/GameUI.tscn"
 
 [debug]
 

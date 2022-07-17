@@ -58,13 +58,9 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 		line_canvas_group = CanvasGroup.new()
 		line_canvas_group.z_index = 1
 		var line_render := LineSegment.new([], puzzle_data.normal_radius, puzzle_data.start_radius)
-		var line_render2 := LineSegment.new([], puzzle_data.normal_radius, puzzle_data.start_radius)
 		line_renders.append(line_render)
-		line_renders.append(line_render2)
 		line_render.self_modulate = puzzle_data.line_correct_color
-		line_render2.self_modulate = puzzle_data.line_correct_color
 		line_canvas_group.add_child(line_render)
-		line_canvas_group.add_child(line_render2)
 		add_child(line_canvas_group)
 	pass
 

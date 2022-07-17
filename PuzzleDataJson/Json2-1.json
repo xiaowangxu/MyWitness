@@ -5,15 +5,15 @@
 			700
 		],
 		"background_color": [
-			0.22,
-			0.16,
-			0.0,
-			0.0
+			0.26,
+			0.26,
+			0.26,
+			1.0
 		],
 		"background_line_color": [
-			0.1,
-			0.1,
-			0.1,
+			0.12,
+			0.12,
+			0.12,
 			1.0
 		],
 		"start_radius": 60.0,
@@ -54,8 +54,15 @@
 			"type": 0,
 			"data": {
 				"edge_count": 4,
-				"radius": 30,
-				"round_cornor": 25,
+				"radius": 31,
+				"round_cornor": 20,
+				"uv": false
+			}
+		},
+		{
+			"type": 1,
+			"data": {
+				"round_cornor": 4.5,
 				"uv": false
 			}
 		}
@@ -130,13 +137,6 @@
 				580
 			],
 			"type": 1
-		},
-		{
-			"position": [
-				350,
-				465
-			],
-			"type": 2
 		}
 	],
 	"edges": [
@@ -150,8 +150,8 @@
 			"decorator": {
 				"id": 0,
 				"color": [
-					0.9,
-					0.9,
+					0.015,
+					0.015,
 					0.015,
 					1.0
 				],
@@ -182,40 +182,11 @@
 		},
 		{
 			"from": 3,
-			"to": 6,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.025,
-					0.8,
-					0.35,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": [
-					{
-						"name": "line_pass_through",
-						"data": 1
-					}
-				]
-			}
+			"to": 6
 		},
 		{
-			"from": 10,
-			"to": 7,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.015,
-					0.015,
-					0.015,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": []
-			}
+			"from": 4,
+			"to": 7
 		},
 		{
 			"from": 5,
@@ -237,22 +208,62 @@
 	"areas": [
 		{
 			"srounds": [
+				0,
+				2,
+				5,
+				3
+			],
+			"decorator": {
+				"id": 2,
+				"color": [
+					0.85,
+					0.35,
+					0.0,
+					1.0
+				],
+				"texture": null,
+				"rotation": 45,
+				"rules": [
+					{
+						"name": 2,
+						"data": 1
+					},
+					{
+						"name": 3,
+						"data": {
+							"color_id": 1
+						}
+					}
+				]
+			}
+		},
+		{
+			"srounds": [
 				1,
 				4,
 				6,
 				3
 			],
 			"decorator": {
-				"id": 1,
+				"id": 3,
 				"color": [
-					1,
-					1,
-					1,
+					0.85,
+					0.35,
+					0.0,
 					1.0
 				],
 				"texture": null,
-				"rotation": 30,
-				"rules": []
+				"rotation": 0,
+				"rules": [
+					{
+						"name": 3,
+						"data": {
+							"color_id": 1,
+							"host": true,
+							"count": 2
+						}
+					}
+				]
 			}
 		},
 		{
@@ -261,6 +272,10 @@
 				8,
 				10,
 				7
+			],
+			"position": [
+				235,
+				465
 			],
 			"decorator": {
 				"id": 2,
@@ -272,7 +287,45 @@
 				],
 				"texture": null,
 				"rotation": 45,
-				"rules": []
+				"rules": [
+					{
+						"name": 2,
+						"data": 0
+					}
+				]
+			}
+		},
+		{
+			"srounds": [
+				6,
+				8,
+				9,
+				11
+			],
+			"position": [
+				465,
+				465
+			],
+			"decorator": {
+				"id": 3,
+				"color": [
+					0.85,
+					0.35,
+					0.0,
+					1.0
+				],
+				"texture": null,
+				"rotation": 0,
+				"rules": [
+					{
+						"name": 3,
+						"data": {
+							"color_id": 1,
+							"host": true,
+							"count": 2
+						}
+					}
+				]
 			}
 		}
 	]

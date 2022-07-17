@@ -158,7 +158,7 @@
 				"rotation": 0,
 				"rules": [
 					{
-						"name": "line_pass_through",
+						"name": 0,
 						"data": 1
 					}
 				]
@@ -199,7 +199,7 @@
 				"rotation": 0,
 				"rules": [
 					{
-						"name": "line_pass_through",
+						"name": 0,
 						"data": 1
 					}
 				]
@@ -220,7 +220,7 @@
 				"rotation": 0,
 				"rules": [
 					{
-						"name": "line_pass_through",
+						"name": 0,
 						"data": 1
 					}
 				]
@@ -271,7 +271,7 @@
 				"rotation": 30,
 				"rules": [
 					{
-						"name": "area_sround_segment_count",
+						"name": 1,
 						"data": 3
 					}
 				]

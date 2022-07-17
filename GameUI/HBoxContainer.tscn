@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://7ax7cx2qcnuu"]
+
+[sub_resource type="GDScript" id="GDScript_pnmsd"]
+script/source = "extends HBoxContainer
+
+@export var texture : ImageTexture :
+	set(val):
+		texture = val
+		$TextureRect.texture = texture
+@export var title : String :
+	set(val):
+		title = val
+		$Label.text = title
+
+func _ready() -> void:
+	$TextureRect.texture = texture
+	$Label.text = title
+	pass
+"
+
+[node name="HBoxContainer" type="HBoxContainer"]
+offset_right = 923.0
+offset_bottom = 200.0
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 50
+alignment = 1
+script = SubResource("GDScript_pnmsd")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(400, 200)
+offset_right = 400.0
+offset_bottom = 200.0
+mouse_filter = 2
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="."]
+offset_left = 450.0
+offset_top = 67.0
+offset_right = 923.0
+offset_bottom = 133.0
+theme_override_font_sizes/font_size = 45
+text = "HelloWorld 2022/6/29"
+horizontal_alignment = 2

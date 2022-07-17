@@ -1,8 +1,6 @@
-[gd_scene load_steps=47 format=3 uid="uid://dk61kuo0po3jx"]
+[gd_scene load_steps=42 format=3 uid="uid://dk61kuo0po3jx"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_1mdra"]
-[ext_resource type="PackedScene" uid="uid://cn4flf268frdp" path="res://GameUI/LoadGameUI.tscn" id="2_x5wfv"]
-[ext_resource type="Script" path="res://GameUI/MouseCursor.gd" id="3_1ocgo"]
 [ext_resource type="ArrayOccluder3D" uid="uid://c8646lyg8f13m" path="res://World/World.occ" id="4_oegm4"]
 [ext_resource type="PackedScene" uid="uid://byfvksnrh8jr2" path="res://Player/Player.tscn" id="5_sayar"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="6_gar0n"]
@@ -12,96 +10,56 @@
 [ext_resource type="ArrayMesh" uid="uid://bfu0qkcwf5e21" path="res://Grass3.obj" id="10_mpfqv"]
 [ext_resource type="PackedScene" uid="uid://chj5gydaya3pw" path="res://World/TestScene/Node3D.tscn" id="12_7wpmw"]
 
-[sub_resource type="Shader" id="Shader_qe6d4"]
-code = "shader_type canvas_item;
-uniform float percent = 0.1;
-uniform float mul = 2.0;
-uniform float a = 1.0;
-uniform float b = 1.0;
-
-void fragment() {
-	vec2 asp = 1.0 / SCREEN_PIXEL_SIZE;
-	float w = asp.x/2.0;
-	float h = asp.y/2.0;
-	float _a = min(percent * w, percent * h);
-	
-	float _p = (h - _a) / h;
-	float p = (w - _a) / w;
-	
-	vec2 uv = SCREEN_UV * 2.0 - vec2(1.0);
-	uv.x /= p;
-	uv.y /= _p;
-	
-	float dis = pow(abs(uv.x), mul) + pow(abs(uv.y), mul);
-	
-	
-//	COLOR.rg = SCREEN_UV;
-	COLOR.a *= smoothstep(a, b, dis);
-	// Place fragment code here.
+[sub_resource type="Animation" id="Animation_q1g6s"]
+resource_name = "FadeOut"
+length = 2.0
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Cover")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
 }
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_q3dth"]
-shader = SubResource("Shader_qe6d4")
-shader_param/a = -0.187
-shader_param/b = 2.261
-shader_param/mul = 8.0
-shader_param/percent = 0.043
-
-[sub_resource type="Shader" id="Shader_li08q"]
-code = "shader_type canvas_item;
-uniform float percent = 0.1;
-uniform float mul = 2.0;
-uniform float a = 1.0;
-uniform float b = 1.0;
-
-void fragment() {
-	vec2 asp = 1.0 / SCREEN_PIXEL_SIZE;
-	float w = asp.x/2.0;
-	float h = asp.y/2.0;
-	float _a = min(percent * w, percent * h);
-	
-	float _p = (h - _a) / h;
-	float p = (w - _a) / w;
-	
-	vec2 uv = SCREEN_UV * 2.0 - vec2(1.0);
-	uv.x /= p;
-	uv.y /= _p;
-	
-	float dis = pow(abs(uv.x), mul) + pow(abs(uv.y), mul);
-	
-	
-//	COLOR.rg = SCREEN_UV;
-	COLOR.a *= smoothstep(a, b, dis);
-	// Place fragment code here.
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Cover:color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
 }
-"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_cx5ws"]
-shader = SubResource("Shader_li08q")
-shader_param/a = 0.1
-shader_param/b = 1.0
-shader_param/mul = 8.0
-shader_param/percent = 0.0
+[sub_resource type="Animation" id="Animation_7dnjg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Cover:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 1)]
+}
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xkcs"]
-bg_color = Color(1, 1, 1, 0)
-draw_center = false
-border_width_left = 26
-border_width_top = 26
-border_width_right = 26
-border_width_bottom = 26
-border_color = Color(1, 1, 1, 0.501961)
-corner_detail = 1
-anti_aliasing = false
-
-[sub_resource type="GDScript" id="GDScript_pkvgj"]
-script/source = "extends Label
-
-func _process(delta: float) -> void:
-	text = str(Engine.get_frames_per_second())
-	pass
-"
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7fa7o"]
+_data = {
+"FadeOut": SubResource("Animation_q1g6s"),
+"RESET": SubResource("Animation_7dnjg")
+}
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rrxjs"]
 sky_top_color = Color(0.14902, 0.627451, 1, 1)
@@ -334,62 +292,19 @@ _data = {
 [node name="World" type="Node3D"]
 script = ExtResource("1_1mdra")
 
-[node name="GameUI" type="CanvasLayer" parent="."]
+[node name="OnStartLayer" type="CanvasLayer" parent="."]
 
-[node name="LoadGameUI" parent="GameUI" instance=ExtResource("2_x5wfv")]
-visible = false
-
-[node name="PostEffect" type="ColorRect" parent="GameUI"]
-material = SubResource("ShaderMaterial_q3dth")
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-color = Color(0, 0, 0, 0.219608)
-
-[node name="ColorRect" type="ColorRect" parent="GameUI"]
-visible = false
-material = SubResource("ShaderMaterial_cx5ws")
+[node name="Cover" type="ColorRect" parent="OnStartLayer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Cursor" type="Polygon2D" parent="GameUI"]
-visible = false
-scale = Vector2(3, 3)
-color = Color(1, 1, 1, 0.501961)
-polygon = PackedVector2Array(0, -8, 1, -8, 1, -1, 8, -1, 8, 0, 8, 1, 1, 1, 1, 8, 0, 8, -1, 8, -1, 1, -8, 1, -8, 0, -8, -1, -1, -1, -1, -8)
-script = ExtResource("3_1ocgo")
-IndicatorNodePath = NodePath("../Panel")
-
-[node name="TestCursor" type="Polygon2D" parent="GameUI"]
-visible = false
-scale = Vector2(3, 3)
-color = Color(0, 0, 1, 0.34902)
-polygon = PackedVector2Array(1, -3, 1, -1, 3, -1, 3, 1, 1, 1, 1, 3, -1, 3, -1, 1, -3, 1, -3, -1, -1, -1, -1, -3)
-
-[node name="TestCursor2" type="Polygon2D" parent="GameUI"]
-visible = false
-scale = Vector2(3, 3)
-color = Color(0, 1, 0, 0.34902)
-polygon = PackedVector2Array(2.33333, -2.66667, 4.66667, -2.33333, 0, 0, 1.66667, -5)
-
-[node name="Panel" type="Panel" parent="GameUI"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2xkcs")
-
-[node name="Label" type="Label" parent="GameUI"]
-process_mode = 3
-offset_left = 38.0
-offset_top = 28.0
-offset_right = 139.0
-offset_bottom = 73.0
-theme_override_font_sizes/font_size = 30
-text = "FPS: 60"
-script = SubResource("GDScript_pkvgj")
+[node name="AnimationPlayer" type="AnimationPlayer" parent="OnStartLayer"]
+autoplay = "FadeOut"
+libraries = {
+"": SubResource("AnimationLibrary_7fa7o")
+}
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lhcbd")
@@ -514,6 +429,7 @@ shape = SubResource("CylinderShape3D_cwili")
 bus = &"PuzzleSoundEffect"
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.461, 0, 0)
 layers = 524289
 material_override = ExtResource("9_dpoif")
 cast_shadow = 0

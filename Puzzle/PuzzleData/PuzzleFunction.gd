@@ -255,16 +255,44 @@ static func get_isolated_areas(puzzle_data : PuzzleData, line_data : LineData) -
 		ans.append(_ans)
 	return ans
 
-
 # check puzzle answer main function
 static func check_puzzle_answer(puzzle_data : PuzzleData, line_data : LineData) -> Array:
 	var ans : Array[Decorator] = []
+	var grouped_rule_element_map = {}
 	for elem in puzzle_data.decorated_elements:
 		for rule in elem.decorator.rules:
-			if rule.get_handle_type() == PuzzleRule.RuleHandleType.SELF:
+			if rule.handle_type == PuzzleRule.RuleHandleType.SELF:
 				if not rule.check_rule(puzzle_data, line_data, elem):
 					if not ans.has(elem.decorator):
 						ans.append(elem.decorator)
-			elif not ans.has(elem.decorator):
-				ans.append(elem.decorator)
+			else:
+				grouped_rule_element_map[rule] = elem
+	if !grouped_rule_element_map.is_empty():
+		var all_grouped_rules : Array[PuzzleRule] = grouped_rule_element_map.keys()
+		var isolated_areas := get_isolated_areas(puzzle_data, line_data)
+		for isolated_area in isolated_areas:
+			var _all_grouped_rules := all_grouped_rules.duplicate()
+			var rule_element_map = {}
+			for rule in _all_grouped_rules:
+				if isolated_area.has(grouped_rule_element_map[rule]):
+					rule_element_map[rule] = grouped_rule_element_map[rule]
+					all_grouped_rules.erase(rule)
+			var wrong_decorators : Array[Decorator] = _check_puzzle_area_rules(puzzle_data, line_data, rule_element_map, isolated_area)
+			for decorator in wrong_decorators:
+				if not ans.has(decorator):
+					ans.append(decorator)
+		pass
 	return ans
+
+static func _check_puzzle_area_rules(puzzle_data : PuzzleData, line_data : LineData, rule_element_map : Dictionary, isolated_area : Array[Area]) -> Array:
+	var rules := rule_element_map.keys()
+	var rules_map : Dictionary = PuzzleRuleFunction.get_empty_grouped_rules_map()
+	var wrong_decorator : Array[Decorator] = []
+	for rule in rules:
+		rules_map[rule.rule_type].append(rule)
+	for key in rules_map:
+		var _rules : Array[PuzzleRule] = rules_map[key]
+		if _rules.is_empty(): continue
+		var _wrong_rule : Array[PuzzleRule] = PuzzleRuleFunction.check_grouped_rules(key, puzzle_data, line_data, _rules, isolated_area)
+		wrong_decorator.append_array(_wrong_rule.map(func (rule : PuzzleRule) -> Decorator: return rule_element_map[rule].decorator))
+	return wrong_decorator

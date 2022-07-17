@@ -159,7 +159,7 @@
 				"rotation": 0,
 				"rules": [
 					{
-						"name": "line_pass_through",
+						"name": 0,
 						"data": 1
 					}
 				]

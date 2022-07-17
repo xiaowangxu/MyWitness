@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cn4flf268frdp"]
+[gd_scene load_steps=5 format=3 uid="uid://cn4flf268frdp"]
 
 [ext_resource type="Script" path="res://GameUI/LoadGameUI.gd" id="1_3mr0b"]
 [ext_resource type="Texture2D" uid="uid://lnrb2gidfbl2" path="res://test.webp" id="1_v0obm"]
@@ -6,17 +6,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwlta"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tcfxw"]
-
-[sub_resource type="GDScript" id="GDScript_pnmsd"]
-script/source = "extends HBoxContainer
-
-func _ready() -> void:
-	var image : Image = GameSaver.get_cover_image()
-	var texture : ImageTexture = ImageTexture.new()
-	texture.create_from_image(image)
-	$TextureRect.texture = texture
-	pass
-"
 
 [node name="LoadGameUI" type="Control"]
 process_mode = 2
@@ -30,6 +19,30 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0, 0, 0, 0.788235)
 
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_layout_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="ColorRect/CenterContainer"]
+custom_minimum_size = Vector2(800, 800)
+offset_left = 560.0
+offset_top = 140.0
+offset_right = 1360.0
+offset_bottom = 940.0
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect/CenterContainer/ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_right = 200.0
+texture = ExtResource("1_v0obm")
+ignore_texture_size = true
+stretch_mode = 6
+
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -41,6 +54,8 @@ mouse_filter = 2
 theme_override_constants/separation = 0
 metadata/_edit_layout_mode = 1
 metadata/_edit_use_custom_anchors = true
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="PuzzlePanel" type="Panel" parent="HBoxContainer"]
 unique_name_in_owner = true
@@ -89,30 +104,3 @@ mouse_filter = 2
 theme_override_constants/separation = 40
 metadata/_edit_layout_mode = 1
 metadata/_edit_use_custom_anchors = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Panel2/GameSaveDataList"]
-offset_right = 923.0
-offset_bottom = 200.0
-size_flags_horizontal = 0
-mouse_filter = 2
-theme_override_constants/separation = 50
-alignment = 1
-script = SubResource("GDScript_pnmsd")
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer"]
-custom_minimum_size = Vector2(400, 200)
-offset_right = 400.0
-offset_bottom = 200.0
-mouse_filter = 2
-texture = ExtResource("1_v0obm")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel2/GameSaveDataList/HBoxContainer"]
-offset_left = 450.0
-offset_top = 67.0
-offset_right = 923.0
-offset_bottom = 133.0
-theme_override_font_sizes/font_size = 45
-text = "HelloWorld 2022/6/29"
-horizontal_alignment = 2

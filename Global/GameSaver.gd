@@ -1,27 +1,62 @@
 extends Node
 
+const ConfigPath := "user://GameSaveDataConfig.tres"
+
 var game_save_data : GameSaveDataResource
-var cover_texture : ImageTexture
-#var dirty : bool = false
+var game_save_data_config : GameSaveDataConfigResource
 
 func _init() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	if ResourceLoader.exists("user://GameSave.res"):
-		game_save_data = ResourceLoader.load("user://GameSave.res")
-		print(">>>> load")
-		print(game_save_data.get_saved_time())
-		cover_texture = ImageTexture.new()
-		cover_texture.create_from_image(game_save_data.cover_image)
+	if ResourceLoader.exists(ConfigPath):
+		game_save_data_config = ResourceLoader.load(ConfigPath)
 	else:
-		game_save_data = GameSaveDataResource.new()
-		print(">>>> init")
+		game_save_data_config = GameSaveDataConfigResource.new()
+		ResourceSaver.save(ConfigPath, game_save_data_config)
+	print(">>>> load ", game_save_data_config)
+	game_save_data_config.load_all_summarys()
+	load_game_save()
+
+func get_all_summarys() -> Array:
+	return game_save_data_config.summary_map.values()
+
+func load_game_save(key : String = "", force : bool = false) -> void:
+	if force and key == game_save_data_config.current_key:
+		restart_current_game_save()
+	else:
+		var current_game_save_data := game_save_data
+		var new_game_save_data := game_save_data_config.load_game_save_data(key, true)
+		if current_game_save_data != null:
+			await save_game_save_data_resource(current_game_save_data)
+		game_save_data = new_game_save_data
+		if game_save_data == null:
+			game_save_data = GameSaveDataResource.new()
+		if key != "":
+			get_tree().reload_current_scene()
+
+func start_new_game_save() -> void:
+	var current_game_save_data := game_save_data
+	var new_game_save_data := game_save_data_config.load_game_save_data("", true)
+	if current_game_save_data != null:
+		await save_game_save_data_resource(current_game_save_data)
+	game_save_data = new_game_save_data
+	game_save_data_config.restart_game_save_data()
+	get_tree().reload_current_scene()
+
+func restart_current_game_save() -> void:
+	var current_game_save_data := game_save_data
+	var new_game_save_data := game_save_data_config.load_game_save_data("", true)
+	if current_game_save_data != null:
+		await save_game_save_data_resource(current_game_save_data)
+	game_save_data = new_game_save_data
+	game_save_data_config.restart_game_save_data()
+	get_tree().reload_current_scene()
 
 var viewport : SubViewport
 var camera : Camera3D
 func _ready() -> void:
 	viewport = SubViewport.new()
 	viewport.msaa = Viewport.MSAA_4X
-	viewport.size = Vector2(960, 540)
+	viewport.size = Vector2(1024, 576)
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	add_child(viewport)
 	camera = Camera3D.new()
@@ -61,26 +96,27 @@ func clear_interactable(tag : String) -> void:
 func get_interactable(tag : String):
 	return game_save_data.get_interactable(tag)
 
-func get_cover_image() -> Image:
-	return game_save_data.get_cover_image()
-
-func save_game_save_data_resource() -> void:
+func save_game_save_data_resource(new_save_data: GameSaveDataResource = null) -> void:
 #	if not dirty: return
+	var _game_save_data := new_save_data
+	if new_save_data == null:
+		_game_save_data = game_save_data
 	var start_time := Time.get_ticks_msec()
 	var player : Player = GlobalData.get_player()
 	player.save()
 	var _camera := get_viewport().get_camera_3d()
+	camera.fov = _camera.fov
 	camera.global_transform = _camera.global_transform
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	await RenderingServer.frame_post_draw
 	var texture := viewport.get_texture()
 	var image := texture.get_image()
-	game_save_data.set_cover_image(image)
-	var ans := ResourceSaver.save("user://GameSave.res", game_save_data)
+#	game_save_data.set_cover_image(image)
+	game_save_data_config.save_game_data(_game_save_data, image, ConfigPath)
+#	var ans := ResourceSaver.save(game_save_data_config.get_file_path("GameSave"), game_save_data)
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	Debugger.print_tag('Save Game', 'in %d ms' % [ Time.get_ticks_msec() - start_time])
-#	print("Game Saved ! in : ",, "ms")
-#	dirty = false
+
 func clear_game_save_data_resource() -> void:
 	var dir := Directory.new()
 	dir.open("user://")

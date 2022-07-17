@@ -7,9 +7,6 @@ var vertices_start : Array[Vertice] = []
 var vertices_end : Array[Vertice] = []
 var edges : Array[Edge] = []
 var areas : Array[Area] = []
-#var decorated_elements : Dictionary = {}
-# check procedure
-#var require_area_isolation : bool = false
 var decorated_elements : Array[PuzzleElement] = []
 
 var base_size : Vector2i
@@ -66,6 +63,25 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> TextureShap
 			return TextureRegularShapeResource.new(data.edge_count, data.radius, data.round_cornor, data.uv)
 		1:
 			return TextureRoundedShapeResource.new(PackedVector2Array([
+				Vector2(0, -44),
+				Vector2(14, -30),
+				Vector2(30, -30),
+				Vector2(30, -14),
+				Vector2(44, 0),
+				Vector2(30, 14),
+				Vector2(30, 30),
+				Vector2(14, 30),
+				Vector2(0, 44),
+				Vector2(-14, 30),
+				Vector2(-30, 30),
+				Vector2(-30, 14),
+				Vector2(-44, 0),
+				Vector2(-30, -14),
+				Vector2(-30, -30),
+				Vector2(-14, -30)
+			]), data.round_cornor, data.uv)
+		2:
+			return TextureRoundedShapeResource.new(PackedVector2Array([
 				Vector2(-64, -48),
 				Vector2(-48, -64),
 				Vector2(0, -16),
@@ -82,23 +98,24 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> TextureShap
 		_:
 			return null
 
+func create_rule(name : int, data) -> PuzzleRule:
+	match name:
+		PuzzleRuleFunction.LINE_PASS_THROUGH: return LinePassThroughRule.new(data)
+		PuzzleRuleFunction.AREA_SROUND_SEGMENT_COUNT: return AreaSroundSegmentCountRule.new(data)
+		PuzzleRuleFunction.COLOR_ISOLATE: return ColorIsolate.new(data)
+		PuzzleRuleFunction.COLOR_MATCH: return ColorMatch.new(data)
+	return null
+
 func create_decorator(base : TextureShapeResource, color : Array, texture, rotation : float = 0.0, rules : Array = []) -> Decorator:
 	var decorator := Decorator.new(base, array_to_color(color), null if texture == null else load(texture), Transform2D(deg2rad(rotation), Vector2.ZERO)) #decorator
 	for rule_data in rules:
-		var rule : PuzzleRule = PuzzleRule.create_rule(rule_data.name, rule_data.data)
+		var rule : PuzzleRule = create_rule(rule_data.name, rule_data.data)
 		decorator.add_rule(rule)
 		pass
-#	var decorator := Decorator.new(base, Color(color[0], color[1], color[2], color[3]), texture)
 	return decorator
 
 func append_decorator(element : PuzzleElement) -> void:
 	decorated_elements.append(element)
-#	for rule in element.decorator.rules:
-#		var script : GDScript = rule.get_script()
-#		if decorated_elements.has(script):
-#			decorated_elements[script].append(element)
-#		else:
-#			decorated_elements[script] = [element]
 	pass
 
 func calcu_puzzle(data : Dictionary) -> void:

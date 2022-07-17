@@ -3,11 +3,10 @@ extends PuzzleRule
 
 var count : int = 0
 
-func get_handle_type() -> int:
-	return 0
-
 func _init(data) -> void:
 	self.count = data
+	self.rule_type = 1
+	self.handle_type = 0
 	pass
 
 func check_rule(puzzle_data : PuzzleData, line_data : LineData, puzzle_element : PuzzleElement) -> bool:

@@ -1,12 +1,14 @@
 class_name LineData
 extends RefCounted
 
+var line_id : int = 0
 var start : Vertice
 
 var segments : Array[LineDataSegment] = []
 
-func _init(start : Vertice) -> void:
+func _init(start : Vertice, line_id : int = 0) -> void:
 	self.start = start
+	self.line_id = line_id
 	pass
 
 func add_line_segemnt(to : Vertice, percentage : float = 1.0) -> LineData:

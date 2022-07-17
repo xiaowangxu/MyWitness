@@ -212,7 +212,7 @@ func _process(delta: float) -> void:
 			var current := (last_puzzle_panel as Interactable).get_current_world_position()
 			var from = get_mouse_position_from_world(current)
 			var pos = get_viewport_position_from_mouse(from)
-			get_node("/root/World/GameUI/TestCursor").position = pos
+			get_node("/root/GameUI/TestCursor").position = pos
 			var farest := get_farrest_reachable(from, mouse_position, PhysicsLayerCurrentPuzzle)
 			if not farest.is_empty():
 				var obj : CollisionObject3D = farest.collider
@@ -223,13 +223,13 @@ func _process(delta: float) -> void:
 				else:
 					new_mouse_position = last_puzzle_panel.on_mouse_moved(_position)
 					var _pos = get_viewport_position_from_mouse(get_mouse_position_from_world(_position))
-					get_node("/root/World/GameUI/TestCursor2").position = _pos
+					get_node("/root/GameUI/TestCursor2").position = _pos
 			else:
 				if not is_position_in_view(current):
 					(last_puzzle_panel as Interactable).input_event(InputPuzzleForceExitEvent.new(), Vector3.ZERO, Vector3.ZERO)
 				else:
 					new_mouse_position = last_puzzle_panel.on_mouse_moved(current)
-					get_node("/root/World/GameUI/TestCursor2").position = pos
+					get_node("/root/GameUI/TestCursor2").position = pos
 		if new_mouse_position != null:
 			set_mouse_position_from_world(new_mouse_position)
 		move_camera_on_edge(delta)

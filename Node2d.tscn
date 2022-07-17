@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://b1j2ud33h20nf"]
+
+[node name="Node2D" type="Node2D"]
+metadata/_edit_horizontal_guides_ = [-54.0]
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, -44, 14, -30, 30, -30, 30, -14, 44, 0, 24, 12, 24, 24, 12, 24, 0, 36, -12, 24, -24, 24, -24, 12, -40, 0, -28, -12, -28, -28, -12, -28)

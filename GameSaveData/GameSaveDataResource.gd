@@ -2,7 +2,6 @@ class_name GameSaveDataResource
 extends Resource
 
 @export var saved_time : String = ""
-@export var cover_image : Image
 @export var player_position : Vector3 = Vector3(10,0,10)
 @export var player_lookat : Vector2
 @export var puzzles_ans : Dictionary
@@ -42,16 +41,14 @@ func clear_interactable(tag : String) -> void:
 func get_interactable(tag : String):
 	return interactable[tag] if interactable.has(tag) else null
 
-func set_cover_image(image : Image) -> void:
-	cover_image = image
-	update_saved_time()
-	pass
-
-func get_cover_image() -> Image:
-	return cover_image
-
 func update_saved_time() -> void:
 	saved_time = Time.get_datetime_string_from_system(false, true)
 
 func get_saved_time(unknown_ans : String = "unknown_datetime") -> String:
 	return unknown_ans if saved_time == "" else saved_time
+
+func get_summary() -> Dictionary:
+	return {
+		"time":saved_time,
+		"answered": puzzles_ans.size()
+	}

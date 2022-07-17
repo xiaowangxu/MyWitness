@@ -48,8 +48,8 @@ func _init(puzzle_board : PuzzleData, viewport_size : Vector2i, ring_width : flo
 	var _scale := Vector2(viewport_size) / Vector2(puzzle_board.base_size)
 	self.start_positions = puzzle_board.vertices_start.map(func (v : Vertice) -> Vector2: return v.position * _scale)
 	self.end_positions = puzzle_board.vertices_end.map(func (v : Vertice) -> Vector2: return v.position * _scale)
-	self.normal_radius = puzzle_board.normal_radius * 1.2
-	self.start_radius = puzzle_board.start_radius * 1.2
+	self.normal_radius = puzzle_board.normal_radius * 1.25 * _scale.x
+	self.start_radius = puzzle_board.start_radius * 1.25 * _scale.x
 	self.ring_width = ring_width
 
 func _draw() -> void:
