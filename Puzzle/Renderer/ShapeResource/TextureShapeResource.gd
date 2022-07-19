@@ -1,29 +1,27 @@
 class_name TextureShapeResource
-extends Resource
+extends ShapeBaseResource
 
-var points : PackedVector2Array = [] :
-	get: return points
-var uv : PackedVector2Array = [] :
-	get: return uv
-var bound : Rect2 = Rect2()
+var shape : ShapeResource
+var texture : Texture
 
-func _init(points : PackedVector2Array, uv : bool = false) -> void:
-	self.points = points
-	if uv:
-		calcu_bound()
-		calcu_uv()
+func _init(shape : ShapeResource, texture : Texture) -> void:
+	self.shape = shape
+	self.texture = texture
+	pass
 
-func calcu_bound() -> void:
-	bound = Rect2(points[0], Vector2.ZERO)
-	for i in range(1, points.size()):
-		bound = bound.expand(points[i])
-
-func calcu_uv() -> void:
-	uv.resize(points.size())
-	var left := bound.position.x
-	var top := bound.position.y
-	var width := bound.size.x
-	var height := bound.size.y
-	for i in range(points.size()):
-		var pos := points[i]
-		uv[i] = Vector2((pos.x - left)/width, (pos.y - top)/height)
+func draw(rid : RID) -> void:
+	if (not shape.uv.is_empty()) and texture != null:
+		RenderingServer.canvas_item_add_polygon(
+			rid,
+			shape.points,
+			PackedColorArray([Color.WHITE]),
+			shape.uv,
+			texture.get_rid()
+		)
+	else:
+		RenderingServer.canvas_item_add_polygon(
+			rid,
+			shape.points,
+			PackedColorArray([Color.WHITE])
+		)
+	pass

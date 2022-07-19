@@ -61,6 +61,7 @@ func to_vertices() -> Array:
 		ans.append(segment.to)
 	return ans
 
+# TODO: finish this
 func get_points_with_interval(interval : float = 10.0) -> PackedVector2Array:
 	var ans : PackedVector2Array = []
 	return ans

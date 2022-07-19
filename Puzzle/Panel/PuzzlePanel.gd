@@ -193,19 +193,16 @@ func set_viewports(force : bool = false) -> void:
 	if not force and _is_viewports_instanced: return
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.set_viewport(self)
-#	if hint_ring_render_item.get_parent() == null:
-#		get_base_viewport_instance().viewport.add_child(hint_ring_render_item)
-#		get_base_viewport_instance().viewport.add_child(test_info)
 	_is_viewports_instanced = true
+#	Debugger.print_tag("Viewport Inited", puzzle_name, Color.MEDIUM_SPRING_GREEN)
 	pass
 
 func free_viewports(force : bool = false) -> void:
 	if not force and not _is_viewports_instanced: return
-#	get_base_viewport_instance().viewport.remove_child(hint_ring_render_item)
-#	get_base_viewport_instance().viewport.remove_child(test_info)
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.free_viewport(self)
 	_is_viewports_instanced = false
+#	Debugger.print_tag("Viewport Freed", puzzle_name, Color.MEDIUM_SPRING_GREEN)
 	pass
 
 func set_panel_active_percentage(percentage : float) -> void:

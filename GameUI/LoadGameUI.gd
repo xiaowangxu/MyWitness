@@ -21,6 +21,8 @@ enum EndFunction {
 }
 
 func create_menu_puzzle() -> void:
+	%CoverA.material.set_shader_param("opacity", 0.0)
+	%CoverB.material.set_shader_param("opacity", 0.0)
 	for child in %CenterContainer.get_children():
 		%CenterContainer.remove_child(child)
 		child.queue_free()
@@ -90,19 +92,27 @@ func create_menu_puzzle() -> void:
 #	add_level_point
 	game_save_data_summarys = GameSaver.get_all_summarys()
 	var summarys := game_save_data_summarys
-	var level_end_idx : int = puzzle_json.data.points.size() - 1
-	var start_position : float = level_start_position_y + puzzle_json.data.board.start_radius/2.0
+	var start_position : float = level_start_position_y + puzzle_json.data.board.start_radius / 2.0
 	var length : float = level_end_position_y - start_position
 	var count := summarys.size() + 1
 	var current_idx : int = 0
 	var link_level_point_idx : PackedInt32Array = []
+	var level_end_idx : int = puzzle_json.data.points.size() - 1
+	puzzle_json.data.points.append_array([{
+		"position": [200, start_position],
+		"type": 3
+	}])
+	puzzle_json.data.edges.append_array([{
+		"from": level_end_idx,
+		"to": level_end_idx + 1
+	}])
+	level_end_idx += 1
+	var level_start_point_idx : int = level_end_idx
 	for summary in summarys:
-		var texture = ImageTexture.new()
-		texture.create_from_image(summary.cover)
-		var hbox := hboxscene.instantiate()
-		hbox.texture = texture
-		hbox.title = "{time} {answered}/6".format(summary.info)
-		%GameSaveDataList.add_child(hbox)
+#		var hbox := hboxscene.instantiate()
+#		hbox.texture = summary.cover_texture
+#		hbox.title = "{time} {answered}/6".format(summary.info)
+#		%GameSaveDataList.add_child(hbox)
 		puzzle_json.data.points.append_array([
 			{
 				"position": [200,start_position + (current_idx + 1)*(length/count)],
@@ -129,7 +139,7 @@ func create_menu_puzzle() -> void:
 		current_idx += 1
 	if count == 1:
 		puzzle_json.data.edges.append_array([{
-			"from": 4,
+			"from": level_end_idx,
 			"to": 2
 		}])
 	else:
@@ -140,7 +150,7 @@ func create_menu_puzzle() -> void:
 	puzzle_data = PuzzleData.new(puzzle_json)
 	puzzle_renderer = PuzzleRenderer.new(puzzle_data, Vector2i(puzzle_data.base_size))
 	%CenterContainer.add_child(puzzle_renderer)
-	game_save_data_select_path = LineData.new(puzzle_data.vertices[4])
+	game_save_data_select_path = LineData.new(puzzle_data.vertices[level_start_point_idx])
 	for idx in link_level_point_idx:
 		game_save_data_select_path.add_line_segemnt(puzzle_data.vertices[idx])
 #	print(game_save_data_select_path)
@@ -169,8 +179,27 @@ func _process(delta: float) -> void:
 	var game_save_data_select_path_percentage : float = PuzzleFunction.get_base_path_percentage(puzzle_line, game_save_data_select_path, false)
 	var count : Vector2 = %GameSaveDataList.size
 	if game_save_data_select_path_percentage >= 0.0:
-		%GameSaveDataList.offset_left = 0
-		%GameSaveDataList.offset_top = game_save_data_select_path_percentage * count.y * -2 + count.y
+		var max_count : int = game_save_data_summarys.size()
+		var target_idx : int = floor(game_save_data_select_path_percentage * (max_count))
+		var segment_percentage : float = 1.0 / float(max_count)
+		var step_percentage : float = fmod(game_save_data_select_path_percentage, segment_percentage)/segment_percentage
+#		printt(target_idx, step_percentage)
+		if is_zero_approx(step_percentage) or is_equal_approx(step_percentage, 1.0):
+			if target_idx - 1 >= 0:
+				step_percentage = 1.0
+			target_idx = clampi(target_idx - 1, 0, max_count - 1)
+		var a_texture : ImageTexture = null if target_idx == 0 else game_save_data_summarys[target_idx - 1].cover_texture
+		var b_texture : ImageTexture = game_save_data_summarys[target_idx].cover_texture
+#		printt(target_idx, step_percentage)
+		%CoverA.texture = a_texture
+		%CoverB.texture = b_texture
+		%CoverA.material.set_shader_param("opacity", clampf((1.0 - step_percentage) * 2.0, 0.0, 1.0))
+		%CoverB.material.set_shader_param("opacity", clampf((step_percentage - 0.5) * 2.0, 0.0, 1.0))
+#		%GameSaveDataList.offset_left = 0
+#		%GameSaveDataList.offset_top = game_save_data_select_path_percentage * count.y * -2 + count.y
+	else:
+		%CoverA.material.set_shader_param("opacity", 0.0)
+		%CoverB.material.set_shader_param("opacity", 0.0)
 	update_confirm_state(puzzle_line)
 
 func _notification(what: int) -> void:

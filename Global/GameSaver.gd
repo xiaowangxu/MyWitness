@@ -33,18 +33,18 @@ func load_game_save(key : String = "", force : bool = false) -> void:
 		if key != "":
 			get_tree().reload_current_scene()
 
-func start_new_game_save() -> void:
-	var current_game_save_data := game_save_data
-	var new_game_save_data := game_save_data_config.load_game_save_data("", true)
-	if current_game_save_data != null:
-		await save_game_save_data_resource(current_game_save_data)
-	game_save_data = new_game_save_data
-	game_save_data_config.restart_game_save_data()
-	get_tree().reload_current_scene()
+#func start_new_game_save() -> void:
+#	var current_game_save_data := game_save_data
+#	var new_game_save_data := game_save_data_config.load_game_save_data("", true)
+#	if current_game_save_data != null:
+#		await save_game_save_data_resource(current_game_save_data)
+#	game_save_data = new_game_save_data
+#	game_save_data_config.restart_game_save_data()
+#	get_tree().reload_current_scene()
 
 func restart_current_game_save() -> void:
 	var current_game_save_data := game_save_data
-	var new_game_save_data := game_save_data_config.load_game_save_data("", true)
+	var new_game_save_data := game_save_data_config.load_game_save_data("", false)
 	if current_game_save_data != null:
 		await save_game_save_data_resource(current_game_save_data)
 	game_save_data = new_game_save_data

@@ -1,7 +1,7 @@
 class_name PuzzleData
 extends Resource
 
-var decorators : Array[TextureShapeResource] = []
+var decorators : Array[ShapeBaseResource] = []
 var vertices : Array[Vertice] = []
 var vertices_start : Array[Vertice] = []
 var vertices_end : Array[Vertice] = []
@@ -57,12 +57,12 @@ func array_to_color(array : Array) -> Color:
 			assert("array size is not able to convert to Color")
 			return Color.RED
 
-func create_decorator_shared_shape(type : int, data : Dictionary) -> TextureShapeResource:
+func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseResource:
 	match type:
 		0:
-			return TextureRegularShapeResource.new(data.edge_count, data.radius, data.round_cornor, data.uv)
+			return RegularShapeResource.new(data.edge_count, data.radius, data.round_cornor, data.uv)
 		1:
-			return TextureRoundedShapeResource.new(PackedVector2Array([
+			return RoundedShapeResource.new(PackedVector2Array([
 				Vector2(0, -44),
 				Vector2(14, -30),
 				Vector2(30, -30),
@@ -81,7 +81,7 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> TextureShap
 				Vector2(-14, -30)
 			]), data.round_cornor, data.uv)
 		2:
-			return TextureRoundedShapeResource.new(PackedVector2Array([
+			return RoundedShapeResource.new(PackedVector2Array([
 				Vector2(-64, -48),
 				Vector2(-48, -64),
 				Vector2(0, -16),
@@ -95,6 +95,35 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> TextureShap
 				Vector2(-64, 48),
 				Vector2(-16, 0),
 			]), 5.0, true)
+		233:
+			return TextureShapeResource.new(RoundedShapeResource.new(PackedVector2Array([
+				Vector2(0, -44),
+				Vector2(14, -30),
+				Vector2(30, -30),
+				Vector2(30, -14),
+				Vector2(44, 0),
+				Vector2(30, 14),
+				Vector2(30, 30),
+				Vector2(14, 30),
+				Vector2(0, 44),
+				Vector2(-14, 30),
+				Vector2(-30, 30),
+				Vector2(-30, 14),
+				Vector2(-44, 0),
+				Vector2(-30, -14),
+				Vector2(-30, -30),
+				Vector2(-14, -30)
+			]), 4.0, true), preload("res://Puzzle/Panel/TestPainting.png"))
+		234:
+			return GroupShapeResource.new([
+				RegularShapeResource.new(3, 22, 0, false),
+				RegularShapeResource.new(3, 22, 0, false),
+				RegularShapeResource.new(3, 22, 0, false),
+			], [
+				Transform2D(deg2rad(30), Vector2(-40, 0)),
+				Transform2D(deg2rad(30), Vector2(0, 0)),
+				Transform2D(deg2rad(30), Vector2(40, 0)),
+			])
 		_:
 			return null
 
@@ -106,8 +135,8 @@ func create_rule(name : int, data) -> PuzzleRule:
 		PuzzleRuleFunction.COLOR_MATCH: return ColorMatch.new(data)
 	return null
 
-func create_decorator(base : TextureShapeResource, color : Array, texture, rotation : float = 0.0, rules : Array = []) -> Decorator:
-	var decorator := Decorator.new(base, array_to_color(color), null if texture == null else load(texture), Transform2D(deg2rad(rotation), Vector2.ZERO)) #decorator
+func create_decorator(base : ShapeBaseResource, color : Array, rotation : float = 0.0, rules : Array = []) -> Decorator:
+	var decorator := Decorator.new(base, array_to_color(color), Transform2D(deg2rad(rotation), Vector2.ZERO)) #decorator
 	for rule_data in rules:
 		var rule : PuzzleRule = create_rule(rule_data.name, rule_data.data)
 		decorator.add_rule(rule)
@@ -155,13 +184,15 @@ func calcu_puzzle(data : Dictionary) -> void:
 		decorators.append(create_decorator_shared_shape(decorator.type, decorator.data))
 	for i in range(data.points.size()):
 		var point : Dictionary = data.points[i]
-		var decorator : Decorator = null if not point.has("decorator") else create_decorator(decorators[int(point.decorator.id)], point.decorator.color, point.decorator.texture, point.decorator.rotation, point.decorator.rules)
+		var decorator : Decorator = null if not point.has("decorator") else create_decorator(decorators[int(point.decorator.id)], point.decorator.color, point.decorator.rotation, point.decorator.rules)
 		var vertice := Vertice.new(Vector2(point.position[0], point.position[1]), point.type, decorator)
 		if decorator != null:
 			append_decorator(vertice)
 		vertice.id = i
 		if point.has("tag"):
 			vertice.tag = point.tag
+		if point.has("custom"):
+			vertice.set_custom_data(point.custom)
 		vertices.append(vertice)
 		if point.type == Vertice.VerticeType.START:
 			vertices_start.append(vertice)
@@ -171,13 +202,15 @@ func calcu_puzzle(data : Dictionary) -> void:
 		var edge : Dictionary = data.edges[i]
 		var start := vertices[edge.from]
 		var end := vertices[edge.to]
-		var decorator : Decorator = null if not edge.has("decorator") else create_decorator(decorators[int(edge.decorator.id)], edge.decorator.color, edge.decorator.texture, edge.decorator.rotation, edge.decorator.rules)
+		var decorator : Decorator = null if not edge.has("decorator") else create_decorator(decorators[int(edge.decorator.id)], edge.decorator.color, edge.decorator.rotation, edge.decorator.rules)
 		var _edge := Edge.new(start, end, calcu_line_center(start, end), decorator)
 		if decorator != null:
 			append_decorator(_edge)
 		_edge.id = i
 		if edge.has("tag"):
 			_edge.tag = edge.tag
+		if edge.has("custom"):
+			_edge.set_custom_data(edge.custom)
 		edges.append(_edge)
 		start.add_neighbour(i)
 		end.add_neighbour(i)
@@ -186,7 +219,7 @@ func calcu_puzzle(data : Dictionary) -> void:
 		var srounds : PackedInt32Array = []
 		for edge_idx in area.srounds:
 			srounds.append(edge_idx)
-		var decorator : Decorator = null if not area.has("decorator") else create_decorator(decorators[int(area.decorator.id)], area.decorator.color, area.decorator.texture, area.decorator.rotation, area.decorator.rules)
+		var decorator : Decorator = null if not area.has("decorator") else create_decorator(decorators[int(area.decorator.id)], area.decorator.color, area.decorator.rotation, area.decorator.rules)
 		var center : Vector2
 		if area.has("position"):
 			center = Vector2(area.position[0], area.position[1])
@@ -208,6 +241,8 @@ func calcu_puzzle(data : Dictionary) -> void:
 		areas.append(_area)
 		if area.has("tag"):
 			_area.tag = area.tag
+		if area.has("custom"):
+			_area.set_custom_data(area.custom)
 	pass
 
 func calcu_area_neighbour_map() -> void:
@@ -230,3 +265,34 @@ func calcu_egde_map() -> void:
 				edge.to: edge
 			}
 	pass
+
+# utils
+func get_vertice_by_id(id : int) -> Vertice:
+	if has_vertice_id(id):
+		return vertices[id]
+	else:
+		return null
+	pass
+
+func has_vertice_id(id : int) -> bool:
+	return 0 <= id and id < vertices.size()
+
+func get_area_by_id(id : int) -> Area:
+	if has_area_id(id):
+		return areas[id]
+	else:
+		return null
+	pass
+
+func has_area_id(id : int) -> bool:
+	return 0 <= id and id < areas.size()
+
+func get_edge_by_id(id : int) -> Edge:
+	if has_edge_id(id):
+		return edges[id]
+	else:
+		return null
+	pass
+
+func has_edge_id(id : int) -> bool:
+	return 0 <= id and id < edges.size()

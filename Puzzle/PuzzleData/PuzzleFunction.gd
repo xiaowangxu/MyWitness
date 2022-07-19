@@ -177,12 +177,36 @@ static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector
 				last_distance = distance
 	return last_vertice
 
-static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array) -> LineData:
+static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array, end_percentage : float = 1.0) -> LineData:
 	var start_idx := idxs[0]
 	var line := LineData.new(puzzle_data.vertices[start_idx])
 	for i in range(1, idxs.size()):
 		line.add_line_segemnt(puzzle_data.vertices[idxs[i]])
+	if not line.is_empty():
+		line.get_current_segment().set_percentage(end_percentage)
 	return line
+
+static func map_line_data(line_data : LineData, custom_data_key : StringName) -> Array:
+	var ans : Array = []
+	for vertice in line_data.to_vertices():
+		if vertice.has_custom_data(custom_data_key):
+			ans.append(vertice.get_custom_data(custom_data_key))
+		else:
+			return []
+	return ans
+
+static func get_valid_line(puzzle_data : PuzzleData, line_data : LineData) -> LineData:
+	var new_line : LineData
+	var vertices_count := puzzle_data.vertices.size()
+	var last_vertice : Vertice = puzzle_data.get_vertice_by_id(line_data.start.id)
+	if last_vertice == null: return null
+	new_line = LineData.new(last_vertice)
+	for segment in line_data.segments:
+		if last_vertice.has_neighbour(segment.to.id):
+			new_line.add_line_segemnt(segment.to, segment.percentage)
+		else:
+			return new_line
+	return new_line
 
 # get the percentage of a portion of the path
 static func get_base_path_percentage(line_data : LineData, base_path : LineData, strict : bool = true, ) -> float:
@@ -254,6 +278,10 @@ static func get_isolated_areas(puzzle_data : PuzzleData, line_data : LineData) -
 			areas.erase(sub_area)
 		ans.append(_ans)
 	return ans
+
+static func get_directional_sround_area(puzzle_data : PuzzleData, area : Area, sround_direction : int = 0) -> Area:
+	if sround_direction < 0 or sround_direction >= area.srounds.size(): return null
+	return puzzle_data.get_area_by_id(area.srounds[sround_direction])
 
 # check puzzle answer main function
 static func check_puzzle_answer(puzzle_data : PuzzleData, line_data : LineData) -> Array:

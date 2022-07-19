@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="7_kbxjn"]
 [ext_resource type="Script" path="res://Linker/PanelInteractableLinker.gd" id="8_mbl52"]
 [ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="9_f4anv"]
-[ext_resource type="Shader" uid="uid://6lttc6mp4j13" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
+[ext_resource type="Shader" uid="uid://dw6mya4bquqm2" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
 [ext_resource type="Shader" uid="uid://bfr3lr5umbvw1" path="res://World/Panels/CRTBox/Materials/CRTBoxShader.tres" id="12_8wjxh"]
 [ext_resource type="PackedScene" uid="uid://c0vwm084ntxqm" path="res://World/Panels/CRTBox/Objects/CRTBox.tscn" id="12_knu8o"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="13_tdnaq"]
@@ -74,7 +74,7 @@ transform = Transform3D(1, 0, 3.55271e-15, 0, 1, 0, -3.55271e-15, 0, 1, -8.19564
 skeleton = NodePath("../..")
 
 [node name="PuzzlePanel3" parent="CrtPanelStandNeck/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
-next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")]
+next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")]
 puzzle_name = "generator"
 viewport_configs = [{
 "name": "base",
@@ -138,7 +138,7 @@ skeleton = NodePath("../..")
 
 [node name="PuzzlePanel2" parent="CrtPanelStand2/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
-next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")]
+next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")]
 puzzle_name = "first_try"
 viewport_configs = [{
 "name": "base",
@@ -264,7 +264,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../..")
 
 [node name="PuzzlePanel" parent="CrtPanelStand3/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
-next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("")]
+next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("../../../PuzzlePanel")]
 puzzle_name = "crt"
 viewport_configs = [{
 "name": "base",
@@ -281,7 +281,7 @@ metadata/_edit_group_ = true
 [node name="Mesh" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel" instance=ExtResource("4_rqiu4")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
 shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.489
+shader_params/black_factor = 0.3
 shader_params/black_range_a = -0.713
 shader_params/black_range_b = 1.106
 shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
@@ -316,6 +316,7 @@ script = ExtResource("13_tdnaq")
 
 [node name="PuzzlePanel" parent="." instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.8, 4, -8.58307e-06)
+next_interactables_node_path = [NodePath(""), NodePath("../CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"), NodePath(""), NodePath("")]
 puzzle_name = "second2"
 viewport_configs = [{
 "name": "base",

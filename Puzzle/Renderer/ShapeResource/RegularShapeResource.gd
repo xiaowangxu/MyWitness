@@ -1,5 +1,5 @@
-class_name TextureRegularShapeResource
-extends TextureShapeResource
+class_name RegularShapeResource
+extends ShapeResource
 
 var radius : float = 10.0 :
 	get: return radius

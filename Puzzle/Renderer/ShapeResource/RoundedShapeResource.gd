@@ -1,5 +1,5 @@
-class_name TextureRoundedShapeResource
-extends TextureShapeResource
+class_name RoundedShapeResource
+extends ShapeResource
 
 var round_cornor: float = 0.0
 
@@ -12,3 +12,4 @@ func calcu_points(points: PackedVector2Array) -> PackedVector2Array:
 		return points
 	else:
 		return Geometry2D.offset_polygon(points, round_cornor, Geometry2D.JOIN_ROUND)[0]
+		

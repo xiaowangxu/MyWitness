@@ -47,9 +47,9 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 		elements.append_array(puzzle_data.areas)
 		for elem in elements:
 			if elem.decorator != null:
-				var decorator_item : RenderItem = TextureShape.new(elem.decorator.base, elem.decorator.texture)
+				var decorator_item : RenderItem = ShapeRenderer.new(elem.decorator.base)
 				decorator_renderitems_map[elem.decorator] = decorator_item
-				decorator_item.self_modulate = elem.decorator.color
+				decorator_item.modulate = elem.decorator.color
 				decorator_item.position = elem.position
 				decorator_item.rotation = elem.decorator.transform.get_rotation()
 				add_child(decorator_item)
@@ -97,7 +97,7 @@ func create_start_tween() ->void:
 		for decorator in decorator_renderitems_map:
 			var decorator_item : RenderItem = decorator_renderitems_map[decorator]
 			decorator_item.stop_scheduled_tween()
-			decorator_item.self_modulate = decorator.color
+			decorator_item.modulate = decorator.color
 	if show_element & 0b1000:
 		tween.set_parallel(true)
 		for line_render in line_renders:
@@ -126,8 +126,8 @@ func create_error_tween(errors : Array) ->void:
 			if decorator_renderitems_map.has(decorator):
 				var decorator_item : RenderItem = decorator_renderitems_map[decorator]
 				var decorator_tween : Tween = decorator_item.create_scheduled_tween().set_loops(4)
-				decorator_tween.tween_property(decorator_item, "self_modulate", decorator.color, 0.75).from(Color.RED).set_trans(Tween.TRANS_LINEAR)
-				decorator_tween.tween_property(decorator_item, "self_modulate", Color.RED, 0.0)
+				decorator_tween.tween_property(decorator_item, "modulate", decorator.color, 0.75).from(Color.RED).set_trans(Tween.TRANS_LINEAR)
+				decorator_tween.tween_property(decorator_item, "modulate", Color.RED, 0.0)
 		pass
 	if show_element & 0b1000:
 		for line_render in line_renders:

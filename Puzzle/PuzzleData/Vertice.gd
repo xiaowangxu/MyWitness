@@ -19,6 +19,9 @@ func _init(position: Vector2, type : VerticeType, decorator : Decorator = null) 
 func add_neighbour(neighbour_id : int) -> void:
 	if not neighbours.has(neighbour_id):
 		neighbours.append(neighbour_id)
-	
+
+func has_neighbour(neighbour_id : int) -> bool:
+	return neighbours.has(neighbour_id)
+
 func _to_string() -> String:
 	return "[Vertice position:%s type:%d decorator:%s]" % [position, type, decorator]

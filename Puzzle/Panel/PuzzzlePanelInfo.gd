@@ -11,4 +11,5 @@ var puzzle_movement : Vector2 = Vector2.ZERO :
 		%Movement.text = "MO: (%.3f,%.3f)" % [val.x, val.y]
 
 func _process(delta: float) -> void:
+	return
 	%Painting.rotate(0.05)

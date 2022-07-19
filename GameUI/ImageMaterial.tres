@@ -6,6 +6,7 @@ uniform float black_range_a = -0.713;
 uniform float black_range_b = 1.106;
 uniform float pow_factor = 4.0;
 uniform float black_factor = 0.489;
+uniform float opacity : hint_range(0.0, 1.0, 0.01) = 1.0;
 
 void fragment() {
 	vec2 base_uv = UV;
@@ -13,7 +14,7 @@ void fragment() {
 	float _dis = pow(abs(transformed_uv.x), pow_factor) + pow(abs(transformed_uv.y), pow_factor);
 	float dis = smoothstep(black_range_a, black_range_b, 1.0 - _dis) * (1.0 - black_factor) + black_factor;
 	COLOR = texture(TEXTURE, base_uv);
-	COLOR.a = dis;
+	COLOR.a = dis * opacity;
 }
 "
 
@@ -22,4 +23,5 @@ shader = SubResource("Shader_rnioc")
 shader_param/black_factor = -0.183
 shader_param/black_range_a = -0.258
 shader_param/black_range_b = 1.094
+shader_param/opacity = 1.0
 shader_param/pow_factor = 4.0
