@@ -10,6 +10,8 @@ func _init(data) -> void:
 	pass
 
 func check_rule(puzzle_data : PuzzleData, line_data : LineData, puzzle_element : PuzzleElement) -> bool:
-	if line_data.has_edge(puzzle_element):
+	if puzzle_element is Edge and line_data.has_edge(puzzle_element):
+		return true
+	if puzzle_element is Vertice and line_data.has_vertice(puzzle_element):
 		return true
 	return false

@@ -1,6 +1,7 @@
-[gd_scene load_steps=42 format=3 uid="uid://dk61kuo0po3jx"]
+[gd_scene load_steps=40 format=3 uid="uid://ceuj3r17b8kyf"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_1mdra"]
+[ext_resource type="Environment" uid="uid://cjo4uctk4lq2e" path="res://WorldEnv.tres" id="2_opfjl"]
 [ext_resource type="ArrayOccluder3D" uid="uid://c8646lyg8f13m" path="res://World/World.occ" id="4_oegm4"]
 [ext_resource type="PackedScene" uid="uid://byfvksnrh8jr2" path="res://Player/Player.tscn" id="5_sayar"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="6_gar0n"]
@@ -60,42 +61,6 @@ _data = {
 "FadeOut": SubResource("Animation_q1g6s"),
 "RESET": SubResource("Animation_7dnjg")
 }
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rrxjs"]
-sky_top_color = Color(0.14902, 0.627451, 1, 1)
-sky_horizon_color = Color(0.364706, 0.721569, 1, 1)
-ground_bottom_color = Color(0.298039, 0.239216, 0.168627, 1)
-ground_horizon_color = Color(0.32549, 0.243137, 0.2, 1)
-ground_curve = 0.0386374
-sun_angle_max = 5.0
-sun_curve = 0.599995
-
-[sub_resource type="Sky" id="Sky_n86sw"]
-sky_material = SubResource("ProceduralSkyMaterial_rrxjs")
-process_mode = 1
-radiance_size = 0
-
-[sub_resource type="Environment" id="Environment_lhcbd"]
-background_mode = 2
-background_color = Color(1, 1, 1, 1)
-sky = SubResource("Sky_n86sw")
-ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_sky_contribution = 0.0
-ambient_light_energy = 0.4
-tonemap_mode = 2
-ssao_enabled = true
-ssao_intensity = 1.0
-ssil_radius = 1.92
-ssil_intensity = 0.5
-ssil_sharpness = 0.5
-sdfgi_read_sky_light = false
-glow_enabled = true
-glow_strength = 0.75
-glow_hdr_threshold = 0.54
-fog_light_color = Color(0.501961, 0.6, 0.701961, 1)
-volumetric_fog_density = 0.0
-volumetric_fog_temporal_reprojection_amount = 0.933
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yhi52"]
 shading_mode = 2
@@ -307,7 +272,7 @@ libraries = {
 }
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_lhcbd")
+environment = ExtResource("2_opfjl")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.849893, 0.526956, 0, -0.526956, 0.849893, 0, 4.72494, 0)

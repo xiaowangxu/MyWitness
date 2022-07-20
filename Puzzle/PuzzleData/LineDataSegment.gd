@@ -52,3 +52,6 @@ func is_edge(edge : Edge) -> bool:
 func get_percentage(position : Vector2) -> float:
 	var sub_length := (position - from.position).length()
 	return sub_length / length
+
+func is_complete() -> bool:
+	return is_zero_approx(from_percentage) and is_equal_approx(percentage, 1.0)

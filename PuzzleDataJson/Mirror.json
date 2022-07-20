@@ -6,14 +6,14 @@
 		],
 		"background_color": [
 			0.15,
-			0.65,
 			0.15,
+			0.65,
 			1.0
 		],
 		"background_line_color": [
 			0.1,
-			0.25,
 			0.1,
+			0.25,
 			1.0
 		],
 		"start_radius": 60.0,
@@ -21,9 +21,9 @@
 		"lines": [
 			{
 				"drawing": [
-					0.65,
+					0.2,
 					0.7,
-					0.3,
+					0.9,
 					1.0
 				],
 				"error": [
@@ -33,94 +33,84 @@
 					1.0
 				],
 				"correct": [
-					0.5,
+					0.0,
+					0.8,
+					1.0,
+					1.0
+				]
+			},
+			{
+				"drawing": [
+					0.7,
+					0.7,
+					0.0,
+					1.0
+				],
+				"error": [
+					0.05,
+					0.08,
+					0.05,
+					1.0
+				],
+				"correct": [
+					1.0,
 					1.0,
 					0.0,
 					1.0
 				]
-			}
+			},
 		],
 	},
-	"decorators": [
-		{
-			"type": 0,
-			"data": {
-				"edge_count": 6,
-				"radius": 19,
-				"round_cornor": 3,
-				"uv": false
-			}
-		},
-		{
-			"type": 0,
-			"data": {
-				"edge_count": 3,
-				"radius": 30,
-				"round_cornor": 0,
-				"uv": false
-			}
-		},
-		{
-			"type": 0,
-			"data": {
-				"edge_count": 4,
-				"radius": 30,
-				"round_cornor": 25,
-				"uv": false
-			}
-		}
-	],
+	"decorators": [],
 	"points": [
 		{
 			"position": [
 				120,
 				120
 			],
-			"type": 0
+			"type": 3,
+			"custom": {
+				"mirror": 2,
+			}
 		},
 		{
 			"position": [
 				350,
 				120
 			],
-			"type": 3
+			"type": 3,
+			"custom": {
+				"mirror": 1,
+			}
 		},
 		{
 			"position": [
 				580,
 				120
 			],
-			"type": 3
+			"type": 3,
+			"custom": {
+				"mirror": 0,
+			}
 		},
 		{
 			"position": [
 				120,
 				350
 			],
-			"type": 3
+			"type": 3,
+			"custom": {
+				"mirror": 5,
+			}
 		},
 		{
 			"position": [
 				350,
 				350
 			],
-			"type": 0,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.08,
-					0.08,
-					0.08,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": [
-					{
-						"name": 0,
-						"data": 1
-					}
-				]
+			"type": 3,
+			"custom": {
+				"mirror": 4,
 			}
 		},
 		{
@@ -128,35 +118,60 @@
 				580,
 				350
 			],
-			"type": 3
+			"type": 3,
+			"custom": {
+				"mirror": 3,
+			}
 		},
 		{
 			"position": [
 				120,
 				580
 			],
-			"type": 3
+			"type": 0,
+			"custom": {
+				"mirror": 8,
+			}
 		},
 		{
 			"position": [
 				350,
 				580
 			],
-			"type": 3
+			"type": 3,
+			"custom": {
+				"mirror": 7,
+			}
 		},
 		{
 			"position": [
 				580,
 				580
 			],
-			"type": 3
+			"type": 0,
+			"custom": {
+				"mirror": 6,
+			}
 		},
 		{
 			"position": [
-				630,
-				580
+				120,
+				80
 			],
-			"type": 1
+			"type": 1,
+			"custom": {
+				"mirror": 10,
+			}
+		},
+		{
+			"position": [
+				580,
+				80
+			],
+			"type": 1,
+			"custom": {
+				"mirror": 9,
+			}
 		}
 	],
 	"edges": [
@@ -167,23 +182,6 @@
 		{
 			"from": 1,
 			"to": 2,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.08,
-					0.08,
-					0.08,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": [
-					{
-						"name": 0,
-						"data": 1
-					}
-				]
-			}
 		},
 		{
 			"from": 0,
@@ -208,23 +206,6 @@
 		{
 			"from": 3,
 			"to": 6,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.08,
-					0.08,
-					0.08,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": [
-					{
-						"name": 0,
-						"data": 1
-					}
-				]
-			}
 		},
 		{
 			"from": 4,
@@ -243,8 +224,12 @@
 			"to": 8
 		},
 		{
-			"from": 8,
+			"from": 0,
 			"to": 9
+		},
+		{
+			"from": 2,
+			"to": 10
 		}
 	],
 	"areas": [
@@ -263,23 +248,6 @@
 				6,
 				3
 			],
-			"decorator": {
-				"id": 1,
-				"color": [
-					0.8,
-					0.9,
-					0.0,
-					1.0
-				],
-				"texture": null,
-				"rotation": 30,
-				"rules": [
-					{
-						"name": 1,
-						"data": 3
-					}
-				]
-			}
 		},
 		{
 			"srounds": [
@@ -288,18 +256,6 @@
 				10,
 				7
 			],
-			"decorator": {
-				"id": 2,
-				"color": [
-					0,
-					0,
-					0,
-					1.0
-				],
-				"texture": null,
-				"rotation": 45,
-				"rules": []
-			}
 		},
 		{
 			"srounds": [

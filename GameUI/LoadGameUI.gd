@@ -38,8 +38,12 @@ func create_menu_puzzle() -> void:
 			"background_color": [ 1.0, 0.0, 0.0, 0.0 ],
 			"background_line_color": [ 0.35, 0.35, 0.35, 1 ],
 			"base_size": [400, 850],
-			"line_correct_color": [ 1.0, 0.2, 0.0, 1 ],
-			"line_drawing_color": [ 1, 0.75, 0.00, 1 ],
+			"lines":[
+				{
+					"correct": [ 1.0, 0.2, 0.0, 1 ],
+					"drawing": [ 1, 0.75, 0.00, 1 ],
+				}
+			],
 			"normal_radius": 18,
 			"start_radius": 60
 		},

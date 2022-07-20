@@ -12,6 +12,8 @@ var decorated_elements : Array[PuzzleElement] = []
 var base_size : Vector2i
 var background_color : Color
 var background_line_color : Color
+var lines_count : int
+var lines_color : PackedColorArray = []
 var line_drawing_color : Color
 var line_highlight_color : Color
 var line_error_color : Color
@@ -147,6 +149,30 @@ func append_decorator(element : PuzzleElement) -> void:
 	decorated_elements.append(element)
 	pass
 
+func create_lines(lines : Array) -> void:
+	lines_count = lines.size()
+	for i in range(lines_count):
+		var line : Dictionary = lines[i]
+		var color_start := i * 4
+		#	line color
+		if line.has("drawing"):
+			lines_color.append(array_to_color(line.drawing))
+		else:
+			lines_color.append(Color.DEEP_SKY_BLUE)
+		if line.has("highlight"):
+			lines_color.append(array_to_color(line.highlight))
+		else:
+			lines_color.append(Color.WHITE)
+		if line.has("error"):
+			lines_color.append(array_to_color(line.error))
+		else:
+			lines_color.append(Color.RED)
+		if line.has("correct"):
+			lines_color.append(array_to_color(line.correct))
+		else:
+			lines_color.append(lines_color[color_start])
+	pass
+
 func calcu_puzzle(data : Dictionary) -> void:
 	decorators = []
 	vertices = []
@@ -159,25 +185,8 @@ func calcu_puzzle(data : Dictionary) -> void:
 	background_line_color = array_to_color(board.background_line_color)
 	start_radius = board.start_radius
 	normal_radius = board.normal_radius
-
-#	line color
-	if board.has("line_drawing_color"):
-		line_drawing_color = array_to_color(board.line_drawing_color)
-	else:
-		line_drawing_color = Color.DEEP_SKY_BLUE
-	if board.has("line_highlight_color"):
-		var c : Array = board.line_highlight_color
-		line_highlight_color = array_to_color(board.line_highlight_color)
-	else:
-		line_highlight_color = Color.WHITE
-	if board.has("line_error_color"):
-		line_error_color = array_to_color(board.line_error_color)
-	else:
-		line_error_color = Color.RED
-	if board.has("line_correct_color"):
-		line_correct_color = array_to_color(board.line_correct_color)
-	else:
-		line_correct_color = line_drawing_color
+	
+	create_lines(board.lines)
 	
 	for i in range(data.decorators.size()):
 		var decorator : Dictionary = data.decorators[i]

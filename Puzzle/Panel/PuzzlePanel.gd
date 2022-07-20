@@ -538,8 +538,8 @@ func play_sound(stream_name : String = "") -> void:
 		audio.stream = AudioSoundEffects[stream_name]
 		audio.play()
 
-func set_puzzle_line(line_data : LineData, idx : int = 0) -> void:
-	get_base_viewport_instance().puzzle_renderer.set_puzzle_line(idx, line_data)
+func set_puzzle_line(line_data : LineData) -> void:
+	get_base_viewport_instance().puzzle_renderer.set_puzzle_line(0, line_data)
 #	if puzzle_name == "second":
 #		var line := LineData.new(puzzle_data.vertices[8 - line_data.start.id])
 #		var vertices := line_data.to_vertices()

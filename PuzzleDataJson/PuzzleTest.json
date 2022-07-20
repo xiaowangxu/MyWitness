@@ -1,7 +1,5 @@
 {
-	"areas": [
-
-	],
+	"areas": [],
 	"board": {
 		"background_color": [
 			0.372548997402191,
@@ -19,30 +17,32 @@
 			700,
 			700
 		],
-		"line_correct_color": [
-			0.05,
-			0.25,
-			0.6,
-			1
-		],
-		"line_drawing_color": [
-			0.1,
-			0.3,
-			0.7,
-			1
-		],
-		"line_highlight_color": [
-			0.1,
-			0.6,
-			0.7,
-			1
+		"lines": [
+			{
+				"drawing": [
+					0.1,
+					0.3,
+					0.7,
+					1
+				],
+				"correct": [
+					0.05,
+					0.25,
+					0.6,
+					1
+				],
+				"highlight": [
+					0.1,
+					0.6,
+					0.7,
+					1
+				]
+			}
 		],
 		"normal_radius": 22,
 		"start_radius": 60
 	},
-	"decorators": [
-
-	],
+	"decorators": [],
 	"edges": [
 		{
 			"from": 0,

@@ -57,10 +57,11 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 	if show_element & 0b1000:
 		line_canvas_group = CanvasGroup.new()
 		line_canvas_group.z_index = 1
-		var line_render := LineSegment.new([], puzzle_data.normal_radius, puzzle_data.start_radius)
-		line_renders.append(line_render)
-		line_render.self_modulate = puzzle_data.line_correct_color
-		line_canvas_group.add_child(line_render)
+		for i in puzzle_data.lines_count:
+			var line_render := LineSegment.new([], puzzle_data.normal_radius, puzzle_data.start_radius)
+			line_renders.append(line_render)
+			line_render.self_modulate = puzzle_data.lines_color[i * 4 + 3]
+			line_canvas_group.add_child(line_render)
 		add_child(line_canvas_group)
 	pass
 
@@ -91,8 +92,9 @@ func create_start_tween() ->void:
 	var tween : Tween = create_tween()
 	if show_element & 0b1000:
 		line_canvas_group.self_modulate = Color.WHITE
-		for line_render in line_renders:
-			line_render.self_modulate = puzzle_data.line_drawing_color
+		for i in range(line_renders.size()):
+			var line_render := line_renders[i]
+			line_render.self_modulate = puzzle_data.lines_color[i * 4]
 	if show_element & 0b100:
 		for decorator in decorator_renderitems_map:
 			var decorator_item : RenderItem = decorator_renderitems_map[decorator]
@@ -130,8 +132,9 @@ func create_error_tween(errors : Array) ->void:
 				decorator_tween.tween_property(decorator_item, "modulate", Color.RED, 0.0)
 		pass
 	if show_element & 0b1000:
-		for line_render in line_renders:
-			line_render.self_modulate = puzzle_data.line_error_color
+		for i in range(line_renders.size()):
+			var line_render := line_renders[i]
+			line_render.self_modulate = puzzle_data.lines_color[i * 4 + 2]
 		line_canvas_group.self_modulate = Color.WHITE
 		var tween : Tween = create_tween()
 		tween.tween_interval(1.0)
@@ -148,8 +151,9 @@ func create_correct_tween() ->void:
 	if not (show_element & 0b1000): return
 	var tween : Tween = create_tween()
 	tween.set_parallel(true)
-	for line_render in line_renders:
-		tween.tween_property(line_render, "self_modulate", puzzle_data.line_correct_color, 0.15).from_current().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	for i in range(line_renders.size()):
+		var line_render := line_renders[i]
+		tween.tween_property(line_render, "self_modulate", puzzle_data.lines_color[i * 4 + 3], 0.15).from_current().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.set_parallel(false)
 	tween.tween_interval(0.1)
 	tween.tween_callback(func ():
@@ -160,8 +164,9 @@ func create_correct_tween() ->void:
 	pass
 
 func _set_all_line_highlight_tween_step(val : float) -> void:
-	for line_render in line_renders:
-		line_render.self_modulate = puzzle_data.line_drawing_color.lerp(puzzle_data.line_highlight_color, val)
+	for i in range(line_renders.size()):
+		var line_render := line_renders[i]
+		line_render.self_modulate = puzzle_data.lines_color[i * 4].lerp(puzzle_data.lines_color[i * 4 + 1], val)
 	pass
 
 func create_highlight_tween() ->void:

@@ -18,17 +18,21 @@
 		],
 		"start_radius": 60.0,
 		"normal_radius": 23.0,
-		"line_drawing_color": [
-			0.8,
-			0.1,
-			0.8,
-			1.0
-		],
-		"line_correct_color": [
-			0.9,
-			0.0,
-			0.8,
-			1.0
+		"lines": [
+			{
+				"drawing": [
+					0.8,
+					0.1,
+					0.8,
+					1.0
+				],
+				"correct": [
+					0.9,
+					0.0,
+					0.8,
+					1.0
+				]
+			}
 		],
 	},
 	"decorators": [

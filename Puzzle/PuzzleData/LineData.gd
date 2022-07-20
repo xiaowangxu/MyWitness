@@ -247,3 +247,10 @@ func has_edge(edge : Edge) -> bool:
 	for segment in segments:
 		if segment.is_edge(edge): return true
 	return false
+
+func has_vertice(vertice : Vertice) -> bool:
+	if start == vertice: return true
+	for segment in segments:
+		if segment.is_complete() and segment.to == vertice:
+			return true
+	return false

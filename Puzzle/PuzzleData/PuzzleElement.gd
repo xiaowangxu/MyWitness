@@ -10,7 +10,7 @@ var custom_data : Dictionary = {}
 func has_custom_data(key : StringName) -> bool:
 	return custom_data.has(key)
 
-func get_custom_data(key : StringName) -> bool:
+func get_custom_data(key : StringName):
 	return custom_data.get(key)
 
 func set_custom_data(data : Dictionary) -> void:

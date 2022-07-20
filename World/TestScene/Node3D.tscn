@@ -1,9 +1,10 @@
-[gd_scene load_steps=21 format=3 uid="uid://chj5gydaya3pw"]
+[gd_scene load_steps=23 format=3 uid="uid://chj5gydaya3pw"]
 
 [ext_resource type="PackedScene" uid="uid://ksg6ktkih5kr" path="res://World/Panels/CRT/Objects/CrtPanelStandBar.tscn" id="1_5w0eg"]
 [ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="2_3blej"]
 [ext_resource type="PackedScene" uid="uid://bw1qfphklfn4t" path="res://World/Panels/CRT/Objects/CrtPanelStandConnector.tscn" id="3_7qpuk"]
 [ext_resource type="PackedScene" uid="uid://8i2beujlsawi" path="res://World/Panels/CRT/Objects/CrtPanelStandPanel.tscn" id="4_rqiu4"]
+[ext_resource type="Script" path="res://Puzzle/Panel/PuzzlePanelMirror.gd" id="5_33qkm"]
 [ext_resource type="PackedScene" uid="uid://bf2mkpmwngm8g" path="res://World/Panels/CRT/Objects/CrtPanelStandCable.tscn" id="5_xs5cp"]
 [ext_resource type="Material" uid="uid://b5idi261ibcot" path="res://World/Cables/OrangeCable.tres" id="6_b0wx1"]
 [ext_resource type="PackedScene" uid="uid://c6crhapaxy0ni" path="res://World/Panels/CRT/Objects/CrtPanelStandNeck.tscn" id="6_crqbt"]
@@ -15,13 +16,18 @@
 [ext_resource type="PackedScene" uid="uid://c0vwm084ntxqm" path="res://World/Panels/CRTBox/Objects/CRTBox.tscn" id="12_knu8o"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="13_tdnaq"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0c73y"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g3ral"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
 shader_param/texture_puzzle = ExtResource("9_f4anv")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_eia8a"]
 points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0c73y"]
+render_priority = 0
+shader = ExtResource("9_ncb7v")
+shader_param/texture_puzzle = ExtResource("9_f4anv")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fdsnr"]
 render_priority = 0
@@ -58,7 +64,50 @@ transform = Transform3D(-4.37114e-08, 0, 7.55, 0, 1, 0, -1, 0, -3.30021e-07, 0, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../..")
 
-[node name="CrtPanelStandPanel" parent="CrtPanelStand/CrtPanelStandConnector" instance=ExtResource("4_rqiu4")]
+[node name="PuzzlePanel3" parent="CrtPanelStand/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
+script = ExtResource("5_33qkm")
+puzzle_name = "mirror"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+min_delta_length = 2.0
+puzzle_surface_material_id = 2
+initial_active = true
+metadata/_edit_group_ = true
+
+[node name="Mesh" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3" instance=ExtResource("4_rqiu4")]
+transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
+shader_params/albedo = Color(1, 1, 1, 1)
+shader_params/black_factor = 0.489
+shader_params/black_range_a = -0.713
+shader_params/black_range_b = 1.106
+shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
+shader_params/emission_energy = 1.0
+shader_params/fade_percentage = 1.0
+shader_params/pow_factor = 4.0
+skeleton = NodePath("../../../../CrtPanelStand3/CrtPanelStandConnector")
+surface_material_override/2 = SubResource("ShaderMaterial_g3ral")
+
+[node name="Area" type="Area3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3"]
+transform = Transform3D(1.12039e-07, 0, -1, 0, 1.484, 0, 1.484, 0, 7.54979e-08, -0.01, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3/Area"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_eia8a")
+
+[node name="Audio" type="AudioStreamPlayer" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3"]
+script = ExtResource("13_tdnaq")
 
 [node name="CrtPanelStandCable" parent="CrtPanelStand" instance=ExtResource("5_xs5cp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
