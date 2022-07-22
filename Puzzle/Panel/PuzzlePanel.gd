@@ -540,13 +540,6 @@ func play_sound(stream_name : String = "") -> void:
 
 func set_puzzle_line(line_data : LineData) -> void:
 	get_base_viewport_instance().puzzle_renderer.set_puzzle_line(0, line_data)
-#	if puzzle_name == "second":
-#		var line := LineData.new(puzzle_data.vertices[8 - line_data.start.id])
-#		var vertices := line_data.to_vertices()
-#		for i in range(1, vertices.size()):
-#			var percentage := line_data.get_nth_segment(i).percentage
-#			line.add_line_segemnt(puzzle_data.vertices[8 - vertices[i].id], percentage)
-#		get_base_viewport_instance().puzzle_renderer.set_puzzle_line(1, line)
 
 # save load
 func save() -> void:

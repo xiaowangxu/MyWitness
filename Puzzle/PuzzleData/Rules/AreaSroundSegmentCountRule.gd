@@ -12,6 +12,6 @@ func _init(data) -> void:
 func check_rule(puzzle_data : PuzzleData, line_data : LineData, puzzle_element : PuzzleElement) -> bool:
 	var has_count : int = 0
 	for edge_idx in (puzzle_element as Area).srounds: 
-		if line_data.has_edge(puzzle_data.edges[edge_idx]):
+		if line_data.has_edge(puzzle_data.get_edge_by_id(edge_idx)):
 			has_count += 1
 	return has_count == count

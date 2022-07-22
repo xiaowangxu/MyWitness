@@ -66,6 +66,7 @@ skeleton = NodePath("../..")
 
 [node name="PuzzlePanel3" parent="CrtPanelStand/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
 script = ExtResource("5_33qkm")
+next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3")]
 puzzle_name = "mirror"
 viewport_configs = [{
 "name": "base",
@@ -123,7 +124,7 @@ transform = Transform3D(1, 0, 3.55271e-15, 0, 1, 0, -3.55271e-15, 0, 1, -8.19564
 skeleton = NodePath("../..")
 
 [node name="PuzzlePanel3" parent="CrtPanelStandNeck/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
-next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")]
+next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")]
 puzzle_name = "generator"
 viewport_configs = [{
 "name": "base",

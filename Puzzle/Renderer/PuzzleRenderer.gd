@@ -18,7 +18,6 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 	self.puzzle_data = puzzle_data
 	self.show_element = show_element
 	self.override_size = viewport_size
-#func _ready() -> void:
 	# scale
 	var _viewport_size : Vector2
 	if override_size == Vector2i.ZERO:
@@ -58,7 +57,7 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 		line_canvas_group = CanvasGroup.new()
 		line_canvas_group.z_index = 1
 		for i in puzzle_data.lines_count:
-			var line_render := LineSegment.new([], puzzle_data.normal_radius, puzzle_data.start_radius)
+			var line_render := LineSegment.new(null, puzzle_data.normal_radius, puzzle_data.start_radius, puzzle_data.base_size)
 			line_renders.append(line_render)
 			line_render.self_modulate = puzzle_data.lines_color[i * 4 + 3]
 			line_canvas_group.add_child(line_render)
@@ -72,7 +71,7 @@ func panel_to_puzzle(pos : Vector2) -> Vector2:
 	return pos / scale
 
 func set_puzzle_line(index : int, line : LineData) -> void:
-	line_renders[index].points = line.to_points()
+	line_renders[index].line_data = line
 
 var tween_scheduled : Tween = null
 

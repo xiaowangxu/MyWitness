@@ -35,6 +35,11 @@ func _draw() -> void:
 	for edge in puzzle_board.edges:
 		var extends_length := edge.normal * normal_radius
 		var from_position : Vector2 = edge.from.position + (-extends_length if edge.from.type == Vertice.VerticeType.STOP else Vector2.ZERO) 
-		var to_position   : Vector2 = edge.to.position + (extends_length if edge.to.type == Vertice.VerticeType.STOP else Vector2.ZERO) 
-		RenderingServer.canvas_item_add_line(_rid, from_position, to_position, WHITE, normal_radius*2)
+		var to_position   : Vector2 = edge.to.position + (extends_length if edge.to.type == Vertice.VerticeType.STOP else Vector2.ZERO)
+		if edge.wrap:
+			var wrap_extends_length := edge.normal * edge.wrap_extend
+			RenderingServer.canvas_item_add_line(_rid, from_position, edge.wrap_from + wrap_extends_length, WHITE, normal_radius*2)
+			RenderingServer.canvas_item_add_line(_rid, edge.wrap_to - wrap_extends_length, to_position, WHITE, normal_radius*2)
+		else:
+			RenderingServer.canvas_item_add_line(_rid, from_position, to_position, WHITE, normal_radius*2)
 	pass

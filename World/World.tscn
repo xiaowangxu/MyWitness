@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://ceuj3r17b8kyf"]
+[gd_scene load_steps=41 format=3 uid="uid://ceuj3r17b8kyf"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_1mdra"]
 [ext_resource type="Environment" uid="uid://cjo4uctk4lq2e" path="res://WorldEnv.tres" id="2_opfjl"]
@@ -190,6 +190,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_2esf4")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x081a"]
+emission_enabled = true
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cwili"]
 height = 5.615
 radius = 1.0
@@ -357,10 +360,9 @@ skeleton = NodePath("")
 
 [node name="TestPuzzle" parent="." instance=ExtResource("6_gar0n")]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -11.471, 4, -2.551)
-visible = false
 script = ExtResource("7_cy246")
 next_interactables_node_path = [NodePath(""), NodePath("../Panel4/PuzzlePanel"), NodePath(""), NodePath("")]
-puzzle_name = "second2"
+puzzle_name = "second"
 add_config = null
 viewport_configs = [{
 "idle": 1,
@@ -380,6 +382,7 @@ layers = 524289
 ignore_occlusion_culling = true
 mesh = ExtResource("8_2bnqd")
 skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_x081a")
 
 [node name="Area" type="Area3D" parent="TestPuzzle"]
 collision_layer = 2147483648

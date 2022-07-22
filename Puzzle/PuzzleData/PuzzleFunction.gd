@@ -39,9 +39,10 @@ static func _calcu_remain_movement(movement_length : float, current_percentage :
 			return movement_length - used_length
 	return 0.0
 
-static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_movement : Vector2) -> Vector2:
+static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_movement : Vector2, dot_smooth : bool = false) -> Vector2:
 	var movement_normal := remain_movement.normalized()
 	var current_vertice : Vertice = line_data.get_current_vertice()
+#	print(">>>>> ", movement_normal, current_vertice)
 	var from_vertice : Vertice = null
 	var current_percentage : float = line_data.get_current_percentage()
 	var current_normal : Vector2 = line_data.get_current_normal()
@@ -61,7 +62,7 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 		}
 	else:
 		for neighbour_idx in current_vertice.neighbours:
-			var neighbour : Edge = puzzle_data.edges[neighbour_idx]
+			var neighbour : Edge = puzzle_data.get_edge_by_id(neighbour_idx)
 #			if not is_empty and from_vertice != neighbour.get_forward_vertice(current_vertice):
 			to_normals[neighbour.get_forward_vertice(current_vertice)] = {
 				"normal": neighbour.get_normal(current_vertice),
@@ -71,7 +72,7 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 #	from_normals
 	if not is_empty:
 		for neighbour_idx in from_vertice.neighbours:
-			var neighbour : Edge = puzzle_data.edges[neighbour_idx]
+			var neighbour : Edge = puzzle_data.get_edge_by_id(neighbour_idx)
 #			if line_data.get_current_vertice() != neighbour.get_forward_vertice(from_vertice):
 			from_normals[neighbour.get_forward_vertice(from_vertice)] = {
 				"normal": neighbour.get_normal(from_vertice),
@@ -82,39 +83,58 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 #	printt("to", to_normals.keys())
 	var is_end_segment : bool = to_normals.size() == 1 and to_normals.keys()[0] == from_vertice
 	
-	var vertices : Array[Vertice]
+	var vertices : Array
 	var normals : Dictionary
 	if is_empty:
 		normals = to_normals
-		vertices = normals.keys()
+		for vert in normals.keys():
+			vertices.append({
+				&"from": false,
+				&"vertice": vert
+			})
 	else:
 		if current_percentage < 0.5:
 			normals = from_normals
-			vertices = normals.keys()
+			for vert in normals.keys():
+				vertices.append({
+					&"from": true,
+					&"vertice": vert
+				})
 #			if vertices.size() == 1 and vertices[0] == current_vertice:
 #			if not is_complete:
 			normals[from_vertice] = to_normals[from_vertice]
-			vertices.append(from_vertice)
+			vertices.append({
+				&"from": true,
+				&"vertice": from_vertice
+			})
 		else:
 			normals = to_normals
-			vertices = normals.keys()
+			for vert in normals.keys():
+				vertices.append({
+					&"from": false,
+					&"vertice": vert
+				})
 			if not is_complete or is_end_segment:
 				normals[current_vertice] = from_normals[current_vertice]
-				vertices.append(current_vertice)
+				vertices.append({
+					&"from": false,
+					&"vertice": current_vertice
+				})
 	
 	if vertices.size() == 0: return Vector2.ZERO
-	var nearest_vertice : Vertice = vertices[0]
+	var nearest_vertice : Vertice = vertices[0].vertice
+	var nearest_vertice_is_from : bool = vertices[0].from
 	var nearest_dot : float = movement_normal.dot(normals[nearest_vertice].normal)
 	var nearest_length : float = normals[nearest_vertice].length
 	for i in range(1, vertices.size()):
-		var vertice : Vertice = vertices[i]
-		var dot : float = movement_normal.dot(normals[vertice].normal)
+		var vertice_dic : Dictionary = vertices[i]
+		var dot : float = movement_normal.dot(normals[vertice_dic.vertice].normal)
 		if dot > nearest_dot:
-			nearest_vertice = vertice
+			nearest_vertice = vertice_dic.vertice
+			nearest_vertice_is_from = vertice_dic.from
 			nearest_dot = dot
-			nearest_length = normals[vertice].length
+			nearest_length = normals[nearest_vertice].length
 	
-#	print(nearest_vertice)
 	if nearest_dot <= 0: return Vector2.ZERO
 	#	check if end
 	if is_end_segment and nearest_vertice == current_vertice and is_equal_approx(current_percentage, 1.0):
@@ -122,17 +142,20 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	
 #	var dot := current_normal.dot(movement_normal)
 #	if is_empty:
-#		dot = nearest_dot
-#	movement_length = movement_length * abs(dot)
+	if dot_smooth:
+		var dot := nearest_dot
+		movement_length = movement_length * abs(dot)
+
+#	print(nearest_vertice)
 
 	var remained : Vector2 = Vector2.ZERO
 	if is_empty or (is_complete and nearest_vertice != from_vertice and nearest_vertice != current_vertice):
-		line_data.add_line_segemnt(nearest_vertice, movement_length/nearest_length)
+		line_data.add_line_segemnt(nearest_vertice, movement_length/nearest_length, puzzle_data)
 		remained = _calcu_remain_movement(movement_length, 0.0, nearest_length, true) * movement_normal
 	else:
 		var segment_length : float = line_data.get_current_segment_length()
 		var forward : bool = true
-		if nearest_vertice in from_normals:
+		if nearest_vertice_is_from:
 			if nearest_vertice == current_vertice:
 #				print(">>>>>1")
 				line_data.forward(movement_length/segment_length)
@@ -153,12 +176,12 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	line_data.clamp_line_end(puzzle_data.normal_radius, puzzle_data.start_radius)
 	return remained
 
-static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement : Vector2) -> LineData:
+static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement : Vector2, dot_smooth : bool = false) -> LineData:
 	if is_zero_approx(movement.length_squared()): return line_data
 	var new_line : LineData = line_data.duplicate()
 	var count := 0
 	while not is_zero_approx(movement.length_squared()) and count < 100:
-		movement = _move_line(puzzle_data, new_line, movement)
+		movement = _move_line(puzzle_data, new_line, movement, dot_smooth)
 		count += 1
 #	print(count)
 	return new_line
@@ -179,9 +202,9 @@ static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector
 
 static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array, end_percentage : float = 1.0) -> LineData:
 	var start_idx := idxs[0]
-	var line := LineData.new(puzzle_data.vertices[start_idx])
+	var line := LineData.new(puzzle_data.get_vertice_by_id(start_idx))
 	for i in range(1, idxs.size()):
-		line.add_line_segemnt(puzzle_data.vertices[idxs[i]])
+		line.add_line_segemnt(puzzle_data.get_vertice_by_id(idxs[i]))
 	if not line.is_empty():
 		line.get_current_segment().set_percentage(end_percentage)
 	return line
@@ -257,9 +280,8 @@ static func has_edge(puzzle_data : PuzzleData, segment : LineDataSegment) -> boo
 
 static func _reduce_linked_areas(puzzle_data : PuzzleData, line_data : LineData, area : Area, ans : Array[Area]) -> void:
 	for edge_id in area.srounds:
-		if line_data.has_edge(puzzle_data.edges[edge_id]): continue
+		if line_data.has_edge(puzzle_data.get_edge_by_id(edge_id)): continue
 		var sround_areas : Array[Area] = _get_area_neighbour_by_sround_edge_id(puzzle_data, area, edge_id)
-#		printt(edge_id, line_data.has_edge(puzzle_data.edges[edge_id]), sround_areas)
 		for sub_area in sround_areas:
 			if ans.has(sub_area): continue
 			else:

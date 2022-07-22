@@ -11,11 +11,22 @@ func _init(start : Vertice, line_id : int = 0) -> void:
 	self.line_id = line_id
 	pass
 
-func add_line_segemnt(to : Vertice, percentage : float = 1.0) -> LineData:
+func add_line_segemnt(to : Vertice, percentage : float = 1.0, puzzle_data : PuzzleData = null) -> LineData:
 	if is_zero_approx(percentage): return self
 	if segments.size() == 0:
 		if start != to:
-			segments.append(LineDataSegment.new(start, to, percentage))
+			var wrap : bool = false
+			var wrap_from : Vector2
+			var wrap_to : Vector2
+			var wrap_extend : float = 0.0
+			if puzzle_data != null:
+				var edge : Edge = puzzle_data.find_edge(start, to)
+				if edge != null and edge.wrap:
+					wrap = true
+					wrap_from = edge.wrap_from if start == edge.from else edge.wrap_to
+					wrap_to = edge.wrap_to if to == edge.to else edge.wrap_from
+					wrap_extend = edge.wrap_extend
+			segments.append(LineDataSegment.new(start, to, percentage, 0.0, wrap, wrap_from, wrap_to, wrap_extend))
 	else:
 		var last : LineDataSegment
 		var size : int = segments.size() - 1
@@ -26,7 +37,19 @@ func add_line_segemnt(to : Vertice, percentage : float = 1.0) -> LineData:
 				last = segments[i]
 		if last.to != to:
 			last.set_percentage(1.0)
-			segments.append(LineDataSegment.new(last.to, to, percentage))
+			var wrap : bool = false
+			var wrap_from : Vector2
+			var wrap_to : Vector2
+			var wrap_extend : float = 0.0
+			if puzzle_data != null:
+				var edge : Edge = puzzle_data.find_edge(last.to, to)
+				if edge != null and edge.wrap:
+					wrap = true
+					wrap_from = edge.wrap_from if last.to == edge.from else edge.wrap_to
+					wrap_to = edge.wrap_to if to == edge.to else edge.wrap_from
+					wrap_extend = edge.wrap_extend
+					print(wrap_extend)
+			segments.append(LineDataSegment.new(last.to, to, percentage, 0.0, wrap, wrap_from, wrap_to, wrap_extend))
 		else:
 			last.set_percentage(percentage)
 	return self
