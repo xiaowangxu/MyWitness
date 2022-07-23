@@ -5,16 +5,6 @@ func _ready() -> void:
 #	print_orphan_nodes()
 	pass
 
-var freed := false
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept"):
-		for panel in get_tree().get_nodes_in_group(GlobalData.PuzzleGroupName):
-			if freed:
-				panel.set_viewports()
-			else:
-				panel.free_viewports()
-		freed = not freed
-
 func _process(delta: float) -> void:
 #	print(get_tree().get_processed_tweens().size())
 	pass

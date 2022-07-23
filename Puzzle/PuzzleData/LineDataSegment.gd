@@ -38,26 +38,22 @@ func set_percentage(percentage : float) -> void:
 func set_from_percentage(percentage : float) -> void:
 	self.from_percentage = clampf(percentage, 0.0, self.percentage)
 
-func get_position() -> Vector2:
+# get the position[Vector2] on the segemnt by giving a percentage, default will return the current percentage
+func get_position(percentage : float = self.percentage) -> Vector2:
 	if not wrap:
 		return from.position.lerp(to.position, percentage)
 	else:
 		var _length := length * percentage
-		if _length <= wrap_from_length:
+		if _length < wrap_from_length:
 			return from.position.lerp(wrap_from, _length / wrap_from_length)
 		else:
 			return wrap_to.lerp(to.position, (_length - wrap_from_length) / (length - wrap_from_length))
 
+# aka get_position(self.from_percentage)
 func get_from_position() -> Vector2:
-	if not wrap:
-		return from.position.lerp(to.position, from_percentage)
-	else:
-		var _length := length * from_percentage
-		if _length <= wrap_from_length:
-			return from.position.lerp(wrap_from, _length / wrap_from_length)
-		else:
-			return wrap_to.lerp(to.position, from_percentage - wrap_from_length / length)
+	return get_position(self.from_percentage)
 
+# get vector2 array reperesents the line segment data, the length is always 2*n
 func get_positions() -> PackedVector2Array:
 	if not wrap:
 		return PackedVector2Array([get_from_position(), get_position()])
@@ -88,17 +84,23 @@ func _to_string() -> String:
 	return "{%s}-(%.4f <=> %.4f)-{%s}" % [from.id, from_percentage, percentage, to.id]
 
 func is_same_segment(b : LineDataSegment) -> bool:
-	return self.from == b.from and self.to == b.to and self.wrap == b.wrap
+	return self.edge_id == b.edge_id and self.from == b.from and self.to == b.to
+#	return self.from == b.from and self.to == b.to and self.wrap == b.wrap
 
 func is_segment_equal_approx(b : LineDataSegment) -> bool:
-	if self.from == b.from and self.to == b.to and self.wrap == b.wrap:
+	if is_same_segment(b):
 		return is_equal_approx(self.percentage, b.percentage) and is_equal_approx(self.from_percentage, b.from_percentage)
 	else:
 		return false
 
 func is_edge(edge : Edge) -> bool:
-	return (self.from == edge.from and self.to == edge.to) or (self.from == edge.to and self.to == edge.from) and (self.wrap == edge.wrap)
+	return self.edge_id == edge.id
+#	return (self.from == edge.from and self.to == edge.to) or (self.from == edge.to and self.to == edge.from) and (self.wrap == edge.wrap)
 
+#func get_unit_percentage(delta_length : float = 1.0) -> float:
+#	return delta_length / self.length
+
+# TODO : finish this
 func get_percentage(position : Vector2) -> float:
 	var sub_length := (position - from.position).length()
 	return sub_length / length

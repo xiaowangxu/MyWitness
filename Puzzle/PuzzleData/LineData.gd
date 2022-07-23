@@ -11,6 +11,7 @@ func _init(start : Vertice, line_id : int = 0) -> void:
 	self.line_id = line_id
 	pass
 
+# TODO : remove this
 func add_vertice_segment(to : Vertice, percentage : float = 1.0) -> LineData:
 	if is_zero_approx(percentage): return self
 	if segments.size() == 0:
@@ -89,6 +90,9 @@ func is_complete() -> bool:
 
 func is_empty() -> bool:
 	return segments.size() == 0
+
+func size() -> int:
+	return segments.size() + 1
 
 func get_length(from : int = 0, to : int = segments.size()) -> float:
 	var length := 0.0
@@ -191,50 +195,62 @@ func _to_string() -> String:
 	return ans
 
 func calcu_forward_or_backward_line(base_line : LineData) -> Dictionary:
-	var vertices_base : Array[Vertice] = base_line.to_vertices()
-	var vertices_line : Array[Vertice] = self.to_vertices()
-	var vertices_base_size := vertices_base.size()
-	var vertices_line_size := vertices_line.size()
-	var start_idx : int = -1
-	for i in range(mini(vertices_base_size, vertices_line_size)):
-		if vertices_base[i] == vertices_line[i]:
+	var a := self
+	var b := base_line
+	var a_size := a.size()
+	var b_size := b.size()
+	var start_idx : int = 0
+	for i in range(mini(a_size, b_size)):
+		var a_line_elem : LineDataSegment = a.get_nth_segment(i)
+		var b_line_elem : LineDataSegment = b.get_nth_segment(i)
+		if a_line_elem.is_same_segment(b_line_elem):
 			start_idx = i
 		else: break
 	
-	if start_idx < 0: return {"forward": [], "backward": []}
+#	var vertices_base : Array[Vertice] = base_line.to_vertices()
+#	var vertices_line : Array[Vertice] = self.to_vertices()
+#	var vertices_base_size := vertices_base.size()
+#	var vertices_line_size := vertices_line.size()
+#	var start_idx : int = -1
+#	for i in range(mini(vertices_base_size, vertices_line_size)):
+#		if vertices_base[i] == vertices_line[i]:
+#			start_idx = i
+#		else: break
+#
+#	if start_idx < 0: return {"forward": [], "backward": []}
 	
 #	print(">> split ", start_idx)
 #	print(">>> split : ", start_idx, " old: ", vertices_base_size-1, " new: ", vertices_line_size - 1)
 	
 	var backward_segments : Array[LineDataSegment] = []
 	var forward_segments : Array[LineDataSegment] = []
-	
+
 #	| start_idx
 #	|
 #	o---a---b
 #	o---c---d---e
 	if start_idx == 0:
-		for segment in base_line.segments:
+		for segment in b.segments:
 			backward_segments.append(segment.duplicate())
-		for segment in self.segments:
+		for segment in a.segments:
 			forward_segments.append(segment.duplicate())
 	else:
 #		      | start_idx
 #		      | |
 #		o---a-b |
 #		o---a---b
-		if start_idx >= vertices_base_size - 1 and vertices_base_size == vertices_line_size:
-			var base_percentage := base_line.get_current_percentage()
-			var self_percentage := self.get_current_percentage()
-			if base_percentage < self_percentage:
+		if start_idx >= b_size - 1 and a_size == b_size:
+			var a_percentage := a.get_current_percentage()
+			var b_percentage := b.get_current_percentage()
+			if b_percentage < a_percentage:
 #				forward
-				var segment := self.get_current_segment().duplicate()
-				segment.set_from_percentage(base_percentage)
+				var segment := a.get_current_segment().duplicate()
+				segment.set_from_percentage(b_percentage)
 				forward_segments.append(segment)
-			elif base_percentage > self_percentage:
+			elif b_percentage > a_percentage:
 #				backward
-				var segment := base_line.get_current_segment().duplicate()
-				segment.set_from_percentage(self_percentage)
+				var segment := b.get_current_segment().duplicate()
+				segment.set_from_percentage(a_percentage)
 				backward_segments.append(segment)
 		else:
 #		      | start_idx		    | start_idx		    | start_idx
@@ -243,21 +259,21 @@ func calcu_forward_or_backward_line(base_line : LineData) -> Dictionary:
 #		o---a---b---c			    |				  | start_idx
 #								    c---d			o-a=a
 #			backward
-			if start_idx >= vertices_line_size - 1 and not self.is_complete():
-				var segment := self.get_current_segment().duplicate()
+			if start_idx >= a_size - 1 and not a.is_complete():
+				var segment := a.get_current_segment().duplicate()
 				segment.set_from_percentage(segment.percentage)
 				segment.set_percentage(1.0)
 				backward_segments.append(segment)
-			for i in range(start_idx + 1, vertices_base_size):
-				backward_segments.append(base_line.get_nth_segment_duplicated(i))
+			for i in range(start_idx + 1, b_size):
+				backward_segments.append(b.get_nth_segment_duplicated(i))
 #			forward
-			if start_idx >= vertices_base_size - 1 and not base_line.is_complete():
-				var segment := base_line.get_current_segment().duplicate()
+			if start_idx >= b_size - 1 and not b.is_complete():
+				var segment := b.get_current_segment().duplicate()
 				segment.set_from_percentage(segment.percentage)
 				segment.set_percentage(1.0)
 				forward_segments.append(segment)
-			for i in range(start_idx + 1, vertices_line_size):
-				forward_segments.append(self.get_nth_segment_duplicated(i))
+			for i in range(start_idx + 1, a_size):
+				forward_segments.append(a.get_nth_segment_duplicated(i))
 	
 	return {
 		"forward" : forward_segments,

@@ -237,7 +237,11 @@ func _set_material_fade_percentage_param(percentage : float) -> void:
 	mesh.set_shader_instance_uniform(&"fade_percentage", percentage)
 	pass
 
-var current_position : Vector2 = Vector2.ZERO
+var current_position : Vector2 = Vector2.ZERO :
+	set(val):
+		current_position = val
+		assert(not(current_position.x < 0 or current_position.x > puzzle_data.base_size.x or current_position.y < 0 or current_position.y > puzzle_data.base_size.y), "Current Mouse Puzzle Position is out side of panel")
+
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
 	if not is_active: return
 	if event is InputPuzzleForceExitEvent:
@@ -350,49 +354,50 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 	var diff : Dictionary = new_line.calcu_forward_or_backward_line(old_line)
 	var forward : Array[LineDataSegment] = diff.forward
 	var backward : Array[LineDataSegment] = diff.backward
+#	print(forward)
+#	print(backward)
 	backward.reverse()
 	if not backward.is_empty():
 		for segment in backward:
-			var start_pos : Vector2 = segment.get_position()
-			var end_pos : Vector2 = segment.get_from_position()
-			var length := (end_pos - start_pos).length()
-			var count : int = ceil(length / min_delta_length)
-			var last_pos := start_pos
+			var segment_length : float = segment.get_length()
+			var count : int = ceil(segment_length / min_delta_length)
+			var last_percentage := segment.percentage
 			for i in range(count):
 				var weight : float = float(i)/float(count - 1)
-				var point := start_pos.lerp(end_pos, weight)
+				var percentage := lerp(segment.percentage, segment.from_percentage, weight)
+				var point := segment.get_position(percentage)
 				var puzzle_position := puzzle_to_panel(point)
 				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
 				var reachable := GlobalData.check_reachable(world_position, area)
 				if (not reachable_stop and reachable) or (reachable_stop and not reachable):
-					last_pos = point
+					last_percentage = percentage
 					pass
 				else:
-					var percentage : float = segment.get_percentage(point if reachable_stop else last_pos)
-					segment.percentage = percentage
+#					print("clamp backward")
+					segment.percentage = percentage if reachable_stop else last_percentage
 					old_line.clamp_to_segment(segment)
 					return old_line
 	if not forward.is_empty():
 		for segment in forward:
-			var start_pos : Vector2 = segment.get_from_position()
-			var end_pos : Vector2 = segment.get_position()
-			var length := (end_pos - start_pos).length()
-			var count : int = ceil(length / min_delta_length)
-			var last_pos := start_pos
+			var segment_length : float = segment.get_length()
+			var count : int = ceil(segment_length / min_delta_length)
+			var last_percentage := segment.from_percentage
 			for i in range(count):
 				var weight : float = float(i)/float(count - 1)
-				var point := start_pos.lerp(end_pos, weight)
+				var percentage := lerp(segment.from_percentage, segment.percentage, weight)
+				var point := segment.get_position(percentage)
 				var puzzle_position := puzzle_to_panel(point)
 				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
 				var reachable := GlobalData.check_reachable(world_position, area)
 				if (not reachable_stop and reachable) or (reachable_stop and not reachable):
-					last_pos = point
+					last_percentage = percentage
 					pass
 				else:
-					var percentage : float = segment.get_percentage(point if reachable_stop else last_pos)
-					segment.percentage = percentage
+#					print("clamp forward")
+					segment.percentage = percentage if reachable_stop else last_percentage
 					new_line.clamp_to_segment(segment)
 					return new_line
+				pass
 	return new_line
 
 func on_preferred() -> void:
@@ -550,7 +555,6 @@ func save() -> void:
 			var line_vertice_id : Array = PackedInt32Array([puzzle_line.start.id])
 			for i in puzzle_line.segments:
 				line_vertice_id.append(i.edge_id)
-			print(line_vertice_id)
 			var save_data : Dictionary = {
 				"line": line_vertice_id,
 				"active": is_active
