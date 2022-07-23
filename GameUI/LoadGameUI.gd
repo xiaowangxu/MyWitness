@@ -156,7 +156,7 @@ func create_menu_puzzle() -> void:
 	%CenterContainer.add_child(puzzle_renderer)
 	game_save_data_select_path = LineData.new(puzzle_data.vertices[level_start_point_idx])
 	for idx in link_level_point_idx:
-		game_save_data_select_path.add_line_segemnt(puzzle_data.vertices[idx])
+		game_save_data_select_path.add_vertice_segment(puzzle_data.vertices[idx])
 #	print(game_save_data_select_path)
 
 func _input(event: InputEvent) -> void:

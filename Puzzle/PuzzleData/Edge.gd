@@ -36,4 +36,4 @@ func get_forward_vertice(from : Vertice) -> Vertice:
 	return to if from == self.from else self.from
 
 func _to_string() -> String:
-	return "[Edge \n\tfrom:%s\n\tto:%s\n\tdecorator:%s\n]" % [from, to, decorator]
+	return "[Edge(%d) \n\tfrom:%s\n\tto:%s\n\tdecorator:%s\n]" % [id, from, to, decorator]

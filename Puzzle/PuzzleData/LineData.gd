@@ -11,22 +11,11 @@ func _init(start : Vertice, line_id : int = 0) -> void:
 	self.line_id = line_id
 	pass
 
-func add_line_segemnt(to : Vertice, percentage : float = 1.0, puzzle_data : PuzzleData = null) -> LineData:
+func add_vertice_segment(to : Vertice, percentage : float = 1.0) -> LineData:
 	if is_zero_approx(percentage): return self
 	if segments.size() == 0:
 		if start != to:
-			var wrap : bool = false
-			var wrap_from : Vector2
-			var wrap_to : Vector2
-			var wrap_extend : float = 0.0
-			if puzzle_data != null:
-				var edge : Edge = puzzle_data.find_edge(start, to)
-				if edge != null and edge.wrap:
-					wrap = true
-					wrap_from = edge.wrap_from if start == edge.from else edge.wrap_to
-					wrap_to = edge.wrap_to if to == edge.to else edge.wrap_from
-					wrap_extend = edge.wrap_extend
-			segments.append(LineDataSegment.new(start, to, percentage, 0.0, wrap, wrap_from, wrap_to, wrap_extend))
+			segments.append(LineDataSegment.new(start, to, percentage, 0.0))
 	else:
 		var last : LineDataSegment
 		var size : int = segments.size() - 1
@@ -37,21 +26,34 @@ func add_line_segemnt(to : Vertice, percentage : float = 1.0, puzzle_data : Puzz
 				last = segments[i]
 		if last.to != to:
 			last.set_percentage(1.0)
-			var wrap : bool = false
-			var wrap_from : Vector2
-			var wrap_to : Vector2
-			var wrap_extend : float = 0.0
-			if puzzle_data != null:
-				var edge : Edge = puzzle_data.find_edge(last.to, to)
-				if edge != null and edge.wrap:
-					wrap = true
-					wrap_from = edge.wrap_from if last.to == edge.from else edge.wrap_to
-					wrap_to = edge.wrap_to if to == edge.to else edge.wrap_from
-					wrap_extend = edge.wrap_extend
-					print(wrap_extend)
-			segments.append(LineDataSegment.new(last.to, to, percentage, 0.0, wrap, wrap_from, wrap_to, wrap_extend))
+			segments.append(LineDataSegment.new(last.to, to, percentage, 0.0))
 		else:
 			last.set_percentage(percentage)
+	return self
+
+func add_edge_segment(edge : Edge, percentage : float = 1.0) -> LineData:
+	if is_zero_approx(percentage): return self
+	if segments.size() == 0:
+		var to := edge.get_forward_vertice(start)
+		segments.append(LineDataSegment.new(start, to, percentage, 0.0, edge.wrap, edge.wrap_from, edge.wrap_to, edge.wrap_extend, edge.id))
+	else:
+		var last : LineDataSegment
+		var size : int = segments.size() - 1
+		for i in range(size + 1):
+			if i < size:
+				segments[i].set_percentage(1.0)
+			else:
+				last = segments[i]
+		if last != null:
+			last.set_percentage(1.0)
+			var to := edge.get_forward_vertice(last.to)
+			if not edge.wrap:
+				segments.append(LineDataSegment.new(last.to, to, percentage, 0.0, edge.wrap, edge.wrap_from, edge.wrap_to, edge.wrap_extend, edge.id))
+			else:
+				if to == edge.to:
+					segments.append(LineDataSegment.new(last.to, to, percentage, 0.0, edge.wrap, edge.wrap_from, edge.wrap_to, edge.wrap_extend, edge.id))
+				else:
+					segments.append(LineDataSegment.new(last.to, to, percentage, 0.0, edge.wrap, edge.wrap_to, edge.wrap_from, edge.wrap_extend, edge.id))
 	return self
 
 func forward(percentage : float = 0.0) -> void:
@@ -68,14 +70,6 @@ func backward(percentage : float = 0.0) -> void:
 		segments.pop_back()
 	pass
 
-func to_points() -> PackedVector2Array:
-	var ans : PackedVector2Array = []
-	ans.append(start.position)
-	for segment in segments:
-		var point := segment.get_position()
-		ans.append(point)
-	return ans
-
 # TODO: Array[Vertice]
 func to_vertices() -> Array:
 	var ans : Array[Vertice] = []
@@ -85,9 +79,9 @@ func to_vertices() -> Array:
 	return ans
 
 # TODO: finish this
-func get_points_with_interval(interval : float = 10.0) -> PackedVector2Array:
-	var ans : PackedVector2Array = []
-	return ans
+#func get_points_with_interval(interval : float = 10.0) -> PackedVector2Array:
+#	var ans : PackedVector2Array = []
+#	return ans
 
 func is_complete() -> bool:
 	var size := segments.size()
@@ -123,6 +117,10 @@ func get_current_vertice() -> Vertice:
 	if segments.size() == 0: return start
 	return segments[-1].to
 
+func get_current_edge_id() -> int:
+	if segments.size() == 0: return -1
+	return segments[-1].edge_id
+
 func get_current_segment_length() -> float:
 	if segments.size() == 0: return 0.0
 	return segments[-1].length
@@ -135,7 +133,7 @@ func get_current_percentage() -> float:
 	if segments.size() == 0: return -1.0
 	return segments[-1].percentage
 
-func get_from_vertice() -> Vertice:
+func get_current_from_vertice() -> Vertice:
 	if segments.size() == 0: return null
 	return segments[-1].from
 

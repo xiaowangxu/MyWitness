@@ -12,11 +12,13 @@ var wrap_from : Vector2
 var wrap_from_length : float
 var wrap_to : Vector2
 var wrap_extend : float = 0.0
-	
-func _init(from : Vertice, to : Vertice, percentage : float = 1.0, from_percentage : float = 0.0, wrap : bool = false, wrap_from : Vector2 = Vector2.ZERO, wrap_to : Vector2 = Vector2.ZERO, wrap_extend : float = 0.0) -> void:
+var edge_id : int = -1
+
+func _init(from : Vertice, to : Vertice, percentage : float = 1.0, from_percentage : float = 0.0, wrap : bool = false, wrap_from : Vector2 = Vector2.ZERO, wrap_to : Vector2 = Vector2.ZERO, wrap_extend : float = 0.0, edge_id : int = -1) -> void:
 	self.from = from
 	self.to = to
 	self.wrap = wrap
+	self.edge_id = edge_id
 	if self.wrap:
 		self.wrap_from = wrap_from
 		self.wrap_to = wrap_to
@@ -74,14 +76,13 @@ func get_positions() -> PackedVector2Array:
 		[0,0], [1,1]: return PackedVector2Array([get_from_position(), get_position()])
 		_:
 			var wrap_extends_length := normal * wrap_extend
-			print(wrap_extends_length)
 			return PackedVector2Array([get_from_position(), wrap_from + wrap_extends_length, wrap_to - wrap_extends_length, get_position()]) 
 
 func get_length() -> float:
 	return length * (percentage - from_percentage)
 
 func duplicate() -> LineDataSegment:
-	return LineDataSegment.new(self.from, self.to, self.percentage, self.from_percentage, self.wrap, self.wrap_from, self.wrap_to, self.wrap_extend)
+	return LineDataSegment.new(self.from, self.to, self.percentage, self.from_percentage, self.wrap, self.wrap_from, self.wrap_to, self.wrap_extend, self.edge_id)
 
 func _to_string() -> String:
 	return "{%s}-(%.4f <=> %.4f)-{%s}" % [from.id, from_percentage, percentage, to.id]

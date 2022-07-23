@@ -361,19 +361,7 @@ skeleton = NodePath("")
 [node name="TestPuzzle" parent="." instance=ExtResource("6_gar0n")]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -11.471, 4, -2.551)
 script = ExtResource("7_cy246")
-next_interactables_node_path = [NodePath(""), NodePath("../Panel4/PuzzlePanel"), NodePath(""), NodePath("")]
 puzzle_name = "second"
-add_config = null
-viewport_configs = [{
-"idle": 1,
-"name": "base",
-"targets": PackedStringArray("surface_material_override/0:albedo_texture", "surface_material_override/0:emission_texture"),
-"transparent": true,
-"update": true,
-"visual": 15
-}]
-min_delta_length = null
-initial_active = true
 metadata/_edit_group_ = true
 
 [node name="Mesh" type="MeshInstance3D" parent="TestPuzzle"]
