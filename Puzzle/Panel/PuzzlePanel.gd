@@ -549,7 +549,8 @@ func save() -> void:
 		if is_answered and puzzle_line != null:
 			var line_vertice_id : Array = PackedInt32Array([puzzle_line.start.id])
 			for i in puzzle_line.segments:
-				line_vertice_id.append(i.to.id)
+				line_vertice_id.append(i.edge_id)
+			print(line_vertice_id)
 			var save_data : Dictionary = {
 				"line": line_vertice_id,
 				"active": is_active

@@ -126,7 +126,6 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 
 	#	check if end
 	if is_end_segment and current_edge == nearest_move_line.directioned_edge.edge and nearest_move_line.directioned_edge.to == current_vertice and is_equal_approx(current_percentage, 1.0):
-		print("??? end")
 		return Vector2.ZERO
 	
 	if dot_smooth:
@@ -148,7 +147,7 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 #			print(">>>>> 2")
 			forward = false
 			line_data.backward(movement_length/ current_edge.length)
-		remained = _calcu_remain_movement(movement_length, current_percentage, nearest_move_line.directioned_edge.length, forward) * movement_normal
+		remained = _calcu_remain_movement(movement_length, current_percentage, current_edge.length, forward) * movement_normal
 
 	line_data.clamp_line_end(puzzle_data.normal_radius, puzzle_data.start_radius)
 	return remained
@@ -181,7 +180,7 @@ static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32
 	var start_idx := idxs[0]
 	var line := LineData.new(puzzle_data.get_vertice_by_id(start_idx))
 	for i in range(1, idxs.size()):
-		line.add_vertice_segment(puzzle_data.get_vertice_by_id(idxs[i]))
+		line.add_edge_segment(puzzle_data.get_edge_by_id(idxs[i]))
 	if not line.is_empty():
 		line.get_current_segment().set_percentage(end_percentage)
 	return line
