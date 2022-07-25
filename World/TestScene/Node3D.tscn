@@ -419,6 +419,7 @@ script = ExtResource("13_tdnaq")
 transform = Transform3D(0.620546, 0, -0.78417, 0, 1, 0, 0.78417, 0, 0.620546, 3.7441, 4, 0.555349)
 script = ExtResource("16_178vx")
 puzzle_name = "crt"
+save_name = "test1"
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/0:albedo_texture"),
@@ -455,6 +456,7 @@ script = ExtResource("13_tdnaq")
 transform = Transform3D(0.620546, 0, -0.78417, 0, 1, 0, 0.78417, 0, 0.620546, 5.06336, 4, 2.22247)
 script = ExtResource("16_178vx")
 puzzle_name = "second2"
+save_name = "test2"
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/0:albedo_texture"),

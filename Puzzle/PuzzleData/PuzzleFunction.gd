@@ -175,9 +175,13 @@ static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector
 
 static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array, end_percentage : float = 1.0) -> LineData:
 	var start_idx := idxs[0]
-	var line := LineData.new(puzzle_data.get_vertice_by_id(start_idx))
+	var start_vertice : Vertice = puzzle_data.get_vertice_by_id(start_idx)
+	if start_vertice == null: return null
+	var line := LineData.new(start_vertice)
 	for i in range(1, idxs.size()):
-		line.add_edge_segment(puzzle_data.get_edge_by_id(idxs[i]))
+		var edge : Edge = puzzle_data.get_edge_by_id(idxs[i])
+		if edge == null: return line
+		line.add_edge_segment(edge)
 	if not line.is_empty():
 		line.get_current_segment().set_percentage(end_percentage)
 	return line

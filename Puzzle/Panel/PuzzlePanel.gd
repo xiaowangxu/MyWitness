@@ -21,6 +21,8 @@ signal puzzle_checked()
 signal puzzle_interact_state_changed(state : PuzzleInteractState)
 
 @export var puzzle_name : String = ""
+@export var save_name : String = ""
+@onready var puzzle_save_name := save_name if save_name != "" else puzzle_name
 @export var add_config : bool = false:
 	set(val):
 		add_config = false
@@ -101,7 +103,7 @@ func _ready() -> void:
 	
 	load_save()
 	
-	Debugger.print_tag("Puzzle Inited", puzzle_name, Color.CRIMSON)
+	Debugger.print_tag("Puzzle Inited", "{0} as {1}".format([puzzle_name, puzzle_save_name]), Color.CRIMSON)
 	
 	pass
 
@@ -561,7 +563,7 @@ func set_puzzle_line(line_data : LineData) -> void:
 # save load
 func save() -> void:
 	if not is_answered and (not initial_active and not is_active):
-		GameSaver.clear_puzzle(puzzle_name)
+		GameSaver.clear_puzzle(puzzle_save_name)
 	else:
 		if is_answered and puzzle_line != null:
 			var line_vertice_id : Array = PackedInt32Array([puzzle_line.start.id])
@@ -571,16 +573,16 @@ func save() -> void:
 				"line": line_vertice_id,
 				"active": is_active
 			}
-			GameSaver.save_puzzle(puzzle_name, save_data)
+			GameSaver.save_puzzle(puzzle_save_name, save_data)
 		else:
 			var save_data : Dictionary = {
 				"line": null,
 				"active": is_active
 			}
-			GameSaver.save_puzzle(puzzle_name, save_data)
+			GameSaver.save_puzzle(puzzle_save_name, save_data)
 
 func load_save() -> void:
-	var data = GameSaver.get_puzzle(puzzle_name)
+	var data = GameSaver.get_puzzle(puzzle_save_name)
 	if data == null: return
 	if data.line != null:
 		is_answered = true
