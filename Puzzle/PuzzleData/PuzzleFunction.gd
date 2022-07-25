@@ -16,13 +16,7 @@ static func line_to_directioned_edges(puzzle_data : PuzzleData, line : LineData)
 				ans.append(DirectionedEdge.new(edge_map[to][from], true))
 	return ans
 
-#static func around_area_edges_count(directioned_edges : Array[DirectionedEdge], area : Area) -> int:
-#	var edges : Array[Edge] = directioned_edges.map(func(i : DirectionedEdge):return i.edge)
-#	var count : int = 0
-#	for edge in area.srounds:
-#		if edges.has(edge): count += 1
-#	return count
-
+# Move Line
 static func _calcu_remain_movement(movement_length : float, current_percentage : float, total_length : float, forward : bool = true) -> float:
 	var percentage : float = movement_length / total_length
 	if forward:
@@ -52,6 +46,8 @@ class _MoveLineInfo extends RefCounted:
 		self.forward = forward
 		pass
 	pass
+
+const DotSmoothSensitivity : float = 0.6
 
 static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_movement : Vector2, dot_smooth : bool = false) -> Vector2:
 	var movement_normal := remain_movement.normalized()
@@ -129,7 +125,7 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 		return Vector2.ZERO
 	
 	if dot_smooth:
-		var dot := nearest_dot
+		var dot := lerp(1.0, nearest_dot, DotSmoothSensitivity)
 		movement_length = movement_length * abs(dot)
 	
 	var remained : Vector2 = Vector2.ZERO
@@ -152,7 +148,7 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	line_data.clamp_line_end(puzzle_data.normal_radius, puzzle_data.start_radius)
 	return remained
 
-static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement : Vector2, dot_smooth : bool = false) -> LineData:
+static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement : Vector2, dot_smooth : bool = true) -> LineData:
 	if is_zero_approx(movement.length_squared()): return line_data
 	var new_line : LineData = line_data.duplicate()
 	var count := 0
@@ -162,6 +158,7 @@ static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement :
 #	print(count)
 	return new_line
 
+# ====================================================================================================
 static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector2) -> Vertice:
 	var last_vertice : Vertice = null
 	var last_distance : float = INF
@@ -185,15 +182,16 @@ static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32
 		line.get_current_segment().set_percentage(end_percentage)
 	return line
 
-static func map_line_data(line_data : LineData, custom_data_key : StringName) -> Array:
+static func map_line_data(puzzle_data : PuzzleData, line_data : LineData, custom_data_key : StringName) -> Array:
 	var ans : Array = []
-	for vertice in line_data.to_vertices():
-		if vertice.has_custom_data(custom_data_key):
-			ans.append(vertice.get_custom_data(custom_data_key))
+	for elem in line_data.to_puzzle_elements(puzzle_data):
+		if elem.has_custom_data(custom_data_key):
+			ans.append(elem.get_custom_data(custom_data_key))
 		else:
 			return []
 	return ans
 
+# TODO refactor
 static func get_valid_line(puzzle_data : PuzzleData, line_data : LineData) -> LineData:
 	var new_line : LineData
 	var vertices_count := puzzle_data.vertices.size()
@@ -237,6 +235,7 @@ static func get_base_path_percentage(line_data : LineData, base_path : LineData,
 		return 1.0
 	return line_length / base_length
 
+# Area Util
 static func _get_area_neighbour_by_sround_edge_id(puzzle_data : PuzzleData, area : Area, edge_id : int) -> Array:
 	if not area.srounds.has(edge_id): return []
 	if not puzzle_data.area_neighbour_map.has(edge_id): return []
@@ -249,29 +248,24 @@ static func _is_areas_neighbour(puzzle_data : PuzzleData, area1 : Area, area2 : 
 		if area_sround.has(area1) and area_sround.has(area2): return true
 	return false
 
-static func has_edge(puzzle_data : PuzzleData, segment : LineDataSegment) -> bool:
-	var normal : bool = puzzle_data.edge_map.has(segment.from) and puzzle_data.edge_map[segment.from].has(segment.to)
-	var invert : bool = puzzle_data.edge_map.has(segment.to) and puzzle_data.edge_map[segment.to].has(segment.from)
-	return normal or invert
-
-static func _reduce_linked_areas(puzzle_data : PuzzleData, line_data : LineData, area : Area, ans : Array[Area]) -> void:
+static func _reduce_linked_areas(puzzle_data : PuzzleData, edge_ids : PackedInt32Array, area : Area, ans : Array[Area]) -> void:
 	for edge_id in area.srounds:
-		if line_data.has_edge(puzzle_data.get_edge_by_id(edge_id)): continue
+		if edge_ids.has(edge_id): continue
 		var sround_areas : Array[Area] = _get_area_neighbour_by_sround_edge_id(puzzle_data, area, edge_id)
 		for sub_area in sround_areas:
 			if ans.has(sub_area): continue
 			else:
 				ans.append(sub_area)
-				_reduce_linked_areas(puzzle_data, line_data, sub_area, ans)
+				_reduce_linked_areas(puzzle_data, edge_ids, sub_area, ans)
 	pass
 
-static func get_isolated_areas(puzzle_data : PuzzleData, line_data : LineData) -> Array:
+static func get_isolated_areas(puzzle_data : PuzzleData, edge_ids : PackedInt32Array) -> Array:
 	var areas : Array[Area] = puzzle_data.areas.duplicate()
 	var ans = []
 	while areas.size() > 0:
 		var area : Area = areas.pop_back()
 		var _ans : Array[Area] = [area]
-		_reduce_linked_areas(puzzle_data, line_data, area, _ans)
+		_reduce_linked_areas(puzzle_data, edge_ids, area, _ans)
 		for sub_area in _ans:
 			areas.erase(sub_area)
 		ans.append(_ans)
@@ -295,7 +289,8 @@ static func check_puzzle_answer(puzzle_data : PuzzleData, line_data : LineData) 
 				grouped_rule_element_map[rule] = elem
 	if !grouped_rule_element_map.is_empty():
 		var all_grouped_rules : Array[PuzzleRule] = grouped_rule_element_map.keys()
-		var isolated_areas := get_isolated_areas(puzzle_data, line_data)
+		var edge_ids : PackedInt32Array = line_data.get_edge_ids()
+		var isolated_areas := get_isolated_areas(puzzle_data, edge_ids)
 		for isolated_area in isolated_areas:
 			var _all_grouped_rules := all_grouped_rules.duplicate()
 			var rule_element_map = {}

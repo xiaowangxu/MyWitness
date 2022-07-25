@@ -38,22 +38,22 @@ func get_preferred_transform(player_transform: Transform3D) -> Transform3D:
 	var preferred_transform := Transform3D(Basis(Quaternion(Vector3(0,PI/2+angle,0))), normalized_position)#Basis(Quaternion(Vector3(0,0,0)))
 	return preferred_transform
 
-var last_angle : float = 0.0
-func on_puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
-	is_waiting_for_comfirm = false
-	current_position = puzzle_position
-	puzzle_line = LineData.new(start_vertice)
-	GlobalData.set_mouse_position_from_world(world_position)
-	GlobalData.set_active_puzzle_panel(self)
-	GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
-	set_puzzle_line(puzzle_line)
-	base_viewport_instance.puzzle_renderer.create_start_tween()
-	play_sound("start")
-	var position_vec3 := (world_position - self.global_transform.origin).normalized()
-	last_angle = Vector2(position_vec3.x, position_vec3.z).angle()
-	pass
+#var last_angle : float = 0.0
+#func on_puzzle_started(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
+#	is_waiting_for_comfirm = false
+#	current_position = puzzle_position
+#	puzzle_line = LineData.new(start_vertice)
+#	GlobalData.set_mouse_position_from_world(world_position)
+#	GlobalData.set_active_puzzle_panel(self)
+#	GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
+#	set_puzzle_line(puzzle_line)
+#	base_viewport_instance.puzzle_renderer.create_start_tween()
+#	play_sound("start")
+#	var position_vec3 := (world_position - self.global_transform.origin).normalized()
+#	last_angle = Vector2(position_vec3.x, position_vec3.z).angle()
+#	pass
 
-func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> Vector2:
+func on_move_finished(line_data : LineData, puzzle_position : Vector2 = Vector2.ZERO, mouse_position : Vector3 = Vector3.ZERO, world_position : Vector3 = Vector3.ZERO) -> Vector2:
 	var position_vec3 := (world_position - self.global_transform.origin).normalized()
 	var angle := Vector2(position_vec3.x, -position_vec3.z).angle()
 	var angle2 := Vector2(position_vec3.x, position_vec3.z).angle()

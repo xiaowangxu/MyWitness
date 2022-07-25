@@ -15,7 +15,7 @@ enum PuzzleInteractState {
 }
 
 signal puzzle_answered(correct : bool, tag : int, errors : Array[Decorator])
-signal puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
+signal puzzle_started(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_exited()
 signal puzzle_checked()
 signal puzzle_interact_state_changed(state : PuzzleInteractState)
@@ -264,14 +264,8 @@ func input_event(event : InputEvent, mouse_position : Vector3, world_position : 
 			var mouse_pos : Vector3 = Vector3(_mouse_pos.x, _mouse_pos.y, 0)
 			var world_pos : Vector3 = mouse_to_global(Vector3(mouse_pos.x, mouse_pos.y, 0))
 			if GlobalData.is_position_in_view(world_pos) and GlobalData.check_reachable(world_pos, area):
-				set_viewports()
-				is_answered = false
-				is_waiting_for_comfirm = false
-				puzzle_line = LineData.new(start_vertice)
-				set_puzzle_line(puzzle_line)
-				current_position = pos
-				puzzle_started.emit(start_vertice, pos, mouse_pos, world_pos)
-				puzzle_interact_state_changed.emit(PuzzleInteractState.DRAWING)
+				var new_line := LineData.new(start_vertice)
+				start_puzzle(new_line, pos, mouse_pos, world_pos)
 				GlobalData.set_mouse_position_from_world(world_pos)
 				GlobalData.set_active_puzzle_panel(self)
 				GlobalData.set_cursor_state(GlobalData.CursorState.DRAWING)
@@ -315,13 +309,11 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 #	test_cursor.position = puzzlerenderer.puzzle_to_panel(current_position)
 	var new_line : LineData = PuzzleFunction.move_line(puzzle_data, puzzle_line, delta)
 	var ans_line : LineData = clamp_puzzle_line(new_line, puzzle_line)
-	puzzle_line = ans_line 
-	var end_position : Vector2 = puzzle_line.get_current_position()
+	var end_position : Vector2 = ans_line.get_current_position()
 	var mouse_pos : Vector2 = puzzle_to_panel(end_position)
-	current_position = end_position
 	var mouse_position : Vector3 = Vector3(mouse_pos.x, mouse_pos.y, 0)
 	var world_position : Vector3 = mouse_to_global(mouse_position)
-	var new_mouse_pos : Vector2 = puzzle_to_panel(_on_move_finished(puzzle_line, end_position, mouse_position, world_position))
+	var new_mouse_pos : Vector2 = puzzle_to_panel(commit_move_line(ans_line, end_position, mouse_position, world_position))
 	var new_world_pos : Vector3 = mouse_to_global(Vector3(new_mouse_pos.x, new_mouse_pos.y, 0))
 	return new_world_pos
 
@@ -450,6 +442,17 @@ func on_puzzle_render_state_changed(state : PuzzleRenderer.State) -> void:
 	_puzzle_state = state
 	pass
 
+func start_puzzle(line_data : LineData, puzzle_pos : Vector2 = Vector2.ZERO, mouse_pos : Vector3 = Vector3.ZERO, world_pos : Vector3 = Vector3.ZERO) -> void:
+	set_viewports()
+	is_answered = false
+	is_waiting_for_comfirm = false
+	puzzle_line = line_data
+	set_puzzle_line(puzzle_line)
+	current_position = puzzle_pos
+	puzzle_started.emit(puzzle_line, puzzle_pos, mouse_pos, world_pos)
+	puzzle_interact_state_changed.emit(PuzzleInteractState.DRAWING)
+	pass
+
 var is_waiting_for_comfirm : bool = false
 func _on_confirm(force_cancel : bool = false) -> void:
 	if force_cancel or not is_waiting_for_comfirm:
@@ -458,9 +461,13 @@ func _on_confirm(force_cancel : bool = false) -> void:
 		_check_puzzle()
 
 func _exit_puzzle() -> void:
+	exit_puzzle()
+	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
+	pass
+
+func exit_puzzle() -> void:
 	puzzle_line = null
 	save()
-	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	get_base_viewport_instance().puzzle_renderer.create_exit_tween()
 	puzzle_exited.emit()
 	puzzle_interact_state_changed.emit(PuzzleInteractState.PICKING)
@@ -468,13 +475,17 @@ func _exit_puzzle() -> void:
 	pass
 
 func _check_puzzle() -> void:
+	check_puzzle()
+	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
+	pass
+
+func check_puzzle() -> void:
 	puzzle_line.forward(1.0)
 	set_puzzle_line(puzzle_line)
 	var correct_dict := check_puzzle_answer()
 	is_answered = correct_dict.tag >= 0
 	save()
 	puzzle_line = null
-	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	puzzle_answered.emit(is_answered, correct_dict.tag, correct_dict.errors)
 	puzzle_interact_state_changed.emit(PuzzleInteractState.ANSWERED)
 	interact_result_changed.emit(is_answered,  correct_dict.tag)
@@ -487,7 +498,7 @@ func check_puzzle_answer() -> Dictionary:
 	if errors.size() <= 0: return {"tag":last_vertice.tag, "errors": []}
 	return {"tag":-1, "errors": errors}
 
-func on_puzzle_started(start_vertice : Vertice, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
+func on_puzzle_started(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
 	get_base_viewport_instance().puzzle_renderer.create_start_tween()
 	play_sound("start")
 	pass
@@ -520,14 +531,15 @@ func _update_confirm_state(line_data : LineData) -> void:
 			on_waiting_to_confirm_changed(false)
 	hint_ring_render_item.set_end_hint_enabled(not is_waiting_for_comfirm)
 
-func _on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> Vector2:
+func commit_move_line(line_data : LineData, puzzle_position : Vector2 = Vector2.ZERO, mouse_position : Vector3 = Vector3.ZERO, world_position : Vector3 = Vector3.ZERO) -> Vector2:
+	puzzle_line = line_data 
 	var new_puzzle_pos := on_move_finished(line_data, puzzle_position, mouse_position, world_position)
 	current_position = new_puzzle_pos
 	set_puzzle_line(line_data)
 	_update_confirm_state(line_data)
 	return current_position
 
-func on_move_finished(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> Vector2:
+func on_move_finished(line_data : LineData, puzzle_position : Vector2 = Vector2.ZERO, mouse_position : Vector3 = Vector3.ZERO, world_position : Vector3 = Vector3.ZERO) -> Vector2:
 	return puzzle_position
 
 func on_waiting_to_confirm_changed(is_waiting : bool) -> void:

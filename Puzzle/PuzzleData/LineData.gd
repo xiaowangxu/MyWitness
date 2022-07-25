@@ -79,6 +79,18 @@ func to_vertices() -> Array:
 		ans.append(segment.to)
 	return ans
 
+func to_puzzle_element_ids(puzzle_data : PuzzleData) -> PackedInt32Array:
+	var ans : PackedInt32Array = []
+	for elem in to_puzzle_elements(puzzle_data):
+		ans.append(elem.id)
+	return ans
+
+func to_puzzle_elements(puzzle_data : PuzzleData) -> Array:
+	var ans : Array[PuzzleElement] = []
+	for i in range(size()):
+		ans.append(get_nth_puzzle_element(puzzle_data, i))
+	return ans
+
 # TODO: finish this
 #func get_points_with_interval(interval : float = 10.0) -> PackedVector2Array:
 #	var ans : PackedVector2Array = []
@@ -100,8 +112,16 @@ func get_length(from : int = 0, to : int = segments.size()) -> float:
 		length += get_nth_segment(i).get_length()
 	return length
 
-func get_segments_count() -> int:
-	return segments.size()+1
+func get_edge_ids() -> PackedInt32Array:
+	var ans : PackedInt32Array = []
+	for segment in segments:
+		ans.append(segment.edge_id)
+	return ans
+
+func get_nth_puzzle_element(puzzle_data : PuzzleData, idx : int = 0) -> PuzzleElement:
+	if idx > segments.size(): return null
+	if idx == 0: return start
+	return puzzle_data.get_edge_by_id(segments[idx - 1].edge_id)
 
 func get_nth_segment(idx : int = 0) -> LineDataSegment:
 	if idx > segments.size(): return null

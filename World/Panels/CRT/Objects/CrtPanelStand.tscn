@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://beo2iieb68qe2"]
+[gd_scene load_steps=8 format=3 uid="uid://beo2iieb68qe2"]
 
 [ext_resource type="ArrayMesh" uid="uid://bm0vni5apxn7r" path="res://World/Panels/CRT/Meshs/CRTPanelStand_立方体003.res" id="1_ijutx"]
+[ext_resource type="ArrayOccluder3D" uid="uid://bsgx3qc72lsvw" path="res://World/Panels/CRT/Objects/CrtPanelStand.occ" id="2_w4qql"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7pts3"]
 size = Vector3(1.3522, 0.0878558, 1.34978)
@@ -48,3 +49,6 @@ collision_mask = 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.690528, 1.92733, 0)
 shape = SubResource("BoxShape3D_k1hij")
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
+occluder = ExtResource("2_w4qql")

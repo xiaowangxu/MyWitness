@@ -1,0 +1,36 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://cmtmcptohkrq6"
+path="res://.godot/imported/SolarPanel.glb-4c898760647c7a1b646e6d5532d894cd.scn"
+
+[deps]
+
+source_file="res://World/Panels/SolarPanel/SolarPanel.glb"
+dest_files=["res://.godot/imported/SolarPanel.glb-4c898760647c7a1b646e6d5532d894cd.scn"]
+
+[params]
+
+nodes/root_type="Node3D"
+nodes/root_name="Scene Root"
+nodes/root_scale=1.0
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+import_script/path=""
+_subresources={
+"meshes": {
+"SolarPanel_立方体": {
+"generate/shadow_meshes": 2,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://World/Panels/SolarPanel/Meshs/SolarPanel_立方体.res"
+}
+}
+}
