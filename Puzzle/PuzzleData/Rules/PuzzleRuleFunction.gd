@@ -17,10 +17,10 @@ static func get_empty_grouped_rules_map() -> Dictionary:
 		COLOR_MATCH: [],
 	}
 
-static func check_grouped_rules(rule : int, puzzle_data : PuzzleData, line_data : LineData, grouped_rules : Array[PuzzleRule], isolated_area : Array[Area]) -> Array:
+static func check_grouped_rules(rule : int, puzzle_data : PuzzleData, lines_data : Array, grouped_rules : Array[PuzzleRule], isolated_area : Array[Area]) -> Array:
 	match rule:
-		COLOR_ISOLATE: return ColorIsolate.check_grouped_rule(puzzle_data, line_data, grouped_rules, isolated_area)
-		COLOR_MATCH: return ColorMatch.check_grouped_rule(puzzle_data, line_data, grouped_rules, isolated_area)
+		COLOR_ISOLATE: return ColorIsolate.check_grouped_rule(puzzle_data, lines_data, grouped_rules, isolated_area)
+		COLOR_MATCH: return ColorMatch.check_grouped_rule(puzzle_data, lines_data, grouped_rules, isolated_area)
 #		AREA_SROUND_SEGMENT_COUNT: return AreaSroundSegmentCountRule.check_grouped_rule(puzzle_data, line_data, grouped_decorators, isolated_areas)
 		_: return []
 

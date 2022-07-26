@@ -496,9 +496,14 @@ func check_puzzle() -> void:
 # -1 is wrong >= 0 means different correct ans's tags
 func check_puzzle_answer() -> Dictionary:
 	var last_vertice := puzzle_line.get_current_vertice()
-	var errors : Array[Decorator] = PuzzleFunction.check_puzzle_answer(puzzle_data, puzzle_line)
+	var errors : Array[Decorator] = PuzzleFunction.check_puzzle_answer(puzzle_data, get_check_lines(puzzle_line))
 	if errors.size() <= 0: return {"tag":last_vertice.tag, "errors": []}
 	return {"tag":-1, "errors": errors}
+
+# Array[LineData]
+func get_check_lines(line_data : LineData) -> Array:
+	var ans : Array[LineData] = [line_data]
+	return ans
 
 func on_puzzle_started(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3) -> void:
 	get_base_viewport_instance().puzzle_renderer.create_start_tween()

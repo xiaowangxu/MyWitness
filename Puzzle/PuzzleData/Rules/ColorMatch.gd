@@ -14,7 +14,7 @@ func _init(data) -> void:
 	self.handle_type = 1
 	pass
 
-static func check_grouped_rule(puzzle_data : PuzzleData, line_data, grouped_rules : Array[PuzzleRule], isolated_area : Array) -> Array:
+static func check_grouped_rule(puzzle_data : PuzzleData, lines_data : Array, grouped_rules : Array[PuzzleRule], isolated_area : Array) -> Array:
 	var ans : Array[PuzzleRule] = []
 	var counts : Dictionary = {}
 	for rule in grouped_rules:
