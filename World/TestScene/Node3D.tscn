@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://chj5gydaya3pw"]
+[gd_scene load_steps=30 format=3 uid="uid://chj5gydaya3pw"]
 
 [ext_resource type="PackedScene" uid="uid://ksg6ktkih5kr" path="res://World/Panels/CRT/Objects/CrtPanelStandBar.tscn" id="1_5w0eg"]
 [ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="2_3blej"]
@@ -12,7 +12,7 @@
 [ext_resource type="Script" path="res://Linker/PanelInteractableLinker.gd" id="8_mbl52"]
 [ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="9_f4anv"]
 [ext_resource type="Shader" uid="uid://dw6mya4bquqm2" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
-[ext_resource type="Shader" uid="uid://bfr3lr5umbvw1" path="res://World/Panels/CRTBox/Materials/CRTBoxShader.tres" id="12_8wjxh"]
+[ext_resource type="Shader" uid="uid://0qj6ox37ggrc" path="res://World/Panels/CRTBox/Materials/CRTBoxShader.tres" id="12_8wjxh"]
 [ext_resource type="PackedScene" uid="uid://c0vwm084ntxqm" path="res://World/Panels/CRTBox/Objects/CRTBox.tscn" id="12_knu8o"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="13_tdnaq"]
 [ext_resource type="PackedScene" uid="uid://knk1lbymqvom" path="res://World/Panels/SolarPanel/Objects/SolarPanel.tscn" id="16_1ytvv"]
@@ -82,6 +82,18 @@ shader_param/albedo = Color(1, 1, 1, 1)
 shader_param/texture_albedo = ExtResource("9_f4anv")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_os25v"]
+render_priority = 0
+shader = SubResource("Shader_mlaq8")
+shader_param/albedo = Color(1, 1, 1, 1)
+shader_param/texture_albedo = ExtResource("9_f4anv")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6xs4f"]
+render_priority = 0
+shader = SubResource("Shader_mlaq8")
+shader_param/albedo = Color(1, 1, 1, 1)
+shader_param/texture_albedo = ExtResource("9_f4anv")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aq7mu"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
 shader_param/albedo = Color(1, 1, 1, 1)
@@ -518,4 +530,74 @@ shape = SubResource("ConvexPolygonShape3D_eia8a")
 bus = &"PuzzleSoundEffect"
 
 [node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel3"]
+script = ExtResource("13_tdnaq")
+
+[node name="PuzzlePanel4" parent="." instance=ExtResource("7_kbxjn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.66654, 4, 5.51205)
+puzzle_name = "editor"
+save_name = "editor"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+puzzle_surface_material_id = 1
+initial_active = true
+
+[node name="Mesh" parent="PuzzlePanel4" instance=ExtResource("16_1ytvv")]
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_6xs4f")
+
+[node name="Area" type="Area3D" parent="PuzzlePanel4"]
+transform = Transform3D(1.773, 0, 8.9407e-08, 0, 1.773, 0, -1.78814e-07, 0, 1, -3.8147e-06, 0, 0.048974)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzlePanel4/Area"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_eia8a")
+
+[node name="Audio" type="AudioStreamPlayer" parent="PuzzlePanel4"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel4"]
+script = ExtResource("13_tdnaq")
+
+[node name="PuzzlePanel5" parent="." instance=ExtResource("7_kbxjn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.85541, 4, 5.51205)
+puzzle_name = "editor2"
+save_name = "editor2"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+puzzle_surface_material_id = 1
+initial_active = true
+
+[node name="Mesh" parent="PuzzlePanel5" instance=ExtResource("16_1ytvv")]
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_aq7mu")
+
+[node name="Area" type="Area3D" parent="PuzzlePanel5"]
+transform = Transform3D(1.773, 0, 8.9407e-08, 0, 1.773, 0, -1.78814e-07, 0, 1, -3.8147e-06, 0, 0.048974)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzlePanel5/Area"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_eia8a")
+
+[node name="Audio" type="AudioStreamPlayer" parent="PuzzlePanel5"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel5"]
 script = ExtResource("13_tdnaq")

@@ -2,9 +2,11 @@ class_name LineSegment
 extends RenderItem
 
 var line_data : LineData = null :
+	get: return _line_data
 	set(val):
-		line_data = val
+		_line_data = val
 		update()
+var _line_data : LineData = null
 var start_radius : float = 20.0:
 	set(val):
 		val = clampf(val, 0.0, INF)
@@ -35,15 +37,18 @@ func _init(line_data : LineData, normal_radius : float = 10.0, start_radius : fl
 	self.normal_radius = normal_radius
 	self.wrap_rect = wrap_rect
 
+func clear_line_data() -> void:
+	_line_data = null
+
 func _draw() -> void:
-	if percentage == 0.0 or line_data == null:
+	if percentage == 0.0 or _line_data == null:
 		return
-	var last_position : Vector2 = line_data.start.position
+	var last_position : Vector2 = _line_data.start.position
 	RenderingServer.canvas_item_add_circle(_rid, last_position, start_radius * percentage, WHITE)
 #	RenderingServer.canvas_item_add_line(_rid, start, end, WHITE, line_width)
 	var _normal_radius := normal_radius * percentage
 	var _line_width := _normal_radius * 2.0
-	for segment in line_data.segments:
+	for segment in _line_data.segments:
 		if not segment.wrap:
 			var positions : PackedVector2Array = segment.get_positions()
 			RenderingServer.canvas_item_add_circle(_rid, positions[1], _normal_radius, WHITE)

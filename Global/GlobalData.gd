@@ -17,6 +17,8 @@ const AllPuzzleJsons : Dictionary = {
 	"generator": preload("res://PuzzleDataJson/PuzzleTest.json"),
 	"crt": preload("res://PuzzleDataJson/CRTTest.json"),
 	"mirror": preload("res://PuzzleDataJson/Mirror.json"),
+	"editor": preload("res://PuzzleDataJson/Editor.json"),
+	"editor2": preload("res://PuzzleDataJson/Editor3.json"),
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),
@@ -26,6 +28,8 @@ var AllPuzzleData : Dictionary = {
 	"generator": PuzzleData.new(AllPuzzleJsons.generator),
 	"crt": PuzzleData.new(AllPuzzleJsons.crt),
 	"mirror": PuzzleData.new(AllPuzzleJsons.mirror),
+	"editor": PuzzleData.new(AllPuzzleJsons.editor),
+	"editor2": PuzzleData.new(AllPuzzleJsons.editor2),
 }
 # Layers: Puzzles | CurrentPuzzle | ... | InvisibleObstacles | Player | Interactable | Visual | Normal
 const PhysicsLayerNormal 				: int = 0b10000000000000000000000000000001

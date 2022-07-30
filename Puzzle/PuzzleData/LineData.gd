@@ -179,9 +179,28 @@ func clamp_line_end(line_radius : float, start_radius : float) -> void:
 	if segments.size() == 0: return
 	var end_segment := segments[-1]
 	var to_vertice := end_segment.to
+	var normal : Vector2 = end_segment.get_normal_start_with_vertice(to_vertice)
 	if pass_through(to_vertice):
-		end_segment.percentage = clampf(end_segment.percentage, 0.0, 
-			1.0-(line_radius + (line_radius if to_vertice != start else start_radius))/end_segment.length)
+		var min_percentage = end_segment.percentage
+		for segment in segments:
+			if segment == end_segment: continue
+			if segment.from == to_vertice or segment.to == to_vertice:
+				var segment_normal : Vector2 = segment.get_normal_start_with_vertice(to_vertice)
+				var angle : float = abs(normal.angle_to(segment_normal))
+				if to_vertice == start and line_radius < start_radius:
+					var percentage := 1.0 - (line_radius + start_radius) / end_segment.length
+					min_percentage = minf(min_percentage, percentage)
+				elif angle >= PI/2 or is_equal_approx(angle, PI/2):
+					var percentage := 1.0-(line_radius + (line_radius if to_vertice != start else start_radius))/end_segment.length
+					min_percentage = minf(min_percentage, percentage)
+				elif is_zero_approx(angle):
+					min_percentage = 0
+					break
+				else:
+					var x : float = ((line_radius if to_vertice != start else start_radius) * 2) / sin(angle)
+					var percentage : float = 1.0 - (x / end_segment.length)
+					min_percentage = minf(min_percentage, percentage)
+		end_segment.percentage = min_percentage
 		if is_zero_approx(end_segment.percentage):
 			segments.pop_back()
 	pass

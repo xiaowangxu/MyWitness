@@ -31,7 +31,10 @@ func _init(from : Vertice, to : Vertice, percentage : float = 1.0, from_percenta
 		self.normal = from.position.direction_to(to.position)
 	set_from_percentage(from_percentage)
 	set_percentage(percentage)
-	
+
+func get_normal_start_with_vertice(start_vertice : Vertice) -> Vector2:
+	return self.normal * (1 if self.from == start_vertice else -1)
+
 func set_percentage(percentage : float) -> void:
 	self.percentage = clampf(percentage, 0.0, 1.0)
 
