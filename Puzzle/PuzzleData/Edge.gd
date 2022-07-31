@@ -10,7 +10,7 @@ var wrap_from : Vector2
 var wrap_to : Vector2
 var wrap_extend : float = 0.0
 
-func _init(from : Vertice, to : Vertice, center : Vector2, decorator : Decorator = null) -> void:
+func _init(from : Vertice, to : Vertice, center : Vector2 = Vector2.ZERO, decorator : Decorator = null) -> void:
 	self.from = from
 	self.to = to
 	self.position = center

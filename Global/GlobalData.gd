@@ -18,7 +18,7 @@ const AllPuzzleJsons : Dictionary = {
 	"crt": preload("res://PuzzleDataJson/CRTTest.json"),
 	"mirror": preload("res://PuzzleDataJson/Mirror.json"),
 	"editor": preload("res://PuzzleDataJson/Editor.json"),
-	"editor2": preload("res://PuzzleDataJson/Editor3.json"),
+	"editor2": preload("res://PuzzleDataJson/Editor6.json"),
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),

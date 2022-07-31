@@ -39,13 +39,29 @@ static func _get_directioned_edge(edge : Edge, from : Vertice) -> DirectionedEdg
 
 class _MoveLineInfo extends RefCounted:
 	var directioned_edge : DirectionedEdge
+	var force_new_directioned_edge : Edge
 	var forward : bool = true
+	var force_not_new_line : bool = false
 	
-	func _init(directioned_edge : DirectionedEdge, forward : bool = true) -> void:
+	func _init(directioned_edge : DirectionedEdge, forward : bool = true, force_not_new_line : bool = false, force_new_directioned_edge : Edge = null) -> void:
 		self.directioned_edge = directioned_edge
+		self.force_new_directioned_edge = force_new_directioned_edge if force_new_directioned_edge != null else self.directioned_edge.edge
 		self.forward = forward
+		self.force_not_new_line = force_not_new_line
 		pass
 	pass
+
+static func _has_normal_approx(normals : PackedVector2Array, normal : Vector2) -> bool:
+	for v in normals:
+		if v.is_equal_approx(normal): return true
+	return false
+
+static func _get_new_edge_by_normal(puzzle_data : PuzzleData, vertice : Vertice, normal : Vector2) -> Edge:
+	for neighbour_idx in vertice.neighbours:
+			var neighbour : Edge = puzzle_data.get_edge_by_id(neighbour_idx)
+			var dir_edge := _get_directioned_edge(neighbour, vertice)
+			if dir_edge.normal.is_equal_approx(normal): return dir_edge.edge
+	return null
 
 const DotSmoothSensitivity : float = 0.6
 
@@ -55,34 +71,51 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	var current_vertice : Vertice = line_data.get_current_vertice()
 #	print(">>>>> ", movement_normal, current_vertice)
 #	print(">>>>> ", current_edge)
-	var from_vertice : Vertice = null
+	var from_vertice : Vertice =  line_data.get_current_from_vertice()
 	var current_percentage : float = line_data.get_current_percentage()
 	var current_normal : Vector2 = line_data.get_current_normal()
 	var movement_length : float = remain_movement.length()
 	var is_empty : bool = line_data.is_empty()
 	var is_complete : bool = line_data.is_complete()
-	if not is_empty: from_vertice = line_data.get_current_from_vertice()
+	var pass_through : bool = line_data.pass_through(current_vertice)
+	
 	
 	var from_normals : Array[_MoveLineInfo] = []
 	var to_normals : Array[_MoveLineInfo] = []
 	var start_normals : Array[_MoveLineInfo] = []
 	
+	var _has_normals : PackedVector2Array = []
+	
+	var filtered_normals : Array[_MoveLineInfo] = []
+	
 #	to_normals
-	if line_data.pass_through(current_vertice):
+	if pass_through:
 		if current_edge != null:
 			var dir_edge := _get_directioned_edge(current_edge, current_vertice)
-			to_normals.append(_MoveLineInfo.new(dir_edge, false))
+			var move_line_info := _MoveLineInfo.new(dir_edge, false)
+			to_normals.append(move_line_info)
+			if is_empty or current_percentage >= 0.5:
+				filtered_normals.append(move_line_info)
+				_has_normals.append(move_line_info.directioned_edge.normal)
 	else:
 		for neighbour_idx in current_vertice.neighbours:
 			var neighbour : Edge = puzzle_data.get_edge_by_id(neighbour_idx)
 			var dir_edge := _get_directioned_edge(neighbour, current_vertice)
-			to_normals.append(_MoveLineInfo.new(dir_edge, current_edge != neighbour))
+			var move_line_info := _MoveLineInfo.new(dir_edge, current_edge != neighbour)
+			to_normals.append(move_line_info)
+			if is_empty or current_percentage >= 0.5:
+				filtered_normals.append(move_line_info)
+				_has_normals.append(move_line_info.directioned_edge.normal)
 #	from_normals
 	if not is_empty:
 		for neighbour_idx in from_vertice.neighbours:
 			var neighbour : Edge = puzzle_data.get_edge_by_id(neighbour_idx)
 			var dir_edge := _get_directioned_edge(neighbour, from_vertice)
-			from_normals.append(_MoveLineInfo.new(dir_edge, current_edge == neighbour))
+			var move_line_info := _MoveLineInfo.new(dir_edge, current_edge == neighbour)
+			from_normals.append(move_line_info)
+			if current_percentage < 0.5:
+				filtered_normals.append(move_line_info)
+				_has_normals.append(move_line_info.directioned_edge.normal)
 	
 #	printt("from", from_normals.keys())
 #	printt("to", to_normals.keys())
@@ -91,22 +124,46 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	var is_end_segment : bool = to_normals.size() == 1 and to_normals[0].directioned_edge.to == from_vertice
 	
 #	print("=====================================================")
-	var filtered_normals : Array
 	if is_empty:
-		filtered_normals.append_array(to_normals)
+		pass
 	else:
+		var forward_new_edge : DirectionedEdge = _get_directioned_edge(current_edge, from_vertice)
+		var backward_new_edge : DirectionedEdge = _get_directioned_edge(current_edge, current_vertice)
 		if current_percentage < 0.5:
-			filtered_normals.append_array(from_normals)
-			filtered_normals.append(
-				_MoveLineInfo.new(_get_directioned_edge(current_edge, current_vertice), false)
-			)
+			var move_line_info := _MoveLineInfo.new(backward_new_edge, false)
+			filtered_normals.append(move_line_info)
+			_has_normals.append(move_line_info.directioned_edge.normal)
 		else:
-			filtered_normals.append_array(to_normals)
-			
 			if not is_complete or is_end_segment:
-				filtered_normals.append(
-					_MoveLineInfo.new(_get_directioned_edge(current_edge, from_vertice), true)
-				)
+				var move_line_info := _MoveLineInfo.new(forward_new_edge, true)
+				filtered_normals.append(move_line_info)
+				_has_normals.append(move_line_info.directioned_edge.normal)
+	
+	if false and not pass_through and current_edge != null and current_edge.has_custom_data(&"connect_link"):
+#		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> linked ", current_edge)
+		var _from_vertice : Vertice = puzzle_data.get_vertice_by_id(current_edge.get_custom_data(&"connect_link").from)
+		var _to_vertice : Vertice = puzzle_data.get_vertice_by_id(current_edge.get_custom_data(&"connect_link").to)
+		var _current_position : Vector2 = line_data.get_current_position()
+		var is_near_to_from : bool = _from_vertice.position.distance_squared_to(_current_position) <= _to_vertice.position.distance_squared_to(_current_position)
+		var need_backward : bool = _from_vertice.position.distance_squared_to(_current_position) >= _from_vertice.position.distance_squared_to(from_vertice.position)
+#		if is_equal_approx(_from_vertice.position.distance_squared_to(_current_position), _from_vertice.position.distance_squared_to(from_vertice.position)):
+#		printt("======================================================", _from_vertice.position.distance_squared_to(_current_position), _from_vertice.position.distance_squared_to(from_vertice.position))
+		if is_near_to_from:
+			for neighbour_idx in _from_vertice.neighbours:
+				var neighbour : Edge = puzzle_data.get_edge_by_id(neighbour_idx)
+				var dir_edge := _get_directioned_edge(neighbour, _from_vertice)
+				var move_line_info := _MoveLineInfo.new(dir_edge, not need_backward, need_backward, _get_new_edge_by_normal(puzzle_data, current_vertice, current_normal))
+				if _has_normal_approx(_has_normals, move_line_info.directioned_edge.normal): continue
+#				print(">>>>>>> from ", move_line_info.directioned_edge.normal, need_backward)
+				filtered_normals.append(move_line_info)
+		else:
+			for neighbour_idx in _to_vertice.neighbours:
+				var neighbour : Edge = puzzle_data.get_edge_by_id(neighbour_idx)
+				var dir_edge := _get_directioned_edge(neighbour, _to_vertice)
+				var move_line_info := _MoveLineInfo.new(dir_edge, need_backward, not need_backward, _get_new_edge_by_normal(puzzle_data, current_vertice, current_normal))
+				if _has_normal_approx(_has_normals, move_line_info.directioned_edge.normal): continue
+#				print(">>>>>>> to ", move_line_info.directioned_edge.normal, need_backward)
+				filtered_normals.append(move_line_info)
 	
 	if filtered_normals.size() == 0: return Vector2.ZERO
 	var nearest_move_line : _MoveLineInfo = filtered_normals[0]
@@ -130,9 +187,12 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	
 	var remained : Vector2 = Vector2.ZERO
 	
-	if is_complete and current_edge != nearest_move_line.directioned_edge.edge:
+#	print(">>>>> nerw line ?? ", nearest_move_line.directioned_edge.edge.id)
+#	print(">>>>> not nerw line ?? ", nearest_move_line.force_not_new_line)
+#	print(">>>>> forward ?? ", nearest_move_line.forward)
+	if is_complete and current_edge != nearest_move_line.directioned_edge.edge and not nearest_move_line.force_not_new_line:
 #		print(">>>> new line")
-		line_data.add_edge_segment(nearest_move_line.directioned_edge.edge, movement_length/nearest_move_line.directioned_edge.length)
+		line_data.add_edge_segment(nearest_move_line.force_new_directioned_edge, movement_length/nearest_move_line.directioned_edge.length)
 		remained = _calcu_remain_movement(movement_length, 0.0, nearest_move_line.directioned_edge.length, true) * movement_normal
 	else:
 		var forward : bool = true
