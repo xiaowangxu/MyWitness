@@ -106,7 +106,7 @@ func is_empty() -> bool:
 func size() -> int:
 	return segments.size() + 1
 
-func get_length(from : int = 0, to : int = segments.size()) -> float:
+func get_length(from : int = 0,  to : int = segments.size()) -> float:
 	var length := 0.0
 	for i in range(from, to + 1):
 		length += get_nth_segment(i).get_length()
@@ -117,6 +117,24 @@ func get_edge_ids() -> PackedInt32Array:
 	for segment in segments:
 		ans.append(segment.edge_id)
 	return ans
+
+func validate() -> void:
+	for i in range(segments.size()):
+		var segment : LineDataSegment = segments[i]
+		if not segment.from.neighbours.has(segment.edge_id):
+			segments = segments.slice(0, i)
+			return
+		if i == 0:
+			if segment.from.type != Vertice.VerticeType.START:
+				segments = []
+				return
+		else:
+			if segment.from.type != Vertice.VerticeType.NORMAL:
+				segments = segments.slice(0, i)
+				return
+		if segment.to.type == Vertice.VerticeType.STOP or segment.to.type == Vertice.VerticeType.END:
+			segments = segments.slice(0, i + 1)
+			return
 
 func get_nth_puzzle_element(puzzle_data : PuzzleData, idx : int = 0) -> PuzzleElement:
 	if idx > segments.size(): return null
@@ -147,7 +165,7 @@ func get_current_edge_id() -> int:
 
 func get_current_segment_length() -> float:
 	if segments.size() == 0: return 0.0
-	return segments[-1].length
+	return segments[-1].get_length()
 
 func get_current_position() -> Vector2:
 	if segments.size() == 0: return start.position
@@ -218,6 +236,22 @@ func clamp_to_segment(segment : LineDataSegment, forward : bool = true) -> void:
 			break
 	if is_zero_approx(get_current_percentage()):
 		segments.pop_back()
+	pass
+
+func clamp_to_length(length : float = 0.0) -> void:
+	if length <= 0.0: return
+	var total_length := get_length()
+	if total_length <= length: return
+	total_length = length
+	for i in range(segments.size()):
+		var segment := segments[i]
+		var segment_length := segment.get_length()
+		if total_length - segment_length <= 0:
+			segments = segments.slice(0, i + 1)
+			var percentage : float = segment.get_length_percentage(total_length)
+			segment.set_percentage(percentage)
+			return
+		total_length -= segment_length
 	pass
 
 func duplicate() -> LineData:

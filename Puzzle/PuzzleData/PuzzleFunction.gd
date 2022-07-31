@@ -172,7 +172,7 @@ static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector
 				last_distance = distance
 	return last_vertice
 
-static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array, end_percentage : float = 1.0) -> LineData:
+static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array, end_percentage : float = 1.0, by_length : bool = false) -> LineData:
 	if idxs.size() == 0: return null
 	var start_idx := idxs[0]
 	var start_vertice : Vertice = puzzle_data.get_vertice_by_id(start_idx)
@@ -183,14 +183,22 @@ static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32
 		if edge == null: return line
 		line.add_edge_segment(edge)
 	if not line.is_empty():
-		line.get_current_segment().set_percentage(end_percentage)
+		if by_length:
+			var percentage : float = line.get_current_segment().get_length_percentage(end_percentage)
+			line.get_current_segment().set_percentage(percentage)
+			pass
+		else:
+			line.get_current_segment().set_percentage(end_percentage)
 	return line
 
-static func map_line_data(puzzle_data : PuzzleData, line_data : LineData, custom_data_key : StringName) -> Array:
+static func map_line_data(puzzle_data : PuzzleData, line_data : LineData, custom_data_key : StringName, map_func : Callable = func(i, s, e):return i) -> Array:
 	var ans : Array = []
-	for elem in line_data.to_puzzle_elements(puzzle_data):
+	var elems := line_data.to_puzzle_elements(puzzle_data)
+	for i in range(elems.size()):
+		var elem : PuzzleElement = elems[i]
+		var segment = line_data.get_nth_segment(i)
 		if elem.has_custom_data(custom_data_key):
-			ans.append(elem.get_custom_data(custom_data_key))
+			ans.append(map_func.call(elem.get_custom_data(custom_data_key), segment, elem))
 		else:
 			break
 	return ans
@@ -210,7 +218,7 @@ static func get_valid_line(puzzle_data : PuzzleData, line_data : LineData) -> Li
 	return new_line
 
 # get the percentage of a portion of the path
-static func get_base_path_percentage(line_data : LineData, base_path : LineData, strict : bool = true, ) -> float:
+static func get_base_path_percentage(line_data : LineData, base_path : LineData, strict : bool = true) -> float:
 	var vertices_base : Array[Vertice] = base_path.to_vertices()
 	var vertices_line : Array[Vertice] = line_data.to_vertices()
 	var vertices_base_size := vertices_base.size()

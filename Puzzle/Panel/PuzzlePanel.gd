@@ -293,19 +293,27 @@ func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
 func get_base_viewport_instance() -> ViewportInstance:
 	return base_viewport_instance
 
+const ComputationTolerence : float = 0.5
 func on_mouse_moved(pos : Vector3) -> Vector3:
 	if not GlobalData.check_reachable(get_current_world_position(), area):
 		if puzzle_line.is_empty():
+			current_position = puzzle_line.get_current_position()
 			_on_confirm(true)
 			return get_current_world_position()
 		var back_line : LineData = LineData.new(puzzle_line.start)
 		puzzle_line = clamp_puzzle_line(back_line, puzzle_line, true)
 		if puzzle_line.is_empty():
+			current_position = puzzle_line.get_current_position()
 			_on_confirm(true)
 			return get_current_world_position()
 	var local = mouse_to_local(pos)
 	var new_pos : Vector2 = panel_to_puzzle(Vector2(local.x, local.y))
 	var delta := new_pos - current_position
+	
+	print(delta.length_squared())
+	if delta.length_squared() < ComputationTolerence:
+		delta = Vector2.ZERO
+	
 	test_info.puzzle_movement = delta
 	current_position = new_pos
 #	test_cursor.position = puzzlerenderer.puzzle_to_panel(current_position)
@@ -315,8 +323,12 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 	var mouse_pos : Vector2 = puzzle_to_panel(end_position)
 	var mouse_position : Vector3 = Vector3(mouse_pos.x, mouse_pos.y, 0)
 	var world_position : Vector3 = mouse_to_global(mouse_position)
-	var new_mouse_pos : Vector2 = puzzle_to_panel(commit_move_line(ans_line, end_position, mouse_position, world_position))
+	current_position = commit_move_line(ans_line, end_position, mouse_position, world_position)
+	var new_mouse_pos : Vector2 = puzzle_to_panel(current_position)
 	var new_world_pos : Vector3 = mouse_to_global(Vector3(new_mouse_pos.x, new_mouse_pos.y, 0))
+	
+#	print(">>>>>> ", pos == new_world_pos, new_world_pos, pos)
+	
 	return new_world_pos
 
 func mouse_to_local(pos : Vector3) -> Vector3:
@@ -541,10 +553,9 @@ func _update_confirm_state(line_data : LineData) -> void:
 func commit_move_line(line_data : LineData, puzzle_position : Vector2 = Vector2.ZERO, mouse_position : Vector3 = Vector3.ZERO, world_position : Vector3 = Vector3.ZERO) -> Vector2:
 	puzzle_line = line_data 
 	var new_puzzle_pos := on_move_finished(line_data, puzzle_position, mouse_position, world_position)
-	current_position = new_puzzle_pos
 	set_puzzle_line(line_data)
 	_update_confirm_state(line_data)
-	return current_position
+	return new_puzzle_pos
 
 func on_move_finished(line_data : LineData, puzzle_position : Vector2 = Vector2.ZERO, mouse_position : Vector3 = Vector3.ZERO, world_position : Vector3 = Vector3.ZERO) -> Vector2:
 	return puzzle_position
