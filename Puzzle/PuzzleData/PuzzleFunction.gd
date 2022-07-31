@@ -55,13 +55,12 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	var current_vertice : Vertice = line_data.get_current_vertice()
 #	print(">>>>> ", movement_normal, current_vertice)
 #	print(">>>>> ", current_edge)
-	var from_vertice : Vertice = null
+	var from_vertice : Vertice = line_data.get_current_from_vertice()
 	var current_percentage : float = line_data.get_current_percentage()
 	var current_normal : Vector2 = line_data.get_current_normal()
 	var movement_length : float = remain_movement.length()
 	var is_empty : bool = line_data.is_empty()
 	var is_complete : bool = line_data.is_complete()
-	if not is_empty: from_vertice = line_data.get_current_from_vertice()
 	
 	var from_normals : Array[_MoveLineInfo] = []
 	var to_normals : Array[_MoveLineInfo] = []
@@ -174,6 +173,7 @@ static func pick_start_vertice(puzzle_data : PuzzleData, mouse_position : Vector
 	return last_vertice
 
 static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32Array, end_percentage : float = 1.0) -> LineData:
+	if idxs.size() == 0: return null
 	var start_idx := idxs[0]
 	var start_vertice : Vertice = puzzle_data.get_vertice_by_id(start_idx)
 	if start_vertice == null: return null
@@ -192,7 +192,7 @@ static func map_line_data(puzzle_data : PuzzleData, line_data : LineData, custom
 		if elem.has_custom_data(custom_data_key):
 			ans.append(elem.get_custom_data(custom_data_key))
 		else:
-			return []
+			break
 	return ans
 
 # TODO refactor
