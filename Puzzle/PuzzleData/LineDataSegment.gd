@@ -111,5 +111,81 @@ func get_percentage(position : Vector2) -> float:
 func get_length_percentage(length : float) -> float:
 	return clampf(length / self.length, 0.0, 1.0)
 
+func is_empty() -> bool:
+	return is_zero_approx(from_percentage) and is_zero_approx(percentage)
+
 func is_complete() -> bool:
 	return is_zero_approx(from_percentage) and is_equal_approx(percentage, 1.0)
+
+static func collide_segments_pair(a : LineDataSegment, b : LineDataSegment, line_radius : float) -> bool:
+	if a.edge_id == b.edge_id:
+		if a.from == b.from: return false
+		var radius_percentage := line_radius / a.length
+		if (a.percentage + b.percentage) > (1.0 - 2 * radius_percentage):
+			var remain_percentage := 1.0 - (a.percentage + b.percentage)
+			if remain_percentage >= 0:
+				remain_percentage = (2 * radius_percentage) - remain_percentage
+				a.percentage = clampf(a.percentage - remain_percentage/2, 0.0, 1.0)
+				b.percentage = clampf(a.percentage - remain_percentage/2, 0.0, 1.0)
+			else:
+				remain_percentage *= -1
+				a.percentage = clampf(a.percentage - remain_percentage/2 - radius_percentage, 0.0, 1.0)
+				b.percentage = clampf(a.percentage - remain_percentage/2 - radius_percentage, 0.0, 1.0)
+			print(">>>>> clamp same segment")
+		pass
+	else:
+		var end_vertice : Vertice = null
+		if a.from == b.from:
+			return false
+		if a.from == b.to:
+			var a_normal : Vector2 = a.get_normal_start_with_vertice(a.from)
+			var b_normal : Vector2 = b.get_normal_start_with_vertice(a.from)
+			var angle : float = abs(a_normal.angle_to(b_normal))
+			var min_percentage : float = 1.0
+			if angle >= PI/2 or is_equal_approx(angle, PI/2):
+				min_percentage = 1.0-(line_radius * 2)/b.length
+			elif is_zero_approx(angle):
+				min_percentage = 0
+			else:
+				var x : float = (line_radius * 2) / sin(angle)
+				min_percentage = 1.0 - (x / b.length)
+			b.percentage = minf(min_percentage, b.percentage)
+#			a.from------a.to
+#			^
+#			b.to
+#			|
+#			|
+#			b.from
+#			clamp b
+		if a.to == b.from:
+			var b_normal : Vector2 = b.get_normal_start_with_vertice(a.to)
+			var a_normal : Vector2 = a.get_normal_start_with_vertice(a.to)
+			var angle : float = abs(b_normal.angle_to(a_normal))
+			var min_percentage : float = 1.0
+			if angle >= PI/2 or is_equal_approx(angle, PI/2):
+				min_percentage = 1.0-(line_radius * 2)/a.length
+			elif is_zero_approx(angle):
+				min_percentage = 0
+			else:
+				var x : float = (line_radius * 2) / sin(angle)
+				min_percentage = 1.0 - (x / a.length)
+			a.percentage = minf(min_percentage, a.percentage)
+#			b.from < a.to------a.from
+#			|
+#			|
+#			b.to
+#			clamp a
+		if a.to == b.to:
+			var a_normal : Vector2 = a.get_normal_start_with_vertice(a.to)
+			var b_normal : Vector2 = b.get_normal_start_with_vertice(b.to)
+			var angle : float = abs(a_normal.angle_to(b_normal)) / 2.0
+			if is_zero_approx(angle):
+				a.percentage = 0.0
+				b.percentage = 0.0
+			else:
+				var x : float = line_radius / sin(angle)
+				a.percentage = minf(1.0 - (x / a.length), a.percentage)
+				b.percentage = minf(1.0 - (x / b.length), b.percentage)
+#			clamp a and b
+			pass
+	return false

@@ -1,20 +1,20 @@
 class_name PuzzleFunction
 extends RefCounted
 
-static func line_to_directioned_edges(puzzle_data : PuzzleData, line : LineData) -> Array:
-	var ans : Array[DirectionedEdge] = []
-	var edge_map : Dictionary = puzzle_data.edge_map
-	for line_segment in line.segments:
-		if not is_equal_approx(line_segment.percentage, 1.0): continue
-		var from := line_segment.from
-		var to := line_segment.to
-		if edge_map.has(from):
-			if edge_map[from].has(to):
-				ans.append(DirectionedEdge.new(edge_map[from][to], false))
-		elif edge_map.has(to):
-			if edge_map[to].has(from):
-				ans.append(DirectionedEdge.new(edge_map[to][from], true))
-	return ans
+#static func line_to_directioned_edges(puzzle_data : PuzzleData, line : LineData) -> Array:
+#	var ans : Array[DirectionedEdge] = []
+#	var edge_map : Dictionary = puzzle_data.edge_map
+#	for line_segment in line.segments:
+#		if not is_equal_approx(line_segment.percentage, 1.0): continue
+#		var from := line_segment.from
+#		var to := line_segment.to
+#		if edge_map.has(from):
+#			if edge_map[from].has(to):
+#				ans.append(DirectionedEdge.new(edge_map[from][to], false))
+#		elif edge_map.has(to):
+#			if edge_map[to].has(from):
+#				ans.append(DirectionedEdge.new(edge_map[to][from], true))
+#	return ans
 
 # Move Line
 static func _calcu_remain_movement(movement_length : float, current_percentage : float, total_length : float, forward : bool = true) -> float:

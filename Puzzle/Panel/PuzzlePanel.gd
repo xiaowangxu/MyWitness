@@ -3,7 +3,7 @@ class_name PuzzlePanel
 extends Interactable
 
 const AudioSoundEffects = {
-#	"start": preload("res://SoundEffects/Puzzle/PuzzleStart.wav"),
+	"answered": preload("res://SoundEffects/Puzzle/PuzzleStart.wav"),
 	"start": preload("res://SoundEffects/Puzzle/PuzzleError.wav"),
 	"error": preload("res://SoundEffects/Puzzle/PuzzleError2.wav"),
 }
@@ -310,7 +310,7 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 	var new_pos : Vector2 = panel_to_puzzle(Vector2(local.x, local.y))
 	var delta := new_pos - current_position
 	
-	print(delta.length_squared())
+#	print(delta.length_squared())
 	if delta.length_squared() < ComputationTolerence:
 		delta = Vector2.ZERO
 	
@@ -529,7 +529,7 @@ func on_puzzle_answered(correct : bool, tag : int, errors : Array) -> void:
 			viewport_instance.puzzle_renderer.create_error_tween(errors)
 #		get_base_viewport_instance().puzzle_renderer
 	else:
-		
+		play_sound("answered")
 		get_base_viewport_instance().puzzle_renderer.create_correct_tween()
 	pass
 

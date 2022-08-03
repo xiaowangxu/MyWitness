@@ -79,6 +79,11 @@ func to_vertices() -> Array:
 		ans.append(segment.to)
 	return ans
 
+func to_line_elements() -> Array:
+	var ans : Array = [start]
+	ans.append_array(segments)
+	return ans
+
 func to_puzzle_element_ids(puzzle_data : PuzzleData) -> PackedInt32Array:
 	var ans : PackedInt32Array = []
 	for elem in to_puzzle_elements(puzzle_data):
@@ -135,6 +140,14 @@ func validate() -> void:
 		if segment.to.type == Vertice.VerticeType.STOP or segment.to.type == Vertice.VerticeType.END:
 			segments = segments.slice(0, i + 1)
 			return
+
+func normalize() -> void:
+	for i in range(segments.size()):
+		var segment : LineDataSegment = segments[i]
+		if segment.is_empty():
+			segments = segments.slice(0, i)
+			return
+	return
 
 func get_nth_puzzle_element(puzzle_data : PuzzleData, idx : int = 0) -> PuzzleElement:
 	if idx > segments.size(): return null
@@ -364,3 +377,12 @@ func has_vertice(vertice : Vertice) -> bool:
 		if segment.is_complete() and segment.to == vertice:
 			return true
 	return false
+
+func find_first_collision_with_another_line(line : LineData) -> int:
+	var size := mini(self.segments.size(), line.segments.size())
+	for i in range(size):
+		var a := self.segments[i]
+		var b := line.segments[i]
+		if a.edge_id == b.edge_id: return i
+		if a.to == b.to: return i
+	return -1

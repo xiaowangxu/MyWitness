@@ -18,6 +18,16 @@ func on_move_finished(line_data : LineData, puzzle_position : Vector2 = Vector2.
 	var mirror_line := PuzzleFunction.generate_line_from_idxs(puzzle_data, mirror_vertices_id, line_data.get_current_segment_length(), true)
 	mirror_line.validate()
 	line_data.clamp_to_length(mirror_line.get_length())
+	var collision_idx : int = line_data.find_first_collision_with_another_line(mirror_line)
+	if collision_idx != -1:
+		var collision := line_data.get_nth_segment(collision_idx + 1)
+		var mirror_collision := mirror_line.get_nth_segment(collision_idx + 1)
+#		printt(collision.edge_id, mirror_collision.edge_id)
+		line_data.clamp_to_segment(collision)
+		mirror_line.clamp_to_segment(mirror_collision)
+		LineDataSegment.collide_segments_pair(collision, mirror_collision, puzzle_data.normal_radius)
+		line_data.normalize()
+		mirror_line.normalize()
 	return line_data.get_current_position()
 
 func set_puzzle_line(line_data : LineData) -> void:

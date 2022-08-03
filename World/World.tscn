@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://ceuj3r17b8kyf"]
+[gd_scene load_steps=48 format=3 uid="uid://ceuj3r17b8kyf"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_1mdra"]
 [ext_resource type="Environment" uid="uid://cjo4uctk4lq2e" path="res://WorldEnv.tres" id="2_opfjl"]
@@ -190,8 +190,16 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_2esf4")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_664iv"]
+albedo_color = Color(0.364706, 0.270588, 0.152941, 1)
+metallic_specular = 0.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x081a"]
-emission_enabled = true
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 1
+shading_mode = 0
+disable_receive_shadows = true
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cwili"]
 height = 5.615
@@ -412,10 +420,25 @@ layers = 524289
 mesh = SubResource("ArrayMesh_7x4vq")
 skeleton = NodePath("")
 
+[node name="Mesh2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.58, 0, -3.45707e-08, 0, 0.6, 0, 3.45707e-08, 0, 0.58, -7.39405, 4, -2.551)
+layers = 524289
+ignore_occlusion_culling = true
+mesh = ExtResource("8_2bnqd")
+surface_material_override/0 = SubResource("StandardMaterial3D_664iv")
+
 [node name="TestPuzzle" parent="." instance=ExtResource("6_gar0n")]
-transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -11.471, 4, -2.551)
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -7.39405, 4, -2.551)
 script = ExtResource("7_cy246")
-puzzle_name = "second"
+puzzle_name = "hello_world"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:albedo_texture"),
+"transparent": true,
+"update": true,
+"visual": 12
+}]
+initial_active = true
 metadata/_edit_group_ = true
 
 [node name="Mesh" type="MeshInstance3D" parent="TestPuzzle"]

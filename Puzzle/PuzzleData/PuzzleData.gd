@@ -21,12 +21,12 @@ var line_correct_color : Color
 var start_radius : float
 var normal_radius : float
 
-var edge_map : Dictionary = {}
+#var edge_map : Dictionary = {}
 var area_neighbour_map : Dictionary = {}
 
 func _init(res : JsonResource) -> void:
 	calcu_puzzle(res.data)
-	calcu_egde_map()
+#	calcu_egde_map()
 	calcu_area_neighbour_map()
 	pass
 
@@ -59,6 +59,7 @@ func array_to_color(array : Array) -> Color:
 			assert("array size is not able to convert to Color")
 			return Color.RED
 
+var _TestSquare := RegularShapeResource.new(4, 20, 0, false)
 func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseResource:
 	match type:
 		0:
@@ -118,13 +119,15 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseRe
 			]), 4.0, true), preload("res://Puzzle/Panel/TestPainting.png"))
 		234:
 			return GroupShapeResource.new([
-				RegularShapeResource.new(3, 22, 0, false),
-				RegularShapeResource.new(3, 22, 0, false),
-				RegularShapeResource.new(3, 22, 0, false),
+				_TestSquare,
+				_TestSquare,
+				_TestSquare,
+				_TestSquare,
 			], [
-				Transform2D(deg2rad(30), Vector2(-40, 0)),
-				Transform2D(deg2rad(30), Vector2(0, 0)),
-				Transform2D(deg2rad(30), Vector2(40, 0)),
+				Transform2D(deg2rad(45), Vector2(-18, -18)),
+				Transform2D(deg2rad(45), Vector2(18, -18)),
+				Transform2D(deg2rad(45), Vector2(-18, 18)),
+				Transform2D(deg2rad(45), Vector2(18, 18)),
 			])
 		_:
 			return null
@@ -265,16 +268,16 @@ func calcu_area_neighbour_map() -> void:
 				area_neighbour_map[i] = [area]
 	pass
 
-func calcu_egde_map() -> void:
-	if not edge_map.is_empty(): return
-	for edge in edges:
-		if edge_map.has(edge.from):
-			edge_map[edge.from][edge.to] = edge
-		else:
-			edge_map[edge.from] = {
-				edge.to: edge
-			}
-	pass
+#func calcu_egde_map() -> void:
+#	if not edge_map.is_empty(): return
+#	for edge in edges:
+#		if edge_map.has(edge.from):
+#			edge_map[edge.from][edge.to] = edge
+#		else:
+#			edge_map[edge.from] = {
+#				edge.to: edge
+#			}
+#	pass
 
 # utils
 func get_vertice_by_id(id : int) -> Vertice:
@@ -307,11 +310,11 @@ func get_edge_by_id(id : int) -> Edge:
 func has_edge_id(id : int) -> bool:
 	return 0 <= id and id < edges.size()
 
-func find_edge(a : Vertice, b : Vertice) -> Edge:
-	if edge_map.has(a):
-		if edge_map[a].has(b):
-			return edge_map[a][b]
-	if edge_map.has(b):
-		if edge_map[b].has(a):
-			return edge_map[b][a]
-	return null
+#func find_edge(a : Vertice, b : Vertice) -> Edge:
+#	if edge_map.has(a):
+#		if edge_map[a].has(b):
+#			return edge_map[a][b]
+#	if edge_map.has(b):
+#		if edge_map[b].has(a):
+#			return edge_map[b][a]
+#	return null

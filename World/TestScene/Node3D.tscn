@@ -115,8 +115,6 @@ skeleton = NodePath("../..")
 script = ExtResource("5_33qkm")
 next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3")]
 puzzle_name = "mirror"
-save_name = null
-add_config = null
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
