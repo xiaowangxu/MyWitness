@@ -383,6 +383,12 @@ func find_first_collision_with_another_line(line : LineData) -> int:
 	for i in range(size):
 		var a := self.segments[i]
 		var b := line.segments[i]
-		if a.edge_id == b.edge_id: return i
-		if a.to == b.to: return i
+		if a.edge_id == b.edge_id: return i + 1
+		if a.to == b.to: return i + 1
+	return -1
+
+func find_first_collision_with_another_vertice(vertice : Vertice) -> int:
+	if start == vertice: return 0
+	for i in range(segments.size()):
+		if segments[i].to == vertice: return i + 1
 	return -1
