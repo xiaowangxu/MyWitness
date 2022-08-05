@@ -317,7 +317,7 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 	test_info.puzzle_movement = delta
 	current_position = new_pos
 #	test_cursor.position = puzzlerenderer.puzzle_to_panel(current_position)
-	var new_line : LineData = PuzzleFunction.move_line(puzzle_data, puzzle_line, delta)
+	var new_line : LineData = PuzzleFunction.move_line(puzzle_data, puzzle_line, delta, get_is_clamped(puzzle_line))
 	var ans_line : LineData = clamp_puzzle_line(new_line, puzzle_line)
 	var end_position : Vector2 = ans_line.get_current_position()
 	var mouse_pos : Vector2 = puzzle_to_panel(end_position)
@@ -466,6 +466,9 @@ func start_puzzle(line_data : LineData, puzzle_pos : Vector2 = Vector2.ZERO, mou
 	puzzle_started.emit(puzzle_line, puzzle_pos, mouse_pos, world_pos)
 	puzzle_interact_state_changed.emit(PuzzleInteractState.DRAWING)
 	pass
+
+func get_is_clamped(line_data : LineData) -> bool:
+	return false
 
 var is_waiting_for_comfirm : bool = false
 func _on_confirm(force_cancel : bool = false) -> void:

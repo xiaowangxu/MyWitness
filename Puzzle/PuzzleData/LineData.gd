@@ -236,6 +236,13 @@ func clamp_line_end(line_radius : float, start_radius : float) -> void:
 			segments.pop_back()
 	pass
 
+func clamp_to_nth(idx : int) -> void:
+	if idx == 0:
+		segments.clear()
+		return
+	segments = segments.slice(0, idx)
+	return
+
 func clamp_to_segment(segment : LineDataSegment, forward : bool = true) -> void:
 	if segment.from == segment.to:
 		if segment.to == start:
@@ -391,4 +398,33 @@ func find_first_collision_with_another_vertice(vertice : Vertice) -> int:
 	if start == vertice: return 0
 	for i in range(segments.size()):
 		if segments[i].to == vertice: return i + 1
+	return -1
+
+static func find_first_collision(lines : Array[LineData]) -> int:
+	var line_count := lines.size()
+	if line_count <= 1: return -1
+	var size : int = lines[0].size()
+	for line_idx in range(1, line_count):
+		size = mini(size, lines[line_idx].size())
+	var used_verts : Array = []
+	var idx : int = 0
+	while idx < size:
+#		is same vert
+		var elems := lines.map(
+			func (l : LineData) -> Vertice:
+				return l.get_nth_segment(idx) if idx == 0 else l.get_nth_segment(idx).to
+		)
+		var is_same : bool = elems.slice(1).any(
+			func (v) -> bool:
+				return v == elems[0]
+		)
+		if is_same: return idx
+		var used : bool = elems.any(
+			func (v) -> bool:
+				return used_verts.has(v)
+		)
+		if used: return idx
+		used_verts.append_array(elems)
+#		print(is_same)
+		idx += 1
 	return -1

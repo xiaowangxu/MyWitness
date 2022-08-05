@@ -49,7 +49,7 @@ class _MoveLineInfo extends RefCounted:
 
 const DotSmoothSensitivity : float = 0.6
 
-static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_movement : Vector2, dot_smooth : bool = false) -> Vector2:
+static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_movement : Vector2, clamped : bool = false, dot_smooth : bool = false) -> Vector2:
 	var movement_normal := remain_movement.normalized()
 	var current_edge : Edge = puzzle_data.get_edge_by_id(line_data.get_current_edge_id())
 	var current_vertice : Vertice = line_data.get_current_vertice()
@@ -67,7 +67,7 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	var start_normals : Array[_MoveLineInfo] = []
 	
 #	to_normals
-	if line_data.pass_through(current_vertice):
+	if not is_empty and (clamped or line_data.pass_through(current_vertice)):
 		if current_edge != null:
 			var dir_edge := _get_directioned_edge(current_edge, current_vertice)
 			to_normals.append(_MoveLineInfo.new(dir_edge, false))
@@ -147,12 +147,12 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 	line_data.clamp_line_end(puzzle_data.normal_radius, puzzle_data.start_radius)
 	return remained
 
-static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement : Vector2, dot_smooth : bool = true) -> LineData:
+static func move_line(puzzle_data : PuzzleData, line_data : LineData, movement : Vector2, clamped : bool = false, dot_smooth : bool = true) -> LineData:
 	if is_zero_approx(movement.length_squared()): return line_data
 	var new_line : LineData = line_data.duplicate()
 	var count := 0
 	while not is_zero_approx(movement.length_squared()) and count < 100:
-		movement = _move_line(puzzle_data, new_line, movement, dot_smooth)
+		movement = _move_line(puzzle_data, new_line, movement, clamped, dot_smooth)
 		count += 1
 #	print(count)
 	return new_line
