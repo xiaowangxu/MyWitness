@@ -17,6 +17,7 @@ const AllPuzzleJsons : Dictionary = {
 	"generator": preload("res://PuzzleDataJson/PuzzleTest.json"),
 	"crt": preload("res://PuzzleDataJson/CRTTest.json"),
 	"mirror": preload("res://PuzzleDataJson/MirrorTest2.json"),
+	"mirror2": preload("res://PuzzleDataJson/MirrorTest.json"),
 	"editor": preload("res://PuzzleDataJson/Editor.json"),
 	"editor2": preload("res://PuzzleDataJson/Editor5.json"),
 }
@@ -28,6 +29,7 @@ var AllPuzzleData : Dictionary = {
 	"generator": PuzzleData.new(AllPuzzleJsons.generator),
 	"crt": PuzzleData.new(AllPuzzleJsons.crt),
 	"mirror": PuzzleData.new(AllPuzzleJsons.mirror),
+	"mirror2": PuzzleData.new(AllPuzzleJsons.mirror2),
 	"editor": PuzzleData.new(AllPuzzleJsons.editor),
 	"editor2": PuzzleData.new(AllPuzzleJsons.editor2),
 }

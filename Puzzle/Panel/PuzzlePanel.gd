@@ -284,9 +284,9 @@ func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
 	var pos := area.global_transform.origin
 	var quat := area.global_transform.basis.get_rotation_quaternion()
 	if is_zero_approx(quat.get_axis().length_squared()):
-		pos -= Vector3.FORWARD * 2.5
+		pos -= Vector3.FORWARD * 2.25
 	else:
-		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 2.5
+		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 2.25
 	pos.y = area.global_transform.origin.y - 4.0
 	return Transform3D(Basis(Quaternion(Vector3(0,area.global_transform.basis.get_euler().y,0))), pos)
 
@@ -499,6 +499,8 @@ func _check_puzzle() -> void:
 func check_puzzle() -> void:
 	puzzle_line.forward(1.0)
 	set_puzzle_line(puzzle_line)
+	current_position = puzzle_line.get_current_position()
+	GlobalData.set_mouse_position_from_world(get_current_world_position())
 	var correct_dict := check_puzzle_answer()
 	is_answered = correct_dict.tag >= 0
 	save()

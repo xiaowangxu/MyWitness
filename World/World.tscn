@@ -1,10 +1,11 @@
-[gd_scene load_steps=48 format=3 uid="uid://ceuj3r17b8kyf"]
+[gd_scene load_steps=49 format=3 uid="uid://ceuj3r17b8kyf"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_1mdra"]
 [ext_resource type="Environment" uid="uid://cjo4uctk4lq2e" path="res://WorldEnv.tres" id="2_opfjl"]
 [ext_resource type="ArrayOccluder3D" uid="uid://c8646lyg8f13m" path="res://World/World.occ" id="4_oegm4"]
 [ext_resource type="PackedScene" uid="uid://byfvksnrh8jr2" path="res://Player/Player.tscn" id="5_sayar"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="6_gar0n"]
+[ext_resource type="Script" path="res://Puzzle/Panel/PuzzlePanelMirror.gd" id="6_hebhx"]
 [ext_resource type="Script" path="res://Puzzle/Panel/PuzzlePanelPillar.gd" id="7_cy246"]
 [ext_resource type="ArrayMesh" uid="uid://hf6r8fma0hbe" path="res://untitled.obj" id="8_2bnqd"]
 [ext_resource type="Material" uid="uid://cuftf8iel3754" path="res://GrassMaterial.tres" id="9_dpoif"]
@@ -371,8 +372,9 @@ metadata/_edit_group_ = true
 
 [node name="PuzzlePanel" parent="Panel4" instance=ExtResource("6_gar0n")]
 transform = Transform3D(-1.45963, 0, -0.00157666, 0, 1.45963, 0, 0.000993222, 0, -1.43681, 0, 4, -0.0272955)
-next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("")]
-puzzle_name = "hello_world"
+script = ExtResource("6_hebhx")
+puzzle_name = "mirror"
+save_name = "transparent"
 viewport_configs = [{
 "idle": 0,
 "name": "base",
