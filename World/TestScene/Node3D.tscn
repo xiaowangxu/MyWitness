@@ -111,7 +111,7 @@ transform = Transform3D(-4.37114e-08, 0, 7.55, 0, 1, 0, -1, 0, -3.30021e-07, 0, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../..")
 
-[node name="PuzzlePanel3" parent="CrtPanelStand/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel3" parent="CrtPanelStand/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 script = ExtResource("5_33qkm")
 next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3")]
 puzzle_name = "mirror2"
@@ -171,7 +171,7 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 3.55271e-15, 0, 1, 0, -3.55271e-15, 0, 1, -8.19564e-08, 0, 0)
 skeleton = NodePath("../..")
 
-[node name="PuzzlePanel3" parent="CrtPanelStandNeck/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel3" parent="CrtPanelStandNeck/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")]
 puzzle_name = "generator"
 viewport_configs = [{
@@ -234,7 +234,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3.8, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../..")
 
-[node name="PuzzlePanel2" parent="CrtPanelStand2/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel2" parent="CrtPanelStand2/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
 next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")]
 puzzle_name = "first_try"
@@ -297,7 +297,7 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 3.55271e-15, 0, 1, 0, -3.55271e-15, 0, 1, -8.19564e-08, 0, 0)
 skeleton = NodePath("../..")
 
-[node name="PuzzlePanel2" parent="CrtPanelStandNeck2/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel2" parent="CrtPanelStandNeck2/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 8.73115e-11, -1.19209e-07, 0, 1, 0.000733038, 8.9407e-08, -0.000733038, 1, 0, 0, 0)
 next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("../../../CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel")]
 puzzle_name = "second"
@@ -361,7 +361,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7.6, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../..")
 
-[node name="PuzzlePanel" parent="CrtPanelStand3/CrtPanelStandConnector" instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel" parent="CrtPanelStand3/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("../../../PuzzlePanel")]
 puzzle_name = "crt"
 viewport_configs = [{
@@ -412,7 +412,7 @@ NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnec
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"]
 script = ExtResource("13_tdnaq")
 
-[node name="PuzzlePanel" parent="." instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel" parent="." groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.8, 4, -8.58307e-06)
 next_interactables_node_path = [NodePath(""), NodePath("../CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"), NodePath(""), NodePath("")]
 puzzle_name = "second2"
@@ -533,7 +533,7 @@ bus = &"PuzzleSoundEffect"
 [node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel3"]
 script = ExtResource("13_tdnaq")
 
-[node name="PuzzlePanel4" parent="." instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel4" parent="." groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.66654, 4, 5.51205)
 puzzle_name = "editor"
 save_name = "editor"
@@ -568,7 +568,7 @@ bus = &"PuzzleSoundEffect"
 [node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel4"]
 script = ExtResource("13_tdnaq")
 
-[node name="PuzzlePanel5" parent="." instance=ExtResource("7_kbxjn")]
+[node name="PuzzlePanel5" parent="." groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.85541, 4, 5.51205)
 puzzle_name = "editor2"
 save_name = "editor2"

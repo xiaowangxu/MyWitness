@@ -284,9 +284,9 @@ func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
 	var pos := area.global_transform.origin
 	var quat := area.global_transform.basis.get_rotation_quaternion()
 	if is_zero_approx(quat.get_axis().length_squared()):
-		pos -= Vector3.FORWARD * 2.25
+		pos -= Vector3.FORWARD * 1.75
 	else:
-		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 2.25
+		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 1.75
 	pos.y = area.global_transform.origin.y - 4.0
 	return Transform3D(Basis(Quaternion(Vector3(0,area.global_transform.basis.get_euler().y,0))), pos)
 
@@ -409,16 +409,16 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 func on_preferred() -> void:
 	_is_preferred = true
 	puzzle_interact_state_changed.emit(PuzzleInteractState.PREFERRED)
-	Debugger.print_tag(puzzle_name, "preferred", Color.CHARTREUSE)
+#	Debugger.print_tag(puzzle_name, "preferred", Color.CHARTREUSE)
 	pass
 
 func on_unpreferred() -> void:
 	_is_preferred = false
-	Debugger.print_tag(puzzle_name, "unpreferred", Color.CHARTREUSE)
+#	Debugger.print_tag(puzzle_name, "unpreferred", Color.CHARTREUSE)
 	pass
 
 func on_puzzle_interact_state_changed(state : PuzzleInteractState) -> void:
-	Debugger.print_tag(puzzle_name + " interact state", str(state) + (" Answered" if is_answered else ""), Color.SEA_GREEN)
+#	Debugger.print_tag(puzzle_name + " interact state", str(state) + (" Answered" if is_answered else ""), Color.SEA_GREEN)
 	if state == PuzzleInteractState.PREFERRED and not is_answered:
 		hint_ring_render_item.set_start_hint_enabled(true)
 	elif state == PuzzleInteractState.PICKING or state == PuzzleInteractState.ANSWERED:
@@ -442,11 +442,11 @@ var _is_preferred : bool = false :
 		request_viewport_mode(_is_preferred)
 func request_viewport_mode(should_render : bool) -> void:
 	if should_render:
-		Debugger.print_tag(puzzle_name, "rendering", Color.DODGER_BLUE)
+#		Debugger.print_tag(puzzle_name, "rendering", Color.DODGER_BLUE)
 		for viewport in viewport_instance_list:
 			viewport.set_rendering(true)
 	elif _puzzle_state == PuzzleRenderer.State.STOPPED and not _is_preferred:
-		Debugger.print_tag(puzzle_name, "render disabled", Color.DODGER_BLUE)
+#		Debugger.print_tag(puzzle_name, "render disabled", Color.DODGER_BLUE)
 		hint_ring_render_item.set_start_hint_enabled(false)
 		hint_ring_render_item.set_end_hint_enabled(false)
 		for viewport in viewport_instance_list:
@@ -493,6 +493,7 @@ func exit_puzzle() -> void:
 
 func _check_puzzle() -> void:
 	check_puzzle()
+	GlobalData.set_mouse_position_from_world(get_current_world_position())
 	GlobalData.set_cursor_state(GlobalData.CursorState.PICKING)
 	pass
 
@@ -500,8 +501,7 @@ func check_puzzle() -> void:
 	puzzle_line.forward(1.0)
 	set_puzzle_line(puzzle_line)
 	current_position = puzzle_line.get_current_position()
-	GlobalData.set_mouse_position_from_world(get_current_world_position())
-	var correct_dict := check_puzzle_answer()
+	var correct_dict := check_puzzle_answer(puzzle_line)
 	is_answered = correct_dict.tag >= 0
 	save()
 	puzzle_line = null
@@ -511,9 +511,9 @@ func check_puzzle() -> void:
 	pass
 
 # -1 is wrong >= 0 means different correct ans's tags
-func check_puzzle_answer() -> Dictionary:
-	var last_vertice := puzzle_line.get_current_vertice()
-	var errors : Array[Decorator] = PuzzleFunction.check_puzzle_answer(puzzle_data, get_check_lines(puzzle_line))
+func check_puzzle_answer(line_data : LineData) -> Dictionary:
+	var last_vertice := line_data.get_current_vertice()
+	var errors : Array[Decorator] = PuzzleFunction.check_puzzle_answer(puzzle_data, get_check_lines(line_data))
 	if errors.size() <= 0: return {"tag":last_vertice.tag, "errors": []}
 	return {"tag":-1, "errors": errors}
 

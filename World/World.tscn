@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://ceuj3r17b8kyf"]
+[gd_scene load_steps=52 format=3 uid="uid://ceuj3r17b8kyf"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_1mdra"]
 [ext_resource type="Environment" uid="uid://cjo4uctk4lq2e" path="res://WorldEnv.tres" id="2_opfjl"]
@@ -10,6 +10,7 @@
 [ext_resource type="ArrayMesh" uid="uid://hf6r8fma0hbe" path="res://untitled.obj" id="8_2bnqd"]
 [ext_resource type="Material" uid="uid://cuftf8iel3754" path="res://GrassMaterial.tres" id="9_dpoif"]
 [ext_resource type="ArrayMesh" uid="uid://bfu0qkcwf5e21" path="res://Grass3.obj" id="10_mpfqv"]
+[ext_resource type="PackedScene" uid="uid://b714f6qkfqyao" path="res://Global/AutoTester.tscn" id="12_2fswg"]
 [ext_resource type="PackedScene" uid="uid://chj5gydaya3pw" path="res://World/TestScene/Node3D.tscn" id="12_7wpmw"]
 
 [sub_resource type="Animation" id="Animation_q1g6s"]
@@ -320,6 +321,14 @@ _data = {
 "新建动画": SubResource("Animation_6mbpb")
 }
 
+[sub_resource type="SphereMesh" id="SphereMesh_abk7w"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_70ja4"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
 [node name="World" type="Node3D"]
 script = ExtResource("1_1mdra")
 
@@ -370,7 +379,7 @@ shape = SubResource("ConcavePolygonShape3D_ieo6j")
 transform = Transform3D(-0.932708, 0, 0.360632, 0, 1, 0, -0.360632, 0, -0.932708, -2.72833, 0, -1.05491)
 metadata/_edit_group_ = true
 
-[node name="PuzzlePanel" parent="Panel4" instance=ExtResource("6_gar0n")]
+[node name="PuzzlePanel" parent="Panel4" groups=["AutoTest"] instance=ExtResource("6_gar0n")]
 transform = Transform3D(-1.45963, 0, -0.00157666, 0, 1.45963, 0, 0.000993222, 0, -1.43681, 0, 4, -0.0272955)
 script = ExtResource("6_hebhx")
 puzzle_name = "mirror"
@@ -546,3 +555,15 @@ autoplay = "新建动画"
 libraries = {
 "": SubResource("AnimationLibrary_juxwe")
 }
+
+[node name="Position3D" type="Position3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.0227, 2.60345, 4.73761)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Position3D"]
+mesh = SubResource("SphereMesh_abk7w")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_70ja4")
+
+[node name="AutoTester" parent="." instance=ExtResource("12_2fswg")]
+unique_name_in_owner = true

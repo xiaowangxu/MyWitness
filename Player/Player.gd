@@ -141,3 +141,8 @@ func load_save() -> void:
 	camera.rotation.x = lookat.x
 	neck.rotation.y = lookat.y
 	pass
+
+func get_look_at_transform(target : Vector3) -> Transform3D:
+	var trans := Transform3D()
+	trans = trans.looking_at(target - %Camera.global_transform.origin)
+	return trans

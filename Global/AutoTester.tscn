@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b714f6qkfqyao"]
+
+[ext_resource type="Script" path="res://Global/AutoTester.gd" id="1_vxjyj"]
+
+[node name="AutoTester" type="Node"]
+script = ExtResource("1_vxjyj")
