@@ -96,7 +96,7 @@ func get_current_transform() -> Transform3D:
 
 var mouse_sensitivity = 0.1
 var up_max_deg = 85
-var down_max_deg = 50
+var down_max_deg = 60
 func clamp_camera_angle() -> void:
 	var up_max_rad := deg2rad(up_max_deg)
 	var down_max_rad := deg2rad(-down_max_deg)

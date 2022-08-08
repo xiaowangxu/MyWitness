@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://chj5gydaya3pw"]
+[gd_scene load_steps=33 format=3 uid="uid://chj5gydaya3pw"]
 
 [ext_resource type="PackedScene" uid="uid://ksg6ktkih5kr" path="res://World/Panels/CRT/Objects/CrtPanelStandBar.tscn" id="1_5w0eg"]
 [ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="2_3blej"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="13_tdnaq"]
 [ext_resource type="PackedScene" uid="uid://knk1lbymqvom" path="res://World/Panels/SolarPanel/Objects/SolarPanel.tscn" id="16_1ytvv"]
 [ext_resource type="Script" path="res://Puzzle/Panel/PuzzlePanelLinked.gd" id="16_178vx"]
+[ext_resource type="PackedScene" uid="uid://bd67p5cae62b" path="res://World/Panels/TreeBase/Objects/TreeBase.tscn" id="18_0hd3i"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g3ral"]
 render_priority = 0
@@ -98,6 +99,15 @@ render_priority = 0
 shader = SubResource("Shader_mlaq8")
 shader_param/albedo = Color(1, 1, 1, 1)
 shader_param/texture_albedo = ExtResource("9_f4anv")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ovbow"]
+render_priority = 0
+shader = SubResource("Shader_mlaq8")
+shader_param/albedo = Color(1, 1, 1, 1)
+shader_param/texture_albedo = ExtResource("9_f4anv")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_oeoie"]
+data = PackedVector3Array(0, 0.5, 0.5, 0, 0.1, -0.1, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, 0.1, 0.1, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.1, 0.1, 0, 0.1, 0.1, 0, -0.1, 0.1, 0, -0.5, 0.5, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.1, 0.1, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.1, -0.1)
 
 [node name="Node3D" type="Node3D"]
 transform = Transform3D(0.866026, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866026, -25.4345, 0, -0.0655384)
@@ -469,7 +479,6 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
-puzzle_surface_material_id = 1
 initial_active = true
 others_node_path = [NodePath("../PuzzlePanel3"), NodePath(".")]
 
@@ -508,7 +517,6 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
-puzzle_surface_material_id = 1
 initial_active = true
 others_node_path = [NodePath("."), NodePath("../PuzzlePanel2")]
 
@@ -544,7 +552,6 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
-puzzle_surface_material_id = 1
 initial_active = true
 
 [node name="Mesh" parent="PuzzlePanel4" instance=ExtResource("16_1ytvv")]
@@ -579,7 +586,6 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
-puzzle_surface_material_id = 1
 initial_active = true
 
 [node name="Mesh" parent="PuzzlePanel5" instance=ExtResource("16_1ytvv")]
@@ -602,3 +608,39 @@ bus = &"PuzzleSoundEffect"
 
 [node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel5"]
 script = ExtResource("13_tdnaq")
+
+[node name="PuzzlePanel6" parent="." groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
+transform = Transform3D(-4.37114e-08, -0.581216, -3.55277, 1, -2.54057e-08, -1.55297e-07, 0, -3.55277, 0.581216, -25.0329, 0.1, 4.17417)
+puzzle_name = "treebase"
+save_name = "treebase"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+initial_active = true
+
+[node name="Mesh" parent="PuzzlePanel6" instance=ExtResource("18_0hd3i")]
+transform = Transform3D(-1, 0, -8.9407e-08, 0, 1, 0, 8.9407e-08, 0, -1, 0, 0, 0)
+surface_material_override/0 = SubResource("ShaderMaterial_ovbow")
+
+[node name="Area" type="Area3D" parent="PuzzlePanel6"]
+transform = Transform3D(-5.96046e-08, 0, 1, 0, 1, 0, -1, 0, -5.96046e-08, 0, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzlePanel6/Area"]
+transform = Transform3D(-2.98023e-08, 0, 1, 0, 1, 0, -1, 0, -2.98023e-08, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_oeoie")
+
+[node name="Audio" type="AudioStreamPlayer" parent="PuzzlePanel6"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel6"]
+script = ExtResource("13_tdnaq")
+near = 30.0
+far = 50.0

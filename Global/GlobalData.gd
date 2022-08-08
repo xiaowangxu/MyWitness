@@ -20,6 +20,7 @@ const AllPuzzleJsons : Dictionary = {
 	"mirror2": preload("res://PuzzleDataJson/MirrorTest.json"),
 	"editor": preload("res://PuzzleDataJson/Editor.json"),
 	"editor2": preload("res://PuzzleDataJson/Editor5.json"),
+	"treebase": preload("res://PuzzleDataJson/TreeBase.json"),
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),
@@ -32,6 +33,7 @@ var AllPuzzleData : Dictionary = {
 	"mirror2": PuzzleData.new(AllPuzzleJsons.mirror2),
 	"editor": PuzzleData.new(AllPuzzleJsons.editor),
 	"editor2": PuzzleData.new(AllPuzzleJsons.editor2),
+	"treebase": PuzzleData.new(AllPuzzleJsons.treebase),
 }
 # Layers: Puzzles | CurrentPuzzle | ... | InvisibleObstacles | Player | Interactable | Visual | Normal
 const PhysicsLayerNormal 				: int = 0b10000000000000000000000000000001

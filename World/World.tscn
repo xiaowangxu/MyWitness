@@ -556,6 +556,17 @@ libraries = {
 "": SubResource("AnimationLibrary_juxwe")
 }
 
+[node name="StaticBody3D2" type="AnimatableBody3D" parent="."]
+transform = Transform3D(0.385928, 0, 0, 0, 2.32635, 0, 0, 0, 0.385928, -45.0263, 1.72449, 16.0536)
+script = SubResource("GDScript_bktw6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("CylinderShape3D_byshj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+mesh = SubResource("CylinderMesh_ckq6e")
+skeleton = NodePath("../..")
+
 [node name="Position3D" type="Position3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.0227, 2.60345, 4.73761)

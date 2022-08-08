@@ -328,7 +328,6 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 	var new_world_pos : Vector3 = mouse_to_global(Vector3(new_mouse_pos.x, new_mouse_pos.y, 0))
 	
 #	print(">>>>>> ", pos == new_world_pos, new_world_pos, pos)
-	
 	return new_world_pos
 
 func mouse_to_local(pos : Vector3) -> Vector3:
@@ -366,10 +365,10 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 	if not backward.is_empty():
 		for segment in backward:
 			var segment_length : float = segment.get_length()
-			var count : int = ceil(segment_length / min_delta_length)
+			var count : int = maxi(1, ceil(segment_length / min_delta_length))
 			var last_percentage := segment.percentage
-			for i in range(count):
-				var weight : float = float(i)/float(count - 1)
+			for i in range(-1, count):
+				var weight : float = float(i + 1)/float(count)
 				var percentage := lerp(segment.percentage, segment.from_percentage, weight)
 				var point := segment.get_position(percentage)
 				var puzzle_position := puzzle_to_panel(point)
@@ -379,17 +378,17 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 					last_percentage = percentage
 					pass
 				else:
-#					print("clamp backward")
 					segment.percentage = percentage if reachable_stop else last_percentage
+#					print("clamp backward ", segment.percentage)
 					old_line.clamp_to_segment(segment)
 					return old_line
 	if not forward.is_empty():
 		for segment in forward:
 			var segment_length : float = segment.get_length()
-			var count : int = ceil(segment_length / min_delta_length)
+			var count : int = maxi(1, ceil(segment_length / min_delta_length))
 			var last_percentage := segment.from_percentage
-			for i in range(count):
-				var weight : float = float(i)/float(count - 1)
+			for i in range(-1, count):
+				var weight : float = float(i + 1)/float(count)
 				var percentage := lerp(segment.from_percentage, segment.percentage, weight)
 				var point := segment.get_position(percentage)
 				var puzzle_position := puzzle_to_panel(point)
@@ -399,11 +398,12 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 					last_percentage = percentage
 					pass
 				else:
-#					print("clamp forward")
 					segment.percentage = percentage if reachable_stop else last_percentage
+#					print("clamp forward  ", segment.percentage)
 					new_line.clamp_to_segment(segment)
 					return new_line
 				pass
+	assert(!is_nan(new_line.get_current_percentage()))
 	return new_line
 
 func on_preferred() -> void:

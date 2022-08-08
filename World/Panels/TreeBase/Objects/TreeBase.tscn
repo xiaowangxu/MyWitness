@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bd67p5cae62b"]
+
+[ext_resource type="ArrayMesh" uid="uid://dv7xhebjk25ws" path="res://World/Panels/TreeBase/Meshs/TreeBase_平面.res" id="1_jaq6h"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3isb1"]
+size = Vector3(0.00446193, 0.2, 0.2)
+
+[node name="TreeBase" type="MeshInstance3D"]
+mesh = ExtResource("1_jaq6h")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_3isb1")
