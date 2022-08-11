@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://b58q16ne7bccq"]
+
+[ext_resource type="Script" path="res://Player/Walkzilla.gd" id="1_rj7v1"]
+
+[node name="Walkzilla" type="Node3D"]
+script = ExtResource("1_rj7v1")
+grid_count = 15
+
+[node name="Rays" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Indicators" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="FarIndicators" type="Node3D" parent="."]
+unique_name_in_owner = true

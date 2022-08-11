@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://oxc2donlk21r"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_agb6d"]
+radius = 0.02
+height = 0.04
+
+[sub_resource type="Shader" id="Shader_vkxwl"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.0.alpha11's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,unshaded;
+instance uniform vec4 color : source_color = vec4(1.0,0.0,0.0,1.0);
+
+void fragment() {
+	ALBEDO = color.rgb;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j2qvo"]
+render_priority = 0
+shader = SubResource("Shader_vkxwl")
+
+[node name="WalkzillaIndicator" type="MeshInstance3D"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_agb6d")
+surface_material_override/0 = SubResource("ShaderMaterial_j2qvo")

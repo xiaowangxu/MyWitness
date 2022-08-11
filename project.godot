@@ -351,6 +351,7 @@ shift={
 3d_physics/layer_3="Interactable"
 3d_physics/layer_4="Player"
 3d_physics/layer_5="InvisibleObstacles"
+3d_physics/layer_30="Walkzilla"
 3d_physics/layer_31="CurrentPuzzlePanel"
 3d_physics/layer_32="PuzzlePanel"
 

@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://byfvksnrh8jr2"]
+[gd_scene load_steps=7 format=3 uid="uid://byfvksnrh8jr2"]
 
 [ext_resource type="Script" path="res://Player/Player.gd" id="1_2r417"]
+[ext_resource type="PackedScene" uid="uid://b58q16ne7bccq" path="res://Player/Walkzilla.tscn" id="2_5r66m"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_chxod"]
+height = 4.0
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_d32lc"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6n2ah"]
+height = 4.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_wrc6g"]
 size = Vector3(0.05, 0.05, 2)
@@ -18,19 +21,28 @@ collision_layer = 8
 collision_mask = 2147483669
 script = ExtResource("1_2r417")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="Mesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 layers = 8
 cast_shadow = 0
 mesh = SubResource("CapsuleMesh_chxod")
 
+[node name="RayCast" type="RayCast3D" parent="Mesh"]
+unique_name_in_owner = true
+enabled = false
+exclude_parent = false
+target_position = Vector3(0, -10, 0)
+collision_mask = 2147483669
+collide_with_areas = true
+
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("CylinderShape3D_d32lc")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+shape = SubResource("CapsuleShape3D_6n2ah")
 
 [node name="Rotator" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 
 [node name="Rotator" type="MeshInstance3D" parent="Rotator"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.45056)
@@ -43,9 +55,17 @@ surface_material_override/0 = SubResource("StandardMaterial3D_bm2x0")
 
 [node name="Neck" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 
 [node name="Camera" type="Camera3D" parent="Neck"]
 unique_name_in_owner = true
 cull_mask = 1048567
 fov = 65.0
+
+[node name="Walkzilla" parent="." instance=ExtResource("2_5r66m")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+top_level = true
+grid_count = 7
+grid_gap = 0.4
+target_position = Vector3(0, -5, 0)

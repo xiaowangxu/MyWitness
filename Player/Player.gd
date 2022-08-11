@@ -46,7 +46,8 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = 0
 		velocity.z = 0
-
+	
+	%Walkzilla.update_collision(self.global_transform.origin + Vector3(0, 4, 0))
 	move_and_slide()
 
 func on_cursor_state_changed(new_state : GlobalData.CursorState, old_state : GlobalData.CursorState) -> void:
@@ -94,6 +95,19 @@ func rotate_camera_on_edge(axis : Vector3, angle : float, from : Vector3, to : V
 func get_current_transform() -> Transform3D:
 	return Transform3D(Basis(Quaternion(Vector3(camera.rotation.x, neck.rotation.y, 0))), global_transform.origin)
 
+func get_safe_position() -> Vector3:
+	return %Mesh.global_transform.origin
+
+func get_landing_position(safe_pos : Vector3) -> Vector3:
+	var raycast : RayCast3D = %RayCast
+	raycast.global_transform.origin = safe_pos
+	raycast.force_raycast_update()
+	raycast.position = Vector3.ZERO
+	if raycast.is_colliding():
+		return raycast.get_collision_point()
+	else:
+		return safe_pos
+
 var mouse_sensitivity = 0.1
 var up_max_deg = 85
 var down_max_deg = 60
@@ -131,13 +145,13 @@ func move_and_rotate_to_panel(panel : PuzzlePanel) -> void:
 		create_move_and_rotate_tween(preferred_transform)
 
 func save() -> void:
-	GameSaver.save_player(position, camera.rotation.x, neck.rotation.y)
+	GameSaver.save_player(get_safe_position(), camera.rotation.x, neck.rotation.y)
 	pass
 
 func load_save() -> void:
 	var pos : Vector3 = GameSaver.get_player_position()
 	var lookat : Vector2= GameSaver.get_player_lookat()
-	position = pos
+	position = get_landing_position(pos)
 	camera.rotation.x = lookat.x
 	neck.rotation.y = lookat.y
 	pass

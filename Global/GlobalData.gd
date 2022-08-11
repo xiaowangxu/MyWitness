@@ -44,7 +44,7 @@ const PhysicsLayerInvisibleObstacles	: int = 0b00000000000000000000000000010000
 const PhysicsLayerPuzzles 				: int = 0b10000000000000000000000000000000
 const PhysicsLayerCurrentPuzzle			: int = 0b01000000000000000000000000000000
 const PhysicsLayerInteractObstacles 	: int = PhysicsLayerPuzzles | PhysicsLayerNormal | PhysicsLayerVisual | PhysicsLayerInteractables
-const PhysicsLayerIPlayer				: int = PhysicsLayerNormal | PhysicsLayerPuzzles | PhysicsLayerInvisibleObstacles | PhysicsLayerInteractables
+const PhysicsLayerPlayerCollision		: int = PhysicsLayerNormal | PhysicsLayerPuzzles | PhysicsLayerInvisibleObstacles | PhysicsLayerInteractables
 # Cursor Movement
 enum CursorState {
 	DISABLED,
