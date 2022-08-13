@@ -35,7 +35,7 @@ var AllPuzzleData : Dictionary = {
 	"editor2": PuzzleData.new(AllPuzzleJsons.editor2),
 	"treebase": PuzzleData.new(AllPuzzleJsons.treebase),
 }
-# Layers: Puzzles | CurrentPuzzle | ... | InvisibleObstacles | Player | Interactable | Visual | Normal
+# Layers: Puzzles | CurrentPuzzle | Walkzilla | WalkzillaDisabled ... | InvisibleObstacles | Player | Interactable | Visual | Normal
 const PhysicsLayerNormal 				: int = 0b10000000000000000000000000000001
 const PhysicsLayerVisual 				: int = 0b00000000000000000000000000000010
 const PhysicsLayerInteractables 		: int = 0b00000000000000000000000000000100
@@ -43,6 +43,8 @@ const PhysicsLayerPlayer 				: int = 0b00000000000000000000000000001000
 const PhysicsLayerInvisibleObstacles	: int = 0b00000000000000000000000000010000
 const PhysicsLayerPuzzles 				: int = 0b10000000000000000000000000000000
 const PhysicsLayerCurrentPuzzle			: int = 0b01000000000000000000000000000000
+const PhysicsLayerWalkzilla				: int = 0b00100000000000000000000000000000
+const PhysicsLayerWalkzillaDisabled		: int = 0b00010000000000000000000000000000
 const PhysicsLayerInteractObstacles 	: int = PhysicsLayerPuzzles | PhysicsLayerNormal | PhysicsLayerVisual | PhysicsLayerInteractables
 const PhysicsLayerPlayerCollision		: int = PhysicsLayerNormal | PhysicsLayerPuzzles | PhysicsLayerInvisibleObstacles | PhysicsLayerInteractables
 # Cursor Movement

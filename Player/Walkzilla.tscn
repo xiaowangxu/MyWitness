@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://b58q16ne7bccq"]
+[gd_scene load_steps=3 format=3 uid="uid://b58q16ne7bccq"]
 
 [ext_resource type="Script" path="res://Player/Walkzilla.gd" id="1_rj7v1"]
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_cktli"]
 
 [node name="Walkzilla" type="Node3D"]
 script = ExtResource("1_rj7v1")
@@ -14,3 +16,12 @@ unique_name_in_owner = true
 
 [node name="FarIndicators" type="Node3D" parent="."]
 unique_name_in_owner = true
+
+[node name="EdgeMesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+top_level = true
+mesh = SubResource("ImmediateMesh_cktli")
+
+[node name="Collisions" type="Node3D" parent="."]
+unique_name_in_owner = true
+top_level = true

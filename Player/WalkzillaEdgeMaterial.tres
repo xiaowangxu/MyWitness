@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dk72pqr1nx6c"]
+
+[resource]
+no_depth_test = true
+shading_mode = 0
+vertex_color_use_as_albedo = true
