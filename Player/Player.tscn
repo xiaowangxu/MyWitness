@@ -19,6 +19,8 @@ albedo_color = Color(0.184314, 0.592157, 0.639216, 1)
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 8
 collision_mask = 2147483669
+slide_on_ceiling = false
+floor_constant_speed = true
 script = ExtResource("1_2r417")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
@@ -64,8 +66,8 @@ fov = 65.0
 
 [node name="Walkzilla" parent="." instance=ExtResource("2_5r66m")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 top_level = true
+visible = false
 grid_count = 6
 grid_gap = 0.55
-target_position = Vector3(0, -8, 0)
+target_position = Vector3(0, -5.5, 0)
