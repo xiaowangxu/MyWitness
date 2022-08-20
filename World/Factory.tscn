@@ -1,0 +1,176 @@
+[gd_scene load_steps=16 format=3 uid="uid://dlf4w36spirku"]
+
+[ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="1_7faw7"]
+[ext_resource type="PackedScene" uid="uid://bw1qfphklfn4t" path="res://World/Panels/CRT/Objects/CrtPanelStandConnector.tscn" id="2_hveph"]
+[ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="3_20gwl"]
+[ext_resource type="PackedScene" uid="uid://8i2beujlsawi" path="res://World/Panels/CRT/Objects/CrtPanelStandPanel.tscn" id="5_ucw50"]
+[ext_resource type="Shader" uid="uid://dw6mya4bquqm2" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="6_4yo83"]
+[ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="7_dxigb"]
+[ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="8_px48s"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2t4uh"]
+render_priority = 0
+shader = ExtResource("6_4yo83")
+shader_param/texture_puzzle = ExtResource("7_dxigb")
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vkax3"]
+points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
+
+[sub_resource type="GDScript" id="GDScript_6c3uf"]
+script/source = "extends AnimatableBody3D
+
+func _ready() -> void:
+	$CollisionShape3D.disabled = !self.visible
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(\"ui_accept\"):
+		self.visible = !self.visible
+		$CollisionShape3D.disabled = !self.visible
+"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qmd5g"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_8gmmf"]
+
+[sub_resource type="Animation" id="Animation_5m4ht"]
+resource_name = "新建动画"
+length = 7.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/path = NodePath("CrtPanelStand:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.610854, 0, 2.67013e-08), Vector3(0.640413, 0, -2.79933e-08)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CrtPanelStand/CrtPanelStandConnector:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 4, 0), Vector3(0, 4, -0.55702), Vector3(0, 4, 0.662787)]
+}
+
+[sub_resource type="Animation" id="Animation_8k0xe"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CrtPanelStand:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CrtPanelStand/CrtPanelStandConnector:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 4, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_h8e3h"]
+_data = {
+"RESET": SubResource("Animation_8k0xe"),
+"新建动画": SubResource("Animation_5m4ht")
+}
+
+[node name="Factory" type="Node3D"]
+
+[node name="CrtPanelStand" parent="." instance=ExtResource("1_7faw7")]
+
+[node name="CrtPanelStandConnector" parent="CrtPanelStand" instance=ExtResource("2_hveph")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+skeleton = NodePath("../..")
+
+[node name="PuzzlePanel2" parent="CrtPanelStand/CrtPanelStandConnector" instance=ExtResource("3_20gwl")]
+puzzle_name = "factory1"
+save_name = "factory1"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+min_delta_length = 2.0
+puzzle_surface_material_id = 2
+initial_active = true
+
+[node name="Mesh" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2" instance=ExtResource("5_ucw50")]
+transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
+shader_params/albedo = Color(1, 1, 1, 1)
+shader_params/black_factor = 0.489
+shader_params/black_range_a = -0.713
+shader_params/black_range_b = 1.106
+shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
+shader_params/emission_energy = 1.0
+shader_params/fade_percentage = 1.0
+shader_params/pow_factor = 4.0
+surface_material_override/2 = SubResource("ShaderMaterial_2t4uh")
+
+[node name="Area" type="Area3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2"]
+transform = Transform3D(1.12039e-07, 0, -1, 0, 1.484, 0, 1.484, 0, 7.54979e-08, -0.01, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2/Area"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_vkax3")
+
+[node name="Audio" type="AudioStreamPlayer" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2"]
+script = ExtResource("8_px48s")
+
+[node name="StaticBody3D" type="AnimatableBody3D" parent="."]
+transform = Transform3D(0.158502, 0, 0, 0, 3.88643, 0, 0, 0, 0.158502, -0.225623, 3.24619, 0.199858)
+script = SubResource("GDScript_6c3uf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("CylinderShape3D_qmd5g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("CylinderMesh_8gmmf")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D2" type="AnimatableBody3D" parent="."]
+transform = Transform3D(0.157771, -0.3727, 0, 0.0152, 3.86851, 0, 0, 0, 0.158502, 0.388828, 2.94631, 0.199858)
+script = SubResource("GDScript_6c3uf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 2.38419e-07, 0, -4.65661e-10, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_qmd5g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 9.31323e-10, 1, 0, 0, 0, 1, 0, -1.19209e-07, 0)
+mesh = SubResource("CylinderMesh_8gmmf")
+skeleton = NodePath("../..")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "新建动画"
+libraries = {
+"": SubResource("AnimationLibrary_h8e3h")
+}

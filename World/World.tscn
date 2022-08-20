@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://ceuj3r17b8kyf"]
+[gd_scene load_steps=57 format=3 uid="uid://ceuj3r17b8kyf"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_1mdra"]
 [ext_resource type="Environment" uid="uid://cjo4uctk4lq2e" path="res://WorldEnv.tres" id="2_opfjl"]
@@ -12,6 +12,7 @@
 [ext_resource type="ArrayMesh" uid="uid://bfu0qkcwf5e21" path="res://Grass3.obj" id="10_mpfqv"]
 [ext_resource type="PackedScene" uid="uid://b714f6qkfqyao" path="res://Global/AutoTester.tscn" id="12_2fswg"]
 [ext_resource type="PackedScene" uid="uid://chj5gydaya3pw" path="res://World/TestScene/Node3D.tscn" id="12_7wpmw"]
+[ext_resource type="PackedScene" uid="uid://dlf4w36spirku" path="res://World/Factory.tscn" id="13_gxsoy"]
 
 [sub_resource type="Animation" id="Animation_q1g6s"]
 resource_name = "FadeOut"
@@ -486,7 +487,6 @@ bus = &"PuzzleSoundEffect"
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.461, 0, 0)
-visible = false
 layers = 524289
 material_override = ExtResource("9_dpoif")
 cast_shadow = 0
@@ -546,6 +546,7 @@ libraries = {
 
 [node name="StaticBody3D2" type="AnimatableBody3D" parent="."]
 transform = Transform3D(0.385928, 0, 0, 0, 2.32635, 0, 0, 0, 0.385928, -45.0263, 1.72449, 16.0536)
+visible = false
 script = SubResource("GDScript_bktw6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
@@ -711,3 +712,6 @@ collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshInstance3D11/StaticBody3D2"]
 shape = SubResource("ConcavePolygonShape3D_tptp0")
+
+[node name="Factory" parent="." instance=ExtResource("13_gxsoy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.7753, 0, -33.7929)

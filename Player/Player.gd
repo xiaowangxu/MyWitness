@@ -62,7 +62,7 @@ func _physics_process(delta: float) -> void:
 		var a = closest_point
 		global_transform.origin.x = a.x
 		global_transform.origin.z = a.z
-	printt(b, global_transform.origin)
+#	printt(b, global_transform.origin)
 
 func on_cursor_state_changed(new_state : GlobalData.CursorState, old_state : GlobalData.CursorState) -> void:
 	if old_state == GlobalData.CursorState.DISABLED and new_state == GlobalData.CursorState.PICKING:

@@ -1,4 +1,3 @@
-#@tool
 class_name PuzzlePanel
 extends Interactable
 
@@ -62,7 +61,6 @@ var puzzle_line : LineData = null
 @onready var is_active : bool = initial_active
 var is_answered : bool = false
 
-#var test_cursor := preload("res://Puzzle/TestCursor.tscn").instantiate()
 @onready var test_info := preload("res://Puzzle/Panel/PuzzzlePanelInfo.tscn").instantiate()
 func _ready() -> void:
 	if interactable_notifier != null:
@@ -242,7 +240,12 @@ func _set_material_fade_percentage_param(percentage : float) -> void:
 var current_position : Vector2 = Vector2.ZERO :
 	set(val):
 		current_position = val
-		assert(not(current_position.x < 0 or current_position.x > puzzle_data.base_size.x or current_position.y < 0 or current_position.y > puzzle_data.base_size.y), "Current Mouse Puzzle Position is out side of panel")
+		if (current_position.x < 0 or current_position.x > puzzle_data.base_size.x or current_position.y < 0 or current_position.y > puzzle_data.base_size.y):
+			print(current_position)
+			print_stack()
+			current_position.x = clampf(current_position.x, 0.0, puzzle_data.base_size.x)
+			current_position.y = clampf(current_position.y, 0.0, puzzle_data.base_size.y)
+			assert(false, "Current Mouse Puzzle Position is out side of panel")
 
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
 	if not is_active: return
@@ -280,13 +283,14 @@ func get_current_mouse_position() -> Vector3:
 func get_current_world_position() -> Vector3:
 	return mouse_to_global(get_current_mouse_position())
 
+const PreferredDistance : float = 2.5
 func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
 	var pos := area.global_transform.origin
 	var quat := area.global_transform.basis.get_rotation_quaternion()
 	if is_zero_approx(quat.get_axis().length_squared()):
-		pos -= Vector3.FORWARD * 1.75
+		pos -= Vector3.FORWARD * PreferredDistance
 	else:
-		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * 1.75
+		pos -= Vector3.FORWARD.rotated(quat.get_axis().normalized(), quat.get_angle()) * PreferredDistance
 	pos.y = area.global_transform.origin.y - 4.0
 	return Transform3D(Basis(Quaternion(Vector3(0,area.global_transform.basis.get_euler().y,0))), pos)
 
@@ -310,13 +314,12 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 	var new_pos : Vector2 = panel_to_puzzle(Vector2(local.x, local.y))
 	var delta := new_pos - current_position
 	
-#	print(delta.length_squared())
 	if delta.length_squared() < ComputationTolerence:
 		delta = Vector2.ZERO
 	
 	test_info.puzzle_movement = delta
 	current_position = new_pos
-#	test_cursor.position = puzzlerenderer.puzzle_to_panel(current_position)
+
 	var new_line : LineData = PuzzleFunction.move_line(puzzle_data, puzzle_line, delta, get_is_clamped(puzzle_line))
 	var ans_line : LineData = clamp_puzzle_line(new_line, puzzle_line)
 	var end_position : Vector2 = ans_line.get_current_position()

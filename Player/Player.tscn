@@ -62,7 +62,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 [node name="Camera" type="Camera3D" parent="Neck"]
 unique_name_in_owner = true
 cull_mask = 1048567
-fov = 65.0
+fov = 60.0
 
 [node name="Walkzilla" parent="." instance=ExtResource("2_5r66m")]
 unique_name_in_owner = true
