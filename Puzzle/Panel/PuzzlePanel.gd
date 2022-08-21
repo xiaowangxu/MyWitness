@@ -545,10 +545,11 @@ func on_puzzle_exited() -> void:
 	play_sound("error")
 	pass
 
+const ConfirmRemainLength : float = 10.0
 func _update_confirm_state(line_data : LineData) -> void:
 	var current_vertice : Vertice = line_data.get_current_vertice()
-	var current_percentage : float = line_data.get_current_percentage()
-	if current_vertice.type == Vertice.VerticeType.END and current_percentage > 0.9:
+	var current_remain_length : float = line_data.get_current_segment().length - line_data.get_current_segment_length()
+	if current_vertice.type == Vertice.VerticeType.END and current_remain_length <= ConfirmRemainLength:
 		if not is_waiting_for_comfirm:
 			is_waiting_for_comfirm = true
 			on_waiting_to_confirm_changed(true)
