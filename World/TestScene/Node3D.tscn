@@ -427,10 +427,10 @@ metadata/_edit_group_ = true
 [node name="Mesh" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel" instance=ExtResource("4_rqiu4")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
 shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.3
+shader_params/black_factor = 0.489
 shader_params/black_range_a = -0.713
 shader_params/black_range_b = 1.106
-shader_params/default_color = Color(0.14902, 0.65098, 0.14902, 1)
+shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
 shader_params/emission_energy = 1.0
 shader_params/fade_percentage = 1.0
 shader_params/pow_factor = 4.0

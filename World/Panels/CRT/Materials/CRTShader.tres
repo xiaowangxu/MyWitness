@@ -1,8 +1,10 @@
-[gd_resource type="Shader" format=3 uid="uid://dw6mya4bquqm2"]
+[gd_resource type="Shader" format=3 uid="uid://cgx666a0b1qxd"]
 
 [resource]
 code = "shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+
+instance uniform float enable_percentage : hint_range(0.0, 1.0, 0.1) = 1.0;
 instance uniform vec4 albedo : source_color = vec4(1.0);
 uniform sampler2D texture_puzzle : source_color, hint_default_black,filter_linear;
 instance uniform vec4 emission : source_color = vec4(0.0,0.0,0.0,1.0);
@@ -13,7 +15,7 @@ instance uniform float pow_factor = 4.0;
 instance uniform float black_factor = 0.489;
 
 instance uniform vec4 default_color : source_color = vec4(0.15, 0.65, 0.15, 1.0);
-instance uniform float fade_percentage = 1.0;
+instance uniform float fade_percentage : hint_range(0.0, 1.0, 0.1) = 1.0;
 
 void fragment() {
 	vec2 base_uv = UV;
@@ -22,7 +24,8 @@ void fragment() {
 	vec2 transformed_uv = (base_uv - vec2(0.5)) * 2.0;
 	float _dis = pow(abs(transformed_uv.x), pow_factor) + pow(abs(transformed_uv.y), pow_factor);
 	float dis = smoothstep(black_range_a, black_range_b, 1.0 - _dis) * (1.0 - black_factor) + black_factor;
-	ALBEDO = albedo.rgb * albedo_tex.rgb * dis;
+	ALBEDO = albedo.rgb * albedo_tex.rgb * dis * enable_percentage;
 	vec3 emission_tex = albedo_tex.rgb;
-	EMISSION = (emission.rgb + emission_tex) * emission_energy * dis;
+	EMISSION = (emission.rgb + emission_tex) * emission_energy * dis * enable_percentage;
+	ROUGHNESS = 1.0;
 }"

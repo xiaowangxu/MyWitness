@@ -58,6 +58,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector3(0, 4, 0)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2/Mesh:shader_params/enable_percentage")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
 
 [sub_resource type="Animation" id="Animation_5m4ht"]
 resource_name = "新建动画"
@@ -86,6 +98,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector3(0, 4, 0), Vector3(0, 4, -0.55702), Vector3(0, 4, 0.662787)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = false
+tracks/2/path = NodePath("CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2/Mesh:shader_params/enable_percentage")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 3, 3.5, 7),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [1.0, 1.0, 0.0, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_h8e3h"]
@@ -124,6 +148,7 @@ shader_params/black_range_a = -0.713
 shader_params/black_range_b = 1.106
 shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
 shader_params/emission_energy = 1.0
+shader_params/enable_percentage = 1.0
 shader_params/fade_percentage = 1.0
 shader_params/pow_factor = 4.0
 surface_material_override/2 = SubResource("ShaderMaterial_2t4uh")

@@ -67,7 +67,6 @@ fov = 60.0
 [node name="Walkzilla" parent="." instance=ExtResource("2_5r66m")]
 unique_name_in_owner = true
 top_level = true
-visible = false
 grid_count = 6
 grid_gap = 0.55
 target_position = Vector3(0, -5.5, 0)
