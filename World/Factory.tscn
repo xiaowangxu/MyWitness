@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bw1qfphklfn4t" path="res://World/Panels/CRT/Objects/CrtPanelStandConnector.tscn" id="2_hveph"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="3_20gwl"]
 [ext_resource type="PackedScene" uid="uid://8i2beujlsawi" path="res://World/Panels/CRT/Objects/CrtPanelStandPanel.tscn" id="5_ucw50"]
-[ext_resource type="Shader" uid="uid://dw6mya4bquqm2" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="6_4yo83"]
+[ext_resource type="Shader" uid="uid://cgx666a0b1qxd" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="6_4yo83"]
 [ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="7_dxigb"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="8_px48s"]
 

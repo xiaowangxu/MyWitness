@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="7_kbxjn"]
 [ext_resource type="Script" path="res://Linker/PanelInteractableLinker.gd" id="8_mbl52"]
 [ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="9_f4anv"]
-[ext_resource type="Shader" uid="uid://dw6mya4bquqm2" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
+[ext_resource type="Shader" uid="uid://cgx666a0b1qxd" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
 [ext_resource type="Shader" uid="uid://0qj6ox37ggrc" path="res://World/Panels/CRTBox/Materials/CRTBoxShader.tres" id="12_8wjxh"]
 [ext_resource type="PackedScene" uid="uid://c0vwm084ntxqm" path="res://World/Panels/CRTBox/Objects/CRTBox.tscn" id="12_knu8o"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="13_tdnaq"]
@@ -208,6 +208,7 @@ script = ExtResource("13_tdnaq")
 
 [node name="CrtPanelStandCable" parent="CrtPanelStand" instance=ExtResource("5_xs5cp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+visible = false
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("6_b0wx1")
 
@@ -272,6 +273,7 @@ script = ExtResource("13_tdnaq")
 
 [node name="CrtPanelStandCable2" parent="CrtPanelStandNeck" instance=ExtResource("5_xs5cp")]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
+visible = false
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("6_b0wx1")
 
@@ -334,6 +336,7 @@ script = ExtResource("13_tdnaq")
 
 [node name="CrtPanelStandCable2" parent="CrtPanelStand2" instance=ExtResource("5_xs5cp")]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 4, 0)
+visible = false
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("6_b0wx1")
 
@@ -369,6 +372,7 @@ shader_params/black_range_a = -0.713
 shader_params/black_range_b = 1.106
 shader_params/emission = Color(0, 0, 0, 1)
 shader_params/emission_energy = 1.0
+shader_params/enable_percentage = 0.0
 shader_params/fade_percentage = 1.0
 shader_params/pow_factor = 4.0
 skeleton = NodePath("../../../../CrtPanelStand3/CrtPanelStandConnector")
@@ -399,6 +403,7 @@ script = ExtResource("13_tdnaq")
 
 [node name="CrtPanelStandCable2" parent="CrtPanelStandNeck2" instance=ExtResource("5_xs5cp")]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
+visible = false
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("6_b0wx1")
 

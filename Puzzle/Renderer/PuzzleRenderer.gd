@@ -86,6 +86,18 @@ func schedule_tween(tween : Tween = null) -> void:
 		)
 	tween_scheduled = tween
 
+func reset_decorators() -> void:
+	if show_element & 0b100:
+		for decorator in decorator_renderitems_map:
+			var decorator_item : RenderItem = decorator_renderitems_map[decorator]
+			decorator_item.stop_scheduled_tween()
+			decorator_item.modulate = decorator.color
+
+func clear_lines() -> void:
+	if show_element & 0b1000:
+		schedule_tween()
+		line_canvas_group.self_modulate = Color.TRANSPARENT
+
 func create_start_tween() ->void:
 	if not show_element & 0b1100: return
 	var tween : Tween = create_tween()
@@ -94,11 +106,7 @@ func create_start_tween() ->void:
 		for i in range(line_renders.size()):
 			var line_render := line_renders[i]
 			line_render.self_modulate = puzzle_data.lines_color[i * 4]
-	if show_element & 0b100:
-		for decorator in decorator_renderitems_map:
-			var decorator_item : RenderItem = decorator_renderitems_map[decorator]
-			decorator_item.stop_scheduled_tween()
-			decorator_item.modulate = decorator.color
+	reset_decorators()
 	if show_element & 0b1000:
 		tween.set_parallel(true)
 		for line_render in line_renders:

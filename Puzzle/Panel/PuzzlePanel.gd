@@ -124,7 +124,6 @@ class ViewportInstance extends RefCounted:
 		self.targets = config.targets
 		self.config_name = config.name
 		self.viewport.transparent_bg = viewport_transparent
-		self.viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 		self.viewport.size = Vector2i.ONE
 		parent.add_child(self.viewport)
 		self.viewport.add_child(self.puzzle_renderer)
@@ -133,6 +132,7 @@ class ViewportInstance extends RefCounted:
 			self.viewport.add_child(parent.test_info)
 		var texture : ViewportTexture = viewport.get_texture()
 		set_texture(parent, texture)
+		update_render()
 		pass
 	
 	func set_texture(parent : PuzzlePanel, texture : Texture2D) -> void:
@@ -146,7 +146,7 @@ class ViewportInstance extends RefCounted:
 		else:
 			viewport.size = Vector2i(viewport_size)
 			if viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED or viewport.render_target_update_mode == SubViewport.UPDATE_ONCE:
-				viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+				update_render()
 			var texture : ViewportTexture = viewport.get_texture()
 			set_texture(parent, texture)
 			return
@@ -164,6 +164,9 @@ class ViewportInstance extends RefCounted:
 		if viewport != null and need_update:
 			await RenderingServer.frame_post_draw
 			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if render else SubViewport.UPDATE_DISABLED
+	
+	func update_render() -> void:
+		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	
 	func free_viewport(parent : Node) -> void:
 #		if viewport.size == Vector2i.ONE: return
@@ -206,21 +209,24 @@ func free_viewports(force : bool = false) -> void:
 	pass
 
 func set_panel_active_percentage(percentage : float) -> void:
-	if puzzle_surface_material_id >= mesh.get_surface_override_material_count(): return
-	var mat : Material = mesh.get_surface_override_material(puzzle_surface_material_id)
-	if mat is StandardMaterial3D:
-		mat.albedo_color = Color.BLACK.lerp(Color.WHITE, percentage)
-		mat.emission_energy = percentage
+	mesh.set_shader_instance_uniform(&"enable_percentage", percentage)
+	pass
 
+const ActiveDuration : float = 0.3
 func set_active_with_tween(active : bool) -> void:
 	if is_active != active:
 		is_active = active
 		save()
 		var tween := create_tween()
 		if is_active:
-			tween.tween_method(set_panel_active_percentage, 0.0, 1.0, 0.5).set_trans(Tween.TRANS_LINEAR)
+			for viewport_instance in viewport_instance_list:
+				viewport_instance.puzzle_renderer.reset_decorators()
+			get_base_viewport_instance().puzzle_renderer.clear_lines()
+			for viewport in viewport_instance_list:
+				viewport.update_render()
+			tween.tween_method(set_panel_active_percentage, 0.0, 1.0, ActiveDuration).set_trans(Tween.TRANS_LINEAR)
 		else:
-			tween.tween_method(set_panel_active_percentage, 1.0, 0.0, 0.5).set_trans(Tween.TRANS_LINEAR)
+			tween.tween_method(set_panel_active_percentage, 1.0, 0.0, ActiveDuration).set_trans(Tween.TRANS_LINEAR)
 
 func on_visible_changed(on_screen : bool) -> void:
 #	print(">>>>> ", puzzle_name, " ", on_screen)
@@ -535,6 +541,8 @@ func on_puzzle_answered(correct : bool, tag : int, errors : Array) -> void:
 		play_sound("error")
 		for viewport_instance in viewport_instance_list:
 			viewport_instance.puzzle_renderer.create_error_tween(errors)
+		if not initial_active:
+			set_active_with_tween(false)
 #		get_base_viewport_instance().puzzle_renderer
 	else:
 		play_sound("answered")
