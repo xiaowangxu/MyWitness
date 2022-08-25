@@ -220,8 +220,7 @@ func set_active_with_tween(active : bool) -> void:
 		var tween := create_tween()
 		if is_active:
 			for viewport_instance in viewport_instance_list:
-				viewport_instance.puzzle_renderer.reset_decorators()
-			get_base_viewport_instance().puzzle_renderer.clear_lines()
+				viewport_instance.puzzle_renderer.reset_render()
 			for viewport in viewport_instance_list:
 				viewport.update_render()
 			tween.tween_method(set_panel_active_percentage, 0.0, 1.0, ActiveDuration).set_trans(Tween.TRANS_LINEAR)
@@ -439,16 +438,20 @@ func on_puzzle_interact_state_changed(state : PuzzleInteractState) -> void:
 
 var _puzzle_state : int = PuzzleRenderer.State.STOPPED :
 	set(val):
+		var changed := _puzzle_state != val
 		_puzzle_state = val
-		match _puzzle_state:
-			PuzzleRenderer.State.DRAWING:
-				request_viewport_mode(true)
-			PuzzleRenderer.State.STOPPED:
-				request_viewport_mode(false)
+		if changed:
+			match _puzzle_state:
+				PuzzleRenderer.State.DRAWING:
+					request_viewport_mode(true)
+				PuzzleRenderer.State.STOPPED:
+					request_viewport_mode(false)
 var _is_preferred : bool = false :
 	set(val):
+		var changed := _is_preferred != val
 		_is_preferred = val
-		request_viewport_mode(_is_preferred)
+		if changed:
+			request_viewport_mode(_is_preferred)
 func request_viewport_mode(should_render : bool) -> void:
 	if should_render:
 #		Debugger.print_tag(puzzle_name, "rendering", Color.DODGER_BLUE)

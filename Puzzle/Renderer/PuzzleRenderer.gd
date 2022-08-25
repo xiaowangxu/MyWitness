@@ -95,8 +95,13 @@ func reset_decorators() -> void:
 
 func clear_lines() -> void:
 	if show_element & 0b1000:
-		schedule_tween()
 		line_canvas_group.self_modulate = Color.TRANSPARENT
+
+func reset_render() -> void:
+	schedule_tween()
+	reset_decorators()
+	clear_lines()
+	self.state_changed.emit(State.STOPPED)
 
 func create_start_tween() ->void:
 	if not show_element & 0b1100: return
