@@ -22,6 +22,7 @@ const AllPuzzleJsons : Dictionary = {
 	"editor2": preload("res://PuzzleDataJson/Editor5.json"),
 	"treebase": preload("res://PuzzleDataJson/TreeBase.json"),
 	"factory1": preload("res://PuzzleDataJson/Factory1.json"),
+	"factory2_1": preload("res://PuzzleDataJson/Factory2-1.json"),
 }
 var AllPuzzleData : Dictionary = {
 	"first_try": PuzzleData.new(AllPuzzleJsons.first_try),
@@ -36,6 +37,7 @@ var AllPuzzleData : Dictionary = {
 	"editor2": PuzzleData.new(AllPuzzleJsons.editor2),
 	"treebase": PuzzleData.new(AllPuzzleJsons.treebase),
 	"factory1": PuzzleData.new(AllPuzzleJsons.factory1),
+	"factory2_1": PuzzleData.new(AllPuzzleJsons.factory2_1),
 }
 # Layers: Puzzles | CurrentPuzzle | Walkzilla | WalkzillaDisabled ... | InvisibleObstacles | Player | Interactable | Visual | Normal
 const PhysicsLayerNormal 				: int = 0b10000000000000000000000000000001
@@ -68,7 +70,7 @@ func get_player() -> Player:
 	return get_tree().get_first_node_in_group(PlayerGroupName)
 
 var cursor_state : CursorState = CursorState.DISABLED
-const Mouse2DSensitivity : float = 2.75
+const Mouse2DSensitivity : float = 3.0
 const Mouse3DSensitivity : float = 0.1
 const CameraEdgeMovementSensitivity : float = 0.5
 var mouse_position : Vector2 = Vector2.ZERO

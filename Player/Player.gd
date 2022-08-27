@@ -155,6 +155,9 @@ func move_and_rotate_to_panel(panel : PuzzlePanel) -> void:
 	GlobalData.set_preferred_puzzle_panel(panel)
 	var current_transform := get_current_transform()
 	var preferred_transform : Transform3D = panel.get_preferred_transform(current_transform)
+	var pos := preferred_transform.origin
+	var safe_pos := get_landing_position(pos + Vector3(0, 4, 0))
+	preferred_transform = Transform3D(get_look_at_transform(panel.global_transform.origin, safe_pos + Vector3(0, 4, 0)).basis, safe_pos)
 	if not preferred_transform.is_equal_approx(current_transform):
 		create_move_and_rotate_tween(preferred_transform)
 
@@ -170,7 +173,7 @@ func load_save() -> void:
 	neck.rotation.y = lookat.y
 	pass
 
-func get_look_at_transform(target : Vector3) -> Transform3D:
+func get_look_at_transform(target : Vector3, from : Vector3 = %Camera.global_transform.origin) -> Transform3D:
 	var trans := Transform3D()
-	trans = trans.looking_at(target - %Camera.global_transform.origin)
+	trans = trans.looking_at(target - from)
 	return trans
