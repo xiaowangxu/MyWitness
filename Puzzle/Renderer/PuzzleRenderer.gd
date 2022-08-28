@@ -64,6 +64,15 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 		add_child(line_canvas_group)
 	pass
 
+func add_render_item(render_item : RenderItem) -> void:
+	add_child(render_item)
+	move_child(render_item, get_child_count() - 2)
+	pass
+
+func remove_render_item(render_item : RenderItem) -> RenderItem:
+	remove_child(render_item)
+	return render_item
+
 func puzzle_to_panel(pos : Vector2) -> Vector2:
 	return pos * scale
 

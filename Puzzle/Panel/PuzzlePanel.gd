@@ -13,7 +13,8 @@ enum PuzzleInteractState {
 	ANSWERED
 }
 
-signal puzzle_answered(correct : bool, tag : int, errors : Array[Decorator])
+signal puzzle_answered(correct : bool, tag : int, errors : Array[Decorator], puzzle_line : LineData)
+signal puzzle_line_updated(puzzle_line : LineData)
 signal puzzle_started(line_data : LineData, puzzle_position : Vector2, mouse_position : Vector3, world_position : Vector3)
 signal puzzle_exited()
 signal puzzle_checked()
@@ -436,6 +437,16 @@ func on_puzzle_interact_state_changed(state : PuzzleInteractState) -> void:
 		hint_ring_render_item.set_start_hint_enabled(false)
 		hint_ring_render_item.set_end_hint_enabled(true)
 
+func set_always_on(enabled : bool = false) -> void:
+	_always_on = enabled
+	pass
+
+var _always_on : bool = false :
+	set(val):
+		var changed := _always_on != val
+		_always_on = val
+		if changed:
+			request_viewport_mode(_always_on)
 var _puzzle_state : int = PuzzleRenderer.State.STOPPED :
 	set(val):
 		var changed := _puzzle_state != val
@@ -457,7 +468,7 @@ func request_viewport_mode(should_render : bool) -> void:
 #		Debugger.print_tag(puzzle_name, "rendering", Color.DODGER_BLUE)
 		for viewport in viewport_instance_list:
 			viewport.set_rendering(true)
-	elif _puzzle_state == PuzzleRenderer.State.STOPPED and not _is_preferred:
+	elif _puzzle_state == PuzzleRenderer.State.STOPPED and not _is_preferred and not _always_on:
 #		Debugger.print_tag(puzzle_name, "render disabled", Color.DODGER_BLUE)
 		hint_ring_render_item.set_start_hint_enabled(false)
 		hint_ring_render_item.set_end_hint_enabled(false)
@@ -516,10 +527,10 @@ func check_puzzle() -> void:
 	var correct_dict := check_puzzle_answer(puzzle_line)
 	is_answered = correct_dict.tag >= 0
 	save()
+	puzzle_answered.emit(is_answered, correct_dict.tag, correct_dict.errors, puzzle_line)
 	puzzle_line = null
-	puzzle_answered.emit(is_answered, correct_dict.tag, correct_dict.errors)
 	puzzle_interact_state_changed.emit(PuzzleInteractState.ANSWERED)
-	interact_result_changed.emit(is_answered,  correct_dict.tag)
+	interact_result_changed.emit(is_answered, correct_dict.tag)
 	pass
 
 # -1 is wrong >= 0 means different correct ans's tags
@@ -539,7 +550,7 @@ func on_puzzle_started(line_data : LineData, puzzle_position : Vector2, mouse_po
 	play_sound("start")
 	pass
 
-func on_puzzle_answered(correct : bool, tag : int, errors : Array) -> void:
+func on_puzzle_answered(correct : bool, tag : int, errors : Array, line_data : LineData) -> void:
 	if not correct:
 		play_sound("error")
 		for viewport_instance in viewport_instance_list:
@@ -575,6 +586,7 @@ func commit_move_line(line_data : LineData, puzzle_position : Vector2 = Vector2.
 	var new_puzzle_pos := on_move_finished(line_data, puzzle_position, mouse_position, world_position)
 	set_puzzle_line(line_data)
 	_update_confirm_state(line_data)
+	puzzle_line_updated.emit(line_data)
 	return new_puzzle_pos
 
 func on_move_finished(line_data : LineData, puzzle_position : Vector2 = Vector2.ZERO, mouse_position : Vector3 = Vector3.ZERO, world_position : Vector3 = Vector3.ZERO) -> Vector2:

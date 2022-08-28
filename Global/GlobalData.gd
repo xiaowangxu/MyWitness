@@ -70,7 +70,7 @@ func get_player() -> Player:
 	return get_tree().get_first_node_in_group(PlayerGroupName)
 
 var cursor_state : CursorState = CursorState.DISABLED
-const Mouse2DSensitivity : float = 3.0
+const Mouse2DSensitivity : float = 3.75
 const Mouse3DSensitivity : float = 0.1
 const CameraEdgeMovementSensitivity : float = 0.5
 var mouse_position : Vector2 = Vector2.ZERO

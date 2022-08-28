@@ -515,6 +515,7 @@ transform = Transform3D(0.620546, 0, -0.78417, 0, 1, 0, 0.78417, 0, 0.620546, 3.
 script = ExtResource("16_178vx")
 puzzle_name = "crt"
 save_name = "test1"
+add_config = null
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
@@ -522,6 +523,8 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
+min_delta_length = null
+puzzle_surface_material_id = null
 initial_active = true
 others_node_path = [NodePath("../PuzzlePanel3"), NodePath(".")]
 
@@ -553,6 +556,7 @@ transform = Transform3D(0.620546, 0, -0.78417, 0, 1, 0, 0.78417, 0, 0.620546, 5.
 script = ExtResource("16_178vx")
 puzzle_name = "second2"
 save_name = "test2"
+add_config = null
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
@@ -560,6 +564,8 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
+min_delta_length = null
+puzzle_surface_material_id = null
 initial_active = true
 others_node_path = [NodePath("."), NodePath("../PuzzlePanel2")]
 

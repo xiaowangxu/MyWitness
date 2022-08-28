@@ -39,6 +39,8 @@ theme_override_constants/separation = 12
 unique_name_in_owner = true
 offset_right = 186.0
 offset_bottom = 48.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 32
 text = "Puzzle : first"
 
@@ -47,6 +49,8 @@ unique_name_in_owner = true
 offset_left = 198.0
 offset_right = 384.0
 offset_bottom = 48.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 32
 text = "Puzzle : first"
 

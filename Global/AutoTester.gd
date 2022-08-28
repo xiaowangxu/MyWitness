@@ -21,7 +21,7 @@ func run() -> void:
 		await wait_puzzle_answered(target)
 	finished.emit(true)
 
-func on_puzzle_answered(correct : bool, tag : int, errors, puzzle : PuzzlePanel) -> void:
+func on_puzzle_answered(correct : bool, tag : int, errors, line_data : LineData, puzzle : PuzzlePanel) -> void:
 	Debugger.print_tag("Test %s"%[puzzle.puzzle_name], "passed" if correct else "failed", Color.GREEN if correct else Color.RED)
 
 func wait_puzzle_answered(puzzle : PuzzlePanel) -> bool:

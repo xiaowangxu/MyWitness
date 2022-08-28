@@ -30,13 +30,13 @@ func on_move_finished(line_data : LineData, puzzle_position : Vector2 = Vector2.
 				panel.commit_move_line(new_line)
 	return super(line_data, puzzle_position, mouse_position, world_position)
 
-func on_puzzle_answered(correct : bool, tag : int, errors : Array) -> void:
+func on_puzzle_answered(correct : bool, tag : int, errors : Array, line_data : LineData) -> void:
 	if is_main_panel:
 		for panel in others:
 			if panel != self:
 				panel.check_puzzle()
 			panel.is_main_panel = true
-	super(correct, tag, errors)
+	super(correct, tag, errors, line_data)
 
 func on_puzzle_exited() -> void:
 	if is_main_panel:
