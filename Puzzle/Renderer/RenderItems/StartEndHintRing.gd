@@ -10,39 +10,39 @@ var ring_width : float = 2.0 :
 		val = clampf(val, 1.0, INF)
 		if val != ring_width:
 			ring_width = val
-			update()
+			queue_redraw()
 var start_positions : PackedVector2Array = [] :
 	set(val):
 		start_positions = val
-		update()
+		queue_redraw()
 var end_positions : PackedVector2Array = [] :
 	set(val):
 		end_positions = val
-		update()
+		queue_redraw()
 var normal_radius : float = 25.0 :
 	set(val):
 		val = clampf(val, 0.0, INF)
 		if val != normal_radius:
 			normal_radius = val
-			update()
+			queue_redraw()
 var start_radius : float = 60.0 :
 	set(val):
 		val = clampf(val, 0.0, INF)
 		if val != normal_radius:
 			start_radius = val
-			update()
+			queue_redraw()
 var start_percentage : float = 0.0 :
 	set(val):
 		val = clampf(val, 0.0, 1.0)
 		if val != start_percentage:
 			start_percentage = val
-			update()
+			queue_redraw()
 var end_percentage : float = 0.0 :
 	set(val):
 		val = clampf(val, 0.0, 1.0)
 		if val != end_percentage:
 			end_percentage = val
-			update()
+			queue_redraw()
 
 func _init(puzzle_board : PuzzleData, viewport_size : Vector2i, ring_width : float = 1.5) -> void:
 	var _scale := Vector2(viewport_size) / Vector2(puzzle_board.base_size)

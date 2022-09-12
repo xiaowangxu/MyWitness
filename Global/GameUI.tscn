@@ -34,10 +34,10 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q3dth"]
 shader = SubResource("Shader_qe6d4")
-shader_param/a = -0.187
-shader_param/b = 2.261
-shader_param/mul = 8.0
-shader_param/percent = 0.043
+a = null
+b = null
+mul = null
+percent = null
 
 [sub_resource type="Shader" id="Shader_li08q"]
 code = "shader_type canvas_item;
@@ -70,10 +70,10 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cx5ws"]
 shader = SubResource("Shader_li08q")
-shader_param/a = 0.1
-shader_param/b = 1.0
-shader_param/mul = 8.0
-shader_param/percent = 0.0
+a = null
+b = null
+mul = null
+percent = null
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xkcs"]
 bg_color = Color(1, 1, 1, 0)
@@ -103,16 +103,22 @@ visible = false
 [node name="PostEffect" type="ColorRect" parent="."]
 visible = false
 material = SubResource("ShaderMaterial_q3dth")
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.219608)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 visible = false
 material = SubResource("ShaderMaterial_cx5ws")
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
@@ -138,8 +144,11 @@ polygon = PackedVector2Array(2.33333, -2.66667, 4.66667, -2.33333, 0, 0, 1.66667
 
 [node name="Panel" type="Panel" parent="."]
 visible = false
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2xkcs")
 

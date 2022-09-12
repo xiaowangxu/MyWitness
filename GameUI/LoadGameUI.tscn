@@ -26,33 +26,41 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a2hua"]
 shader = SubResource("Shader_rnioc")
-shader_param/black_factor = -0.183
-shader_param/black_range_a = -0.258
-shader_param/black_range_b = 1.094
-shader_param/opacity = 0.0
-shader_param/pow_factor = 4.0
+black_factor = null
+black_range_a = null
+black_range_b = null
+opacity = null
+pow_factor = null
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_41pfa"]
 shader = SubResource("Shader_rnioc")
-shader_param/black_factor = -0.183
-shader_param/black_range_a = -0.258
-shader_param/black_range_b = 1.094
-shader_param/opacity = 0.0
-shader_param/pow_factor = 4.0
+black_factor = null
+black_range_a = null
+black_range_b = null
+opacity = null
+pow_factor = null
 
 [node name="LoadGameUI" type="Control"]
 process_mode = 2
 clip_contents = true
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_3mr0b")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 0.788235)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 200.0
@@ -81,6 +89,7 @@ metadata/_edit_use_custom_anchors = true
 
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/PuzzlePanel"]
 unique_name_in_owner = true
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -104,6 +113,7 @@ metadata/_edit_use_custom_anchors = true
 [node name="GameSaveDataList" type="VBoxContainer" parent="HBoxContainer/Panel2"]
 unique_name_in_owner = true
 clip_contents = true
+anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
@@ -115,8 +125,11 @@ metadata/_edit_layout_mode = 1
 metadata/_edit_use_custom_anchors = true
 
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/Panel2"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="CoverA" type="TextureRect" parent="HBoxContainer/Panel2/CenterContainer"]
 unique_name_in_owner = true

@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/SolarPanel.glb-4c898760647c7a1b646e6d5532d894
 
 nodes/root_type="Node3D"
 nodes/root_name="Scene Root"
+nodes/apply_root_scale=true
 nodes/root_scale=1.0
 meshes/ensure_tangents=true
 meshes/generate_lods=true
@@ -28,8 +29,13 @@ import_script/path=""
 _subresources={
 "meshes": {
 "SolarPanel_立方体": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
 "generate/shadow_meshes": 2,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
 "save_to_file/path": "res://World/Panels/SolarPanel/Meshs/SolarPanel_立方体.res"
 }
 }

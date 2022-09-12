@@ -1,7 +1,7 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
+type="AudioStreamWAV"
 uid="uid://bmwmilroo025s"
 path="res://.godot/imported/PuzzleStart.wav-b193d97e81ed1d38d20f1646b7b7e817.sample"
 

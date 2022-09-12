@@ -126,17 +126,17 @@ var mouse_sensitivity = 0.1
 var up_max_deg = 85
 var down_max_deg = 60
 func clamp_camera_angle() -> void:
-	var up_max_rad := deg2rad(up_max_deg)
-	var down_max_rad := deg2rad(-down_max_deg)
+	var up_max_rad := deg_to_rad(up_max_deg)
+	var down_max_rad := deg_to_rad(-down_max_deg)
 	camera.rotation.x = clamp(camera.rotation.x, down_max_rad, up_max_rad)
 	pass
 
 func rotate_camera_on_interact(event : InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		neck.rotate_y(deg2rad(-event.relative.x * GlobalData.Mouse3DSensitivity))
-		camera.rotate_x(deg2rad(-event.relative.y * GlobalData.Mouse3DSensitivity))
-		var up_max_rad := deg2rad(up_max_deg)
-		var down_max_rad := deg2rad(-down_max_deg)
+		neck.rotate_y(deg_to_rad(-event.relative.x * GlobalData.Mouse3DSensitivity))
+		camera.rotate_x(deg_to_rad(-event.relative.y * GlobalData.Mouse3DSensitivity))
+		var up_max_rad := deg_to_rad(up_max_deg)
+		var down_max_rad := deg_to_rad(-down_max_deg)
 		clamp_camera_angle()
 	pass
 

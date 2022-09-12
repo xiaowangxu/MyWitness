@@ -10,11 +10,11 @@
 [ext_resource type="PackedScene" uid="uid://c6crhapaxy0ni" path="res://World/Panels/CRT/Objects/CrtPanelStandNeck.tscn" id="6_crqbt"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="7_kbxjn"]
 [ext_resource type="Script" path="res://Linker/PanelInteractableLinker.gd" id="8_mbl52"]
-[ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="9_f4anv"]
 [ext_resource type="Shader" uid="uid://cgx666a0b1qxd" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="9_ncb7v"]
 [ext_resource type="Shader" uid="uid://0qj6ox37ggrc" path="res://World/Panels/CRTBox/Materials/CRTBoxShader.tres" id="12_8wjxh"]
 [ext_resource type="PackedScene" uid="uid://c0vwm084ntxqm" path="res://World/Panels/CRTBox/Objects/CRTBox.tscn" id="12_knu8o"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="13_tdnaq"]
+[ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="13_wxr3c"]
 [ext_resource type="PackedScene" uid="uid://knk1lbymqvom" path="res://World/Panels/SolarPanel/Objects/SolarPanel.tscn" id="16_1ytvv"]
 [ext_resource type="Script" path="res://Puzzle/Panel/PuzzlePanelLinked.gd" id="16_178vx"]
 [ext_resource type="PackedScene" uid="uid://bd67p5cae62b" path="res://World/Panels/TreeBase/Objects/TreeBase.tscn" id="18_0hd3i"]
@@ -22,7 +22,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g3ral"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-shader_param/texture_puzzle = ExtResource("9_f4anv")
+texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_eia8a"]
 points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
@@ -30,30 +30,30 @@ points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5,
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0c73y"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-shader_param/texture_puzzle = ExtResource("9_f4anv")
+texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fdsnr"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-shader_param/texture_puzzle = ExtResource("9_f4anv")
+texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jcljl"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-shader_param/texture_puzzle = ExtResource("9_f4anv")
+texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kcqa4"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-shader_param/texture_puzzle = ExtResource("9_f4anv")
+texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5jm5q"]
 render_priority = 0
 shader = ExtResource("12_8wjxh")
-shader_param/resolution = Vector2(100, 100)
-shader_param/scanlines_opacity = 0.25
-shader_param/scanlines_width = 0.5
-shader_param/texture_puzzle = ExtResource("9_f4anv")
+resolution = null
+scanlines_opacity = null
+scanlines_width = null
+texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="Shader" id="Shader_mlaq8"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.alpha11's StandardMaterial3D.
@@ -79,26 +79,26 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_58b0w"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-shader_param/albedo = Color(1, 1, 1, 1)
-shader_param/texture_albedo = ExtResource("9_f4anv")
+albedo = Color(1, 1, 1, 1)
+texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_os25v"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-shader_param/albedo = Color(1, 1, 1, 1)
-shader_param/texture_albedo = ExtResource("9_f4anv")
+albedo = Color(1, 1, 1, 1)
+texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6xs4f"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-shader_param/albedo = Color(1, 1, 1, 1)
-shader_param/texture_albedo = ExtResource("9_f4anv")
+albedo = Color(1, 1, 1, 1)
+texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_aq7mu"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-shader_param/albedo = Color(1, 1, 1, 1)
-shader_param/texture_albedo = ExtResource("9_f4anv")
+albedo = Color(1, 1, 1, 1)
+texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="Shader" id="Shader_85mnk"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.alpha11's StandardMaterial3D.
@@ -124,8 +124,8 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ovbow"]
 render_priority = 0
 shader = SubResource("Shader_85mnk")
-shader_param/albedo = Color(1, 1, 1, 1)
-shader_param/texture_albedo = ExtResource("9_f4anv")
+albedo = Color(1, 1, 1, 1)
+texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_oeoie"]
 data = PackedVector3Array(0, 0.5, 0.5, 0, 0.1, -0.1, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, 0.1, 0.1, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.1, 0.1, 0, 0.1, 0.1, 0, -0.1, 0.1, 0, -0.5, 0.5, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.1, 0.1, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.1, -0.1)
@@ -182,12 +182,11 @@ skeleton = NodePath("../..")
 
 [node name="PuzzlePanel3" parent="CrtPanelStand/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 script = ExtResource("5_33qkm")
-next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3")]
 puzzle_name = "mirror2"
 save_name = "mirror2"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
+"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
 "transparent": false,
 "update": true,
 "visual": 15
@@ -195,18 +194,11 @@ viewport_configs = [{
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
 initial_active = true
+next_interactables_node_path = [NodePath(""), NodePath(""), NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3")]
 metadata/_edit_group_ = true
 
 [node name="Mesh" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3" instance=ExtResource("4_rqiu4")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
-shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.489
-shader_params/black_range_a = -0.713
-shader_params/black_range_b = 1.106
-shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
-shader_params/emission_energy = 1.0
-shader_params/fade_percentage = 1.0
-shader_params/pow_factor = 4.0
 skeleton = NodePath("../../../../CrtPanelStand3/CrtPanelStandConnector")
 surface_material_override/2 = SubResource("ShaderMaterial_g3ral")
 
@@ -242,11 +234,10 @@ transform = Transform3D(1, 0, 3.55271e-15, 0, 1, 0, -3.55271e-15, 0, 1, -8.19564
 skeleton = NodePath("../..")
 
 [node name="PuzzlePanel3" parent="CrtPanelStandNeck/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
-next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")]
 puzzle_name = "generator"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
+"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
 "transparent": false,
 "update": true,
 "visual": 15
@@ -254,19 +245,11 @@ viewport_configs = [{
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
 initial_active = true
+next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStand/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")]
 metadata/_edit_group_ = true
 
 [node name="Mesh" parent="CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3" instance=ExtResource("4_rqiu4")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
-shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.489
-shader_params/black_range_a = -0.713
-shader_params/black_range_b = 1.106
-shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
-shader_params/emission_energy = 1.0
-shader_params/fade_percentage = 1.0
-shader_params/pow_factor = 4.0
-skeleton = NodePath("../../../../CrtPanelStand3/CrtPanelStandConnector")
 surface_material_override/2 = SubResource("ShaderMaterial_0c73y")
 
 [node name="Area" type="Area3D" parent="CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"]
@@ -285,9 +268,9 @@ bus = &"PuzzleSoundEffect"
 
 [node name="PanelInteractableLinker" type="Node" parent="CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"]
 script = ExtResource("8_mbl52")
+NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")
 InteractableNodePath = NodePath("..")
 acceptable_tags = PackedInt32Array(0)
-NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")
 
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"]
 script = ExtResource("13_tdnaq")
@@ -307,28 +290,21 @@ skeleton = NodePath("../..")
 
 [node name="PuzzlePanel2" parent="CrtPanelStand2/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
-next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")]
 puzzle_name = "first_try"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
+"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
+next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck/CrtPanelStandConnector/PuzzlePanel3"), NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")]
 metadata/_edit_group_ = true
 
 [node name="Mesh" parent="CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2" instance=ExtResource("4_rqiu4")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
-shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.489
-shader_params/black_range_a = -0.713
-shader_params/black_range_b = 1.106
-shader_params/emission_energy = 1.0
-shader_params/fade_percentage = 1.0
-shader_params/pow_factor = 4.0
 skeleton = NodePath("../../../../CrtPanelStand3/CrtPanelStandConnector")
 surface_material_override/2 = SubResource("ShaderMaterial_fdsnr")
 
@@ -348,9 +324,9 @@ bus = &"PuzzleSoundEffect"
 
 [node name="PanelInteractableLinker" type="Node" parent="CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2"]
 script = ExtResource("8_mbl52")
+NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")
 InteractableNodePath = NodePath("..")
 acceptable_tags = PackedInt32Array(0)
-NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")
 
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2"]
 script = ExtResource("13_tdnaq")
@@ -371,31 +347,22 @@ skeleton = NodePath("../..")
 
 [node name="PuzzlePanel2" parent="CrtPanelStandNeck2/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 8.73115e-11, -1.19209e-07, 0, 1, 0.000733038, 8.9407e-08, -0.000733038, 1, 0, 0, 0)
-next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("../../../CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel")]
 puzzle_name = "second"
 viewport_configs = [{
 "idle": 1,
 "name": "base",
-"targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
+"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
+next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("../../../CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel")]
 metadata/_edit_group_ = true
 
 [node name="Mesh" parent="CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2" instance=ExtResource("4_rqiu4")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
-shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.489
-shader_params/black_range_a = -0.713
-shader_params/black_range_b = 1.106
-shader_params/emission = Color(0, 0, 0, 1)
-shader_params/emission_energy = 1.0
-shader_params/enable_percentage = 1.0
-shader_params/fade_percentage = 1.0
-shader_params/pow_factor = 4.0
 skeleton = NodePath("../../../../CrtPanelStand3/CrtPanelStandConnector")
 surface_material_override/2 = SubResource("ShaderMaterial_jcljl")
 
@@ -415,9 +382,9 @@ bus = &"PuzzleSoundEffect"
 
 [node name="PanelInteractableLinker" type="Node" parent="CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2"]
 script = ExtResource("8_mbl52")
+NextPanelNodePath = NodePath("../../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")
 InteractableNodePath = NodePath("..")
 acceptable_tags = PackedInt32Array(0)
-NextPanelNodePath = NodePath("../../../../CrtPanelStand2/CrtPanelStandConnector/PuzzlePanel2")
 
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2"]
 script = ExtResource("13_tdnaq")
@@ -436,11 +403,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../..")
 
 [node name="PuzzlePanel" parent="CrtPanelStand3/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
-next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("../../../PuzzlePanel")]
 puzzle_name = "crt"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/2:shader_param/texture_puzzle"),
+"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
 "transparent": false,
 "update": true,
 "visual": 15
@@ -448,18 +414,11 @@ viewport_configs = [{
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
 initial_active = true
+next_interactables_node_path = [NodePath(""), NodePath("../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2"), NodePath(""), NodePath("../../../PuzzlePanel")]
 metadata/_edit_group_ = true
 
 [node name="Mesh" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel" instance=ExtResource("4_rqiu4")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
-shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.489
-shader_params/black_range_a = -0.713
-shader_params/black_range_b = 1.106
-shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
-shader_params/emission_energy = 1.0
-shader_params/fade_percentage = 1.0
-shader_params/pow_factor = 4.0
 skeleton = NodePath("../..")
 surface_material_override/2 = SubResource("ShaderMaterial_kcqa4")
 
@@ -479,38 +438,30 @@ bus = &"PuzzleSoundEffect"
 
 [node name="PanelInteractableLinker" type="Node" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"]
 script = ExtResource("8_mbl52")
+NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")
 InteractableNodePath = NodePath("..")
 acceptable_tags = PackedInt32Array(0)
-NextPanelNodePath = NodePath("../../../../CrtPanelStandNeck2/CrtPanelStandConnector/PuzzlePanel2")
 
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"]
 script = ExtResource("13_tdnaq")
 
 [node name="PuzzlePanel" parent="." groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.8, 4, -8.58307e-06)
-next_interactables_node_path = [NodePath(""), NodePath("../CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"), NodePath(""), NodePath("")]
 puzzle_name = "second2"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/1:shader_param/texture_puzzle"),
+"targets": PackedStringArray("surface_material_override/1:texture_puzzle"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
+min_delta_length = 2.0
 puzzle_surface_material_id = 1
 initial_active = true
+next_interactables_node_path = [NodePath(""), NodePath("../CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"), NodePath(""), NodePath("")]
 
 [node name="Mesh" parent="PuzzlePanel" instance=ExtResource("12_knu8o")]
 transform = Transform3D(-8.9407e-08, 0, 1, 0, 1, 0, -1, 0, -8.9407e-08, 0, 0, 0)
-shader_params/albedo = Color(1, 1, 1, 1)
-shader_params/black_factor = 0.489
-shader_params/black_range_a = -0.713
-shader_params/black_range_b = 1.106
-shader_params/default_color = Color(0.15, 0.65, 0.15, 1)
-shader_params/emission = Color(0, 0, 0, 1)
-shader_params/emission_energy = 1.0
-shader_params/fade_percentage = 1.0
-shader_params/pow_factor = 4.0
 skeleton = NodePath("../../..")
 surface_material_override/1 = SubResource("ShaderMaterial_5jm5q")
 
@@ -534,24 +485,23 @@ script = ExtResource("13_tdnaq")
 [node name="PuzzlePanel2" parent="." instance=ExtResource("7_kbxjn")]
 transform = Transform3D(0.620546, 0, -0.78417, 0, 1, 0, 0.78417, 0, 0.620546, 3.7441, 4, 0.555348)
 script = ExtResource("16_178vx")
+others_node_path = [NodePath("../PuzzlePanel3"), NodePath(".")]
 puzzle_name = "crt"
 save_name = "test1"
 add_config = null
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"targets": PackedStringArray("surface_material_override/0:texture_albedo"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
-min_delta_length = null
-puzzle_surface_material_id = null
+min_delta_length = 2.0
 initial_active = true
-others_node_path = [NodePath("../PuzzlePanel3"), NodePath(".")]
 
 [node name="Mesh" parent="PuzzlePanel2" instance=ExtResource("16_1ytvv")]
-shader_params/default_color = Color(0.14902, 0.65098, 0.14902, 1)
-shader_params/fade_percentage = 1.0
+transform = Transform3D(-2.98023e-08, 0, 1, 0, 1, 0, -1, 0, -2.98023e-08, 0, 0, 0)
+shader_uniforms/fade_percentage = 1.0
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_58b0w")
 
@@ -575,20 +525,20 @@ script = ExtResource("13_tdnaq")
 [node name="PuzzlePanel3" parent="." instance=ExtResource("7_kbxjn")]
 transform = Transform3D(0.620546, 0, -0.78417, 0, 1, 0, 0.78417, 0, 0.620546, 5.06336, 4, 2.22247)
 script = ExtResource("16_178vx")
+others_node_path = [NodePath("."), NodePath("../PuzzlePanel2")]
 puzzle_name = "second2"
 save_name = "test2"
 add_config = null
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"targets": PackedStringArray("surface_material_override/0:texture_albedo"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
-min_delta_length = null
+min_delta_length = 2.0
 puzzle_surface_material_id = null
 initial_active = true
-others_node_path = [NodePath("."), NodePath("../PuzzlePanel2")]
 
 [node name="Mesh" parent="PuzzlePanel3" instance=ExtResource("16_1ytvv")]
 skeleton = NodePath("../..")
@@ -617,11 +567,12 @@ puzzle_name = "editor"
 save_name = "editor"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"targets": PackedStringArray("surface_material_override/0:texture_albedo"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
+min_delta_length = 2.0
 initial_active = true
 
 [node name="Mesh" parent="PuzzlePanel4" instance=ExtResource("16_1ytvv")]
@@ -651,11 +602,12 @@ puzzle_name = "editor2"
 save_name = "editor2"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"targets": PackedStringArray("surface_material_override/0:texture_albedo"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
+min_delta_length = 2.0
 initial_active = true
 
 [node name="Mesh" parent="PuzzlePanel5" instance=ExtResource("16_1ytvv")]
@@ -685,7 +637,7 @@ puzzle_name = "treebase"
 save_name = "treebase"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/0:shader_param/texture_albedo"),
+"targets": PackedStringArray("surface_material_override/0:texture_albedo"),
 "transparent": false,
 "update": true,
 "visual": 15

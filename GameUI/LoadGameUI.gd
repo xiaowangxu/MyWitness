@@ -21,8 +21,8 @@ enum EndFunction {
 }
 
 func create_menu_puzzle() -> void:
-	%CoverA.material.set_shader_param("opacity", 0.0)
-	%CoverB.material.set_shader_param("opacity", 0.0)
+	%CoverA.material.set_shader_parameter("opacity", 0.0)
+	%CoverB.material.set_shader_parameter("opacity", 0.0)
 	for child in %CenterContainer.get_children():
 		%CenterContainer.remove_child(child)
 		child.queue_free()
@@ -197,13 +197,13 @@ func _process(delta: float) -> void:
 #		printt(target_idx, step_percentage)
 		%CoverA.texture = a_texture
 		%CoverB.texture = b_texture
-		%CoverA.material.set_shader_param("opacity", clampf((1.0 - step_percentage) * 2.0, 0.0, 1.0))
-		%CoverB.material.set_shader_param("opacity", clampf((step_percentage - 0.5) * 2.0, 0.0, 1.0))
+		%CoverA.material.set_shader_parameter("opacity", clampf((1.0 - step_percentage) * 2.0, 0.0, 1.0))
+		%CoverB.material.set_shader_parameter("opacity", clampf((step_percentage - 0.5) * 2.0, 0.0, 1.0))
 #		%GameSaveDataList.offset_left = 0
 #		%GameSaveDataList.offset_top = game_save_data_select_path_percentage * count.y * -2 + count.y
 	else:
-		%CoverA.material.set_shader_param("opacity", 0.0)
-		%CoverB.material.set_shader_param("opacity", 0.0)
+		%CoverA.material.set_shader_parameter("opacity", 0.0)
+		%CoverB.material.set_shader_parameter("opacity", 0.0)
 	update_confirm_state(puzzle_line)
 
 func _notification(what: int) -> void:

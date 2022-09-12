@@ -124,7 +124,7 @@ static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_mo
 		return Vector2.ZERO
 	
 	if dot_smooth:
-		var dot := lerp(1.0, nearest_dot, DotSmoothSensitivity)
+		var dot := lerpf(1.0, nearest_dot, DotSmoothSensitivity)
 		movement_length = movement_length * abs(dot)
 	
 	var remained : Vector2 = Vector2.ZERO

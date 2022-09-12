@@ -299,7 +299,6 @@ window/stretch/aspect="expand"
 
 [editor]
 
-export/convert_text_resources_to_binary=true
 scene/scene_naming=1
 
 [input]
@@ -363,15 +362,17 @@ common/enable_object_picking=false
 [rendering]
 
 driver/threads/thread_model=2
-shadows/directional_shadow/size=8192
 reflections/reflection_atlas/reflection_size=1024
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 occlusion_culling/occlusion_rays_per_thread=1024
 environment/glow/use_high_quality=true
 environment/subsurface_scattering/subsurface_scattering_quality=2
-anti_aliasing/quality/msaa=2
+anti_aliasing/quality/msaa_2d=1
+anti_aliasing/quality/msaa_3d=1
 anti_aliasing/quality/use_debanding=true
 occlusion_culling/use_occlusion_culling=true
+shadows/directional_shadow/size=8192
 environment/screen_space_roughness_limiter/enabled=false
 environment/quality/msaa=3
 environment/directional_shadow/soft_shadow_quality=3
+anti_aliasing/quality/msaa=2

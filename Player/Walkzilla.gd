@@ -227,7 +227,7 @@ func update_collision(player_position : Vector3) -> void:
 				collision_positions[ray_id] = pos
 				indicator.visible = true
 				indicator.global_transform.origin = pos
-				indicator.set_shader_instance_uniform("color", Color.GREEN)
+				indicator.set_instance_shader_parameter("color", Color.GREEN)
 			else:
 				collision_positions[ray_id] = null
 				indicator.visible = false
@@ -260,9 +260,9 @@ func update_collision(player_position : Vector3) -> void:
 				var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 				%FarIndicators.add_child(i)
 				i.global_transform.origin = right_far_pos
-				i.set_shader_instance_uniform("color", Color.DODGER_BLUE)
+				i.set_instance_shader_parameter("color", Color.DODGER_BLUE)
 				
-				right_indicator.set_shader_instance_uniform("color", Color.ORANGE_RED)
+				right_indicator.set_instance_shader_parameter("color", Color.ORANGE_RED)
 			if pos != null and right_pos == null:
 				right_far_pos = get_farest_point(ray_id, right_id, pos)
 				is_right_edge = true
@@ -270,9 +270,9 @@ func update_collision(player_position : Vector3) -> void:
 				var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 				%FarIndicators.add_child(i)
 				i.global_transform.origin = right_far_pos
-				i.set_shader_instance_uniform("color", Color.DODGER_BLUE)
+				i.set_instance_shader_parameter("color", Color.DODGER_BLUE)
 				
-				indicator.set_shader_instance_uniform("color", Color.ORANGE_RED)
+				indicator.set_instance_shader_parameter("color", Color.ORANGE_RED)
 		if is_ray_index_valid(index_x, index_y+1):
 			var bottom_id := compose_ray_id(index_x, index_y+1)
 			var bottom_pos = collision_positions[bottom_id]
@@ -284,9 +284,9 @@ func update_collision(player_position : Vector3) -> void:
 				var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 				%FarIndicators.add_child(i)
 				i.global_transform.origin = bottom_far_pos
-				i.set_shader_instance_uniform("color", Color.DODGER_BLUE)
+				i.set_instance_shader_parameter("color", Color.DODGER_BLUE)
 				
-				bottom_indicator.set_shader_instance_uniform("color", Color.ORANGE_RED)
+				bottom_indicator.set_instance_shader_parameter("color", Color.ORANGE_RED)
 			if pos != null and bottom_pos == null:
 				bottom_far_pos = get_farest_point(ray_id, bottom_id, pos)
 				is_bottom_edge = true
@@ -294,9 +294,9 @@ func update_collision(player_position : Vector3) -> void:
 				var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 				%FarIndicators.add_child(i)
 				i.global_transform.origin = bottom_far_pos
-				i.set_shader_instance_uniform("color", Color.DODGER_BLUE)
+				i.set_instance_shader_parameter("color", Color.DODGER_BLUE)
 				
-				indicator.set_shader_instance_uniform("color", Color.ORANGE_RED)
+				indicator.set_instance_shader_parameter("color", Color.ORANGE_RED)
 	
 		if is_cell_index_vaild(index_x, index_y):
 #			self
@@ -379,7 +379,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(up_pos, collision)
 							add_edge_mesh(collision, left_pos)
 			7	:
@@ -407,7 +407,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(up_pos, collision)
 							add_edge_mesh(collision, left_pos)
 			4	:
@@ -435,7 +435,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(up_pos, collision)
 							add_edge_mesh(collision, right_pos)
 			11	:
@@ -463,7 +463,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(up_pos, collision)
 							add_edge_mesh(collision, right_pos)
 			2	: 
@@ -491,7 +491,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(down_pos, collision)
 							add_edge_mesh(collision, right_pos)
 			13	: 
@@ -519,7 +519,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(down_pos, collision)
 							add_edge_mesh(collision, right_pos)
 			1	: 
@@ -547,7 +547,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(down_pos, collision)
 							add_edge_mesh(collision, left_pos)
 			14	: 
@@ -574,7 +574,7 @@ func update_collision(player_position : Vector3) -> void:
 							var i := preload("res://Player/WalkzillaIndicator.tscn").instantiate()
 							%FarIndicators.add_child(i)
 							i.global_transform.origin = collision
-							i.set_shader_instance_uniform("color", Color.REBECCA_PURPLE)
+							i.set_instance_shader_parameter("color", Color.REBECCA_PURPLE)
 							add_edge_mesh(down_pos, collision)
 							add_edge_mesh(collision, left_pos)
 

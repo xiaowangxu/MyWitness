@@ -1,7 +1,7 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
+type="AudioStreamWAV"
 uid="uid://dxr6hpt3g3xmu"
 path="res://.godot/imported/PuzzleError.wav-cfadb779951da01f08434ddd46936e8e.sample"
 

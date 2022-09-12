@@ -11,7 +11,7 @@ func _init() -> void:
 		game_save_data_config = ResourceLoader.load(ConfigPath)
 	else:
 		game_save_data_config = GameSaveDataConfigResource.new()
-		ResourceSaver.save(ConfigPath, game_save_data_config)
+		ResourceSaver.save(game_save_data_config, ConfigPath)
 	print(">>>> load ", game_save_data_config)
 	game_save_data_config.load_all_summarys()
 	load_game_save()
@@ -55,7 +55,8 @@ var viewport : SubViewport
 var camera : Camera3D
 func _ready() -> void:
 	viewport = SubViewport.new()
-	viewport.msaa = Viewport.MSAA_4X
+	viewport.msaa_2d = Viewport.MSAA_4X
+	viewport.msaa_3d = Viewport.MSAA_4X
 	viewport.size = Vector2(1024, 576)
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	add_child(viewport)

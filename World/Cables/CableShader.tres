@@ -14,23 +14,23 @@ function = 31
 [sub_resource type="VisualShaderNodeSmoothStep" id="141"]
 default_input_values = [0, 0.0, 1, 0.25, 2, 0.0]
 
-[sub_resource type="VisualShaderNodeColorUniform" id="142"]
-uniform_name = "LightColor"
+[sub_resource type="VisualShaderNodeColorParameter" id="142"]
+parameter_name = "LightColor"
 
-[sub_resource type="VisualShaderNodeFloatUniform" id="144"]
-uniform_name = "LightStrength"
+[sub_resource type="VisualShaderNodeFloatParameter" id="144"]
+parameter_name = "LightStrength"
 
 [sub_resource type="VisualShaderNodeVectorOp" id="145"]
 operator = 2
 
-[sub_resource type="VisualShaderNodeColorUniform" id="146"]
-uniform_name = "CableColor"
+[sub_resource type="VisualShaderNodeColorParameter" id="146"]
+parameter_name = "CableColor"
 
-[sub_resource type="VisualShaderNodeFloatUniform" id="147"]
-uniform_name = "CableStrength"
+[sub_resource type="VisualShaderNodeFloatParameter" id="147"]
+parameter_name = "CableStrength"
 
-[sub_resource type="VisualShaderNodeFloatUniform" id="VisualShaderNodeFloatUniform_66hgc"]
-uniform_name = "Smooth"
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatUniform_66hgc"]
+parameter_name = "Smooth"
 hint = 1
 min = 0.001
 default_value_enabled = true
@@ -47,11 +47,11 @@ uniform float LightStrength;
 
 
 void fragment() {
-// FloatUniform:26
+// FloatParameter:26
 	float n_out26p0 = Smooth;
 
 
-// FloatUniform:25
+// FloatParameter:25
 	float n_out25p0 = CableStrength;
 
 
@@ -64,7 +64,7 @@ void fragment() {
 	float n_out18p0 = smoothstep(n_in18p0, n_out26p0, n_out12p0);
 
 
-// ColorUniform:24
+// ColorParameter:24
 	vec4 n_out24p0 = CableColor;
 
 
@@ -76,7 +76,7 @@ void fragment() {
 	float n_out17p0 = 1.0 - n_out18p0;
 
 
-// ColorUniform:19
+// ColorParameter:19
 	vec4 n_out19p0 = LightColor;
 
 
@@ -84,7 +84,7 @@ void fragment() {
 	vec3 n_out16p0 = vec3(n_out17p0) * vec3(n_out19p0.xyz);
 
 
-// FloatUniform:22
+// FloatParameter:22
 	float n_out22p0 = LightStrength;
 
 

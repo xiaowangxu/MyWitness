@@ -5,31 +5,31 @@ var line_data : LineData = null :
 	get: return _line_data
 	set(val):
 		_line_data = val
-		update()
+		queue_redraw()
 var _line_data : LineData = null
 var start_radius : float = 20.0:
 	set(val):
 		val = clampf(val, 0.0, INF)
 		if val != start_radius:
 			start_radius = val
-			update()
+			queue_redraw()
 var normal_radius : float = 10.0 :
 	set(val):
 		val = clampf(val, 0.0, INF)
 		if val != normal_radius:
 			normal_radius = val
-			update()
+			queue_redraw()
 var percentage : float = 1.0 :
 	set(val):
 		val = clampf(val, 0.0, 1.0)
 		if val != percentage:
 			percentage = val
-			update()
+			queue_redraw()
 var wrap_rect : Vector2 = Vector2.ZERO :
 	set(val):
 		if val != wrap_rect:
 			wrap_rect = val
-			update()
+			queue_redraw()
 
 func _init(line_data : LineData, normal_radius : float = 10.0, start_radius : float = 20.0, wrap_rect : Vector2 = Vector2.ZERO) -> void:
 	self.line_data = line_data

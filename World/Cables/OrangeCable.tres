@@ -5,8 +5,8 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_b1jon")
-shader_param/CableColor = Color(0, 0, 0, 1)
-shader_param/CableStrength = 0.818
-shader_param/LightColor = Color(0.235294, 1, 0, 1)
-shader_param/LightStrength = 2.946
-shader_param/Smooth = 1.0
+CableColor = null
+CableStrength = null
+LightColor = null
+LightStrength = null
+Smooth = null

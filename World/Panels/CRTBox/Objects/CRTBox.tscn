@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c0vwm084ntxqm"]
 
-[ext_resource type="ArrayMesh" uid="uid://btmbaaoeunrdg" path="res://World/Panels/CRTBox/Meshs/CRTPanelBox_立方体014.res" id="1_bvgat"]
+[ext_resource type="ArrayMesh" uid="uid://pg7hrodf8cqj" path="res://World/Panels/CRTBox/Meshs/CRTPanelBox_立方体014.res" id="1_bvgat"]
 [ext_resource type="ArrayOccluder3D" uid="uid://d4mmy26xj48yq" path="res://World/Panels/CRTBox/Objects/CRTBox.occ" id="4_wsb4w"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7w7k4"]

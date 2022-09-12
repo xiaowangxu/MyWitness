@@ -57,7 +57,7 @@ func create_animation() -> void:
 			var line : LineData = _current_line.duplicate()
 			line.clamp_to_length(line.get_length() * val)
 			path_line_renderer.line_data = line
-			$"../Path3D/PathFollow3D".unit_offset = val
+			$"../Path3D/PathFollow3D".progress_ratio = val
 			pass,
 			1.0,
 			0.0,
@@ -90,7 +90,7 @@ func create_animation() -> void:
 			var line : LineData = current_line.duplicate()
 			line.clamp_to_length(current_line.get_length() * val)
 			path_line_renderer.line_data = line
-			$"../Path3D/PathFollow3D".unit_offset = val
+			$"../Path3D/PathFollow3D".progress_ratio = val
 			pass,
 			0.0,
 			1.0,

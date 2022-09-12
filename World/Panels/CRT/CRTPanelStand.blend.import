@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/CRTPanelStand.blend-b165f6fe491391bf8566dd9bc
 
 nodes/root_type="Node3D"
 nodes/root_name="Scene Root"
+nodes/apply_root_scale=true
 nodes/root_scale=1.0
 meshes/ensure_tangents=true
 meshes/generate_lods=true

@@ -4,19 +4,19 @@ extends RenderItem
 var puzzle_board : PuzzleData :
 	set(val):
 		puzzle_board = val
-		update()
+		queue_redraw()
 var normal_radius : float = 25.0 :
 	set(val):
 		val = clampf(val, 0.0, INF)
 		if val != normal_radius:
 			normal_radius = val
-			update()
+			queue_redraw()
 var start_radius : float = 60.0 :
 	set(val):
 		val = clampf(val, 0.0, INF)
 		if val != normal_radius:
 			start_radius = val
-			update()
+			queue_redraw()
 
 func _init(puzzle_board : PuzzleData) -> void:
 	self.puzzle_board = puzzle_board

@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/CRTPanelStand.glb-0136ac7e1118ef9f988cc08eabc
 
 nodes/root_type="Node3D"
 nodes/root_name="Scene Root"
+nodes/apply_root_scale=true
 nodes/root_scale=1.0
 meshes/ensure_tangents=true
 meshes/generate_lods=true
@@ -28,27 +29,63 @@ import_script/path=""
 _subresources={
 "meshes": {
 "CRTPanelStand_Cube004": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
 "save_to_file/path": "res://World/Panels/CRT/Meshs/CRTPanelStand_Cube004.res"
 },
 "CRTPanelStand_Cube007": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
 "save_to_file/path": "res://World/Panels/CRT/Meshs/CRTPanelStand_Cube007.res"
 },
 "CRTPanelStand_柱体003": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
 "save_to_file/path": "res://World/Panels/CRT/Meshs/CRTPanelStand_柱体003.res"
 },
 "CRTPanelStand_立方体001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
 "save_to_file/path": "res://World/Panels/CRT/Meshs/CRTPanelStand_立方体001.res"
 },
 "CRTPanelStand_立方体003": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
 "save_to_file/path": "res://World/Panels/CRT/Meshs/CRTPanelStand_立方体003.res"
 },
 "CRTPanelStand_立方体005": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
 "save_to_file/path": "res://World/Panels/CRT/Meshs/CRTPanelStand_立方体005.res"
 }
 }

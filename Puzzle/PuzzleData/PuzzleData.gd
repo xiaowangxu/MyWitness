@@ -124,10 +124,10 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseRe
 				_TestSquare,
 				_TestSquare,
 			], [
-				Transform2D(deg2rad(45), Vector2(-18, -18)),
-				Transform2D(deg2rad(45), Vector2(18, -18)),
-				Transform2D(deg2rad(45), Vector2(-18, 18)),
-				Transform2D(deg2rad(45), Vector2(18, 18)),
+				Transform2D(deg_to_rad(45), Vector2(-18, -18)),
+				Transform2D(deg_to_rad(45), Vector2(18, -18)),
+				Transform2D(deg_to_rad(45), Vector2(-18, 18)),
+				Transform2D(deg_to_rad(45), Vector2(18, 18)),
 			])
 		_:
 			return null
@@ -141,7 +141,7 @@ func create_rule(name : int, data) -> PuzzleRule:
 	return null
 
 func create_decorator(base : ShapeBaseResource, color : Array, rotation : float = 0.0, rules : Array = []) -> Decorator:
-	var decorator := Decorator.new(base, array_to_color(color), Transform2D(deg2rad(rotation), Vector2.ZERO)) #decorator
+	var decorator := Decorator.new(base, array_to_color(color), Transform2D(deg_to_rad(rotation), Vector2.ZERO)) #decorator
 	for rule_data in rules:
 		var rule : PuzzleRule = create_rule(rule_data.name, rule_data.data)
 		decorator.add_rule(rule)

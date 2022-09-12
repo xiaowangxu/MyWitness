@@ -4,7 +4,7 @@ extends Node
 signal finished(passed : bool)
 signal _next()
 
-var test_targets : Array[PuzzlePanel] = []
+var test_targets : Array = []
 
 var passed_array : Array[Node]
 var failed_array : Array[Node]

@@ -94,7 +94,7 @@ func _ready() -> void:
 	else:
 		set_viewports(true)
 		_set_material_fade_percentage_param(1.0)
-	mesh.set_shader_instance_uniform(&"default_color", puzzle_data.background_color)
+	mesh.set_instance_shader_parameter(&"default_color", puzzle_data.background_color)
 	
 #	test info
 	get_base_viewport_instance().puzzle_renderer.state_changed.connect(on_puzzle_render_state_changed)
@@ -126,6 +126,7 @@ class ViewportInstance extends RefCounted:
 		self.config_name = config.name
 		self.viewport.transparent_bg = viewport_transparent
 		self.viewport.size = Vector2i.ONE
+		self.viewport.msaa_2d = Viewport.MSAA_4X
 		parent.add_child(self.viewport)
 		self.viewport.add_child(self.puzzle_renderer)
 		if self.config_name == 'base':
@@ -210,7 +211,7 @@ func free_viewports(force : bool = false) -> void:
 	pass
 
 func set_panel_active_percentage(percentage : float) -> void:
-	mesh.set_shader_instance_uniform(&"enable_percentage", percentage)
+	mesh.set_instance_shader_parameter(&"enable_percentage", percentage)
 	pass
 
 const ActiveDuration : float = 0.3
@@ -240,7 +241,7 @@ func on_visible_percentage_changed(percentage : float) -> void:
 	_set_material_fade_percentage_param(percentage)
 
 func _set_material_fade_percentage_param(percentage : float) -> void:
-	mesh.set_shader_instance_uniform(&"fade_percentage", percentage)
+	mesh.set_instance_shader_parameter(&"fade_percentage", percentage)
 	pass
 
 var current_position : Vector2 = Vector2.ZERO :
@@ -378,7 +379,7 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 			var last_percentage := segment.percentage
 			for i in range(-1, count):
 				var weight : float = float(i + 1)/float(count)
-				var percentage := lerp(segment.percentage, segment.from_percentage, weight)
+				var percentage := lerpf(segment.percentage, segment.from_percentage, weight)
 				var point := segment.get_position(percentage)
 				var puzzle_position := puzzle_to_panel(point)
 				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
@@ -398,7 +399,7 @@ func clamp_puzzle_line(new_line : LineData, old_line : LineData, reachable_stop 
 			var last_percentage := segment.from_percentage
 			for i in range(-1, count):
 				var weight : float = float(i + 1)/float(count)
-				var percentage := lerp(segment.from_percentage, segment.percentage, weight)
+				var percentage := lerpf(segment.from_percentage, segment.percentage, weight)
 				var point := segment.get_position(percentage)
 				var puzzle_position := puzzle_to_panel(point)
 				var world_position := mouse_to_global(Vector3(puzzle_position.x, puzzle_position.y, 0.0))
