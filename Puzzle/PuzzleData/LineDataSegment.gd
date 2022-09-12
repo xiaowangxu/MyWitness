@@ -131,7 +131,7 @@ static func collide_segments_pair(a : LineDataSegment, b : LineDataSegment, line
 				remain_percentage *= -1
 				a.percentage = clampf(a.percentage - remain_percentage/2 - radius_percentage, 0.0, 1.0)
 				b.percentage = clampf(a.percentage - remain_percentage/2 - radius_percentage, 0.0, 1.0)
-			print(">>>>> clamp same segment")
+#			print(">>>>> clamp same segment")
 		pass
 	else:
 		var end_vertice : Vertice = null

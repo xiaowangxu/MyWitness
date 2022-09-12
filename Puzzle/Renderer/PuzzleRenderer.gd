@@ -55,7 +55,6 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 	# line
 	if show_element & 0b1000:
 		line_canvas_group = CanvasGroup.new()
-		line_canvas_group.z_index = 1
 		for i in puzzle_data.lines_count:
 			var line_render := LineSegment.new(null, puzzle_data.normal_radius, puzzle_data.start_radius, puzzle_data.base_size)
 			line_renders.append(line_render)
@@ -64,9 +63,20 @@ func _init(puzzle_data : PuzzleData, viewport_size : Vector2i = Vector2i.ZERO, s
 		add_child(line_canvas_group)
 	pass
 
-func add_render_item(render_item : RenderItem) -> void:
+func add_render_item(render_item : RenderItem, layer : int = 3) -> void:
 	add_child(render_item)
-	move_child(render_item, get_child_count() - 2)
+	move_render_item(render_item, layer)
+
+func move_render_item(render_item : RenderItem, layer : int = 3) -> void:
+	match layer:
+		0:
+			move_child(render_item, 0)
+		1:
+			move_child(render_item, 1)
+		2:
+			move_child(render_item, get_child_count() - 2)
+		_:
+			move_child(render_item, get_child_count() - 1)
 	pass
 
 func remove_render_item(render_item : RenderItem) -> RenderItem:

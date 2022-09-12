@@ -79,6 +79,9 @@ func to_vertices() -> Array:
 		ans.append(segment.to)
 	return ans
 
+func to_vertices_ids() -> Array:
+	return self.to_vertices().map(func (v : Vertice): return v.id)
+
 func to_line_elements() -> Array:
 	var ans : Array = [start]
 	ans.append_array(segments)
@@ -260,7 +263,9 @@ func clamp_to_segment(segment : LineDataSegment, forward : bool = true) -> void:
 	pass
 
 func clamp_to_length(length : float = 0.0) -> void:
-	if length <= 0.0: return
+	if length <= 0.0:
+		segments.clear()
+		return
 	var total_length := get_length()
 	if total_length <= length: return
 	total_length = length
@@ -273,7 +278,7 @@ func clamp_to_length(length : float = 0.0) -> void:
 			segment.set_percentage(percentage)
 			return
 		total_length -= segment_length
-	pass
+	return
 
 func duplicate() -> LineData:
 	var line : LineData = LineData.new(self.start)

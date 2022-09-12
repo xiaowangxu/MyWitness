@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://chj5gydaya3pw"]
+[gd_scene load_steps=37 format=3 uid="uid://chj5gydaya3pw"]
 
 [ext_resource type="PackedScene" uid="uid://ksg6ktkih5kr" path="res://World/Panels/CRT/Objects/CrtPanelStandBar.tscn" id="1_5w0eg"]
 [ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="2_3blej"]
@@ -100,9 +100,30 @@ shader = SubResource("Shader_mlaq8")
 shader_param/albedo = Color(1, 1, 1, 1)
 shader_param/texture_albedo = ExtResource("9_f4anv")
 
+[sub_resource type="Shader" id="Shader_85mnk"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.0.alpha11's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color, hint_default_black, filter_linear;
+
+instance uniform vec4 default_color : source_color = vec4(0.15, 0.65, 0.15, 1.0);
+instance uniform float fade_percentage = 1.0;
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	
+	albedo_tex = mix(albedo_tex, default_color, 1.0-fade_percentage);
+	
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+}
+"
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ovbow"]
 render_priority = 0
-shader = SubResource("Shader_mlaq8")
+shader = SubResource("Shader_85mnk")
 shader_param/albedo = Color(1, 1, 1, 1)
 shader_param/texture_albedo = ExtResource("9_f4anv")
 
@@ -372,7 +393,7 @@ shader_params/black_range_a = -0.713
 shader_params/black_range_b = 1.106
 shader_params/emission = Color(0, 0, 0, 1)
 shader_params/emission_energy = 1.0
-shader_params/enable_percentage = 0.0
+shader_params/enable_percentage = 1.0
 shader_params/fade_percentage = 1.0
 shader_params/pow_factor = 4.0
 skeleton = NodePath("../../../../CrtPanelStand3/CrtPanelStandConnector")
@@ -676,7 +697,7 @@ transform = Transform3D(-1, 0, -8.9407e-08, 0, 1, 0, 8.9407e-08, 0, -1, 0, 0, 0)
 surface_material_override/0 = SubResource("ShaderMaterial_ovbow")
 
 [node name="Area" type="Area3D" parent="PuzzlePanel6"]
-transform = Transform3D(-5.96046e-08, 0, 1, 0, 1, 0, -1, 0, -5.96046e-08, 0, 0, 0)
+transform = Transform3D(-5.96046e-08, -7.10543e-15, 1, -2.98023e-08, 1, 1.77636e-15, -1, -2.98023e-08, -5.96046e-08, 0, 0, 0)
 collision_layer = 2147483652
 collision_mask = 0
 monitoring = false

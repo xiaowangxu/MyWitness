@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dlf4w36spirku"]
+[gd_scene load_steps=24 format=3 uid="uid://dlf4w36spirku"]
 
 [ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="1_7faw7"]
 [ext_resource type="PackedScene" uid="uid://bw1qfphklfn4t" path="res://World/Panels/CRT/Objects/CrtPanelStandConnector.tscn" id="2_hveph"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://c7fcgq63dd3w7" path="res://World/Panels/PlaceHolder.png" id="7_dxigb"]
 [ext_resource type="Script" path="res://InteractiveObject/InteractableNotifier.gd" id="8_px48s"]
 [ext_resource type="Script" path="res://World/Factory/FactoryRailController.gd" id="8_ty6g5"]
+[ext_resource type="ArrayMesh" uid="uid://dv7xhebjk25ws" path="res://World/Panels/TreeBase/Meshs/TreeBase_平面.res" id="9_wjh1j"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2t4uh"]
 render_priority = 0
@@ -119,12 +120,17 @@ _data = {
 "新建动画": SubResource("Animation_5m4ht")
 }
 
-[sub_resource type="Curve3D" id="Curve3D_xb2wy"]
-_data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 7.15256e-05, 2.16849, -1.45785, 0, 0, 0, 0, 0, 0, 0.264955, 2.83735, -1.9163, 0, 0, 0, 0, 0, 0, 1.77872, 3.00633, -2.08006, 0, 0, 0, 0, 0, 0, 3.2581, 3.19643, -2.25688, 0, 0, 0, 0, 0, 0, 2.79126, 4.74539, -3.28276),
-"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+[sub_resource type="Shader" id="Shader_mk38y"]
+code = "shader_type spatial;
+
+void fragment() {
+	discard;
 }
-point_count = 5
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sh5ee"]
+render_priority = 0
+shader = SubResource("Shader_mk38y")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lxpwi"]
 render_priority = 0
@@ -135,6 +141,11 @@ shader_param/texture_puzzle = ExtResource("7_dxigb")
 render_priority = 0
 shader = ExtResource("6_4yo83")
 shader_param/texture_puzzle = ExtResource("7_dxigb")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_x0q7u"]
+data = PackedVector3Array(0, 0.5, 0.5, 0, 0.1, -0.1, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, 0.1, 0.1, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.1, 0.1, 0, 0.1, 0.1, 0, -0.1, 0.1, 0, -0.5, 0.5, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.1, 0.1, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.1, -0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qhgok"]
 
 [node name="Factory" type="Node3D"]
 
@@ -220,19 +231,47 @@ libraries = {
 "": SubResource("AnimationLibrary_h8e3h")
 }
 
+[node name="Factory" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.86732, 4.05715, -2.89093)
+
+[node name="Position3D1" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
+
+[node name="Position3D2" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Position3D3" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+
+[node name="Position3D4" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="Position3D5" type="Position3D" parent="Factory"]
+
+[node name="Position3D6" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Position3D7" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, 0)
+
+[node name="Position3D8" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="Position3D9" type="Position3D" parent="Factory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -1, 0)
+
 [node name="Path3D" type="Path3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5328, 0, 0)
-curve = SubResource("Curve3D_xb2wy")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.86732, 4.05715, -2.89093)
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(-4.37115e-08, 0, 1, 0, 0.99999, 0, -1, 0, -4.37115e-08, 7.15256e-05, 2.16849, -1.45785)
+transform = Transform3D(-4.37115e-08, 0, 1, 0, 0.99999, 0, -1, 0, -4.37115e-08, 0, 0, 0)
 rotation_mode = 0
 cubic_interp = false
 loop = false
 
 [node name="PuzzlePanel2" parent="Path3D/PathFollow3D" instance=ExtResource("3_20gwl")]
-transform = Transform3D(1, 0, -3.55271e-15, 0, 1, 0, 3.55271e-15, 0, 1, 0, 0, 0)
-puzzle_name = "factory1"
+transform = Transform3D(1, 0, -7.10543e-15, 0, 1.8, 0, 3.55271e-15, 0, 1.8, 0, 0, 0)
+puzzle_name = "factory2"
 save_name = "factory2"
 viewport_configs = [{
 "name": "base",
@@ -256,7 +295,10 @@ shader_params/emission_energy = 1.0
 shader_params/enable_percentage = 1.0
 shader_params/fade_percentage = 1.0
 shader_params/pow_factor = 4.0
+surface_material_override/0 = SubResource("ShaderMaterial_sh5ee")
+surface_material_override/1 = SubResource("ShaderMaterial_sh5ee")
 surface_material_override/2 = SubResource("ShaderMaterial_lxpwi")
+surface_material_override/3 = SubResource("ShaderMaterial_sh5ee")
 
 [node name="Area" type="Area3D" parent="Path3D/PathFollow3D/PuzzlePanel2"]
 transform = Transform3D(1.12039e-07, 0, -1, 0, 1.484, 0, 1.484, 0, 7.54979e-08, -0.01, 0, 0)
@@ -276,7 +318,7 @@ bus = &"PuzzleSoundEffect"
 script = ExtResource("8_px48s")
 
 [node name="PuzzlePanel2" parent="." instance=ExtResource("3_20gwl")]
-transform = Transform3D(-3.17307e-08, -3.0064e-08, 1, -0.687785, 0.725915, 0, -0.725915, -0.687785, -4.37114e-08, 6.86732, 1.97924, 2.8172)
+transform = Transform3D(-2.94741e-08, -3.22794e-08, 1, -0.803774, 0.594935, -4.48637e-09, -0.594935, -0.803774, -4.34805e-08, 6.86732, 2.06017, 2.8172)
 puzzle_name = "factory2_1"
 save_name = "factory2_1"
 viewport_configs = [{
@@ -288,10 +330,9 @@ viewport_configs = [{
 }]
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
-initial_active = true
 
 [node name="Mesh" parent="PuzzlePanel2" instance=ExtResource("5_ucw50")]
-transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
+transform = Transform3D(0.999846, -0.0175747, -8.75591e-08, 0.0175747, 0.999846, -1.01601e-09, 8.75635e-08, -5.22984e-10, 1, 0, 0, 0)
 shader_params/albedo = Color(1, 1, 1, 1)
 shader_params/black_factor = 0.489
 shader_params/black_range_a = -0.713
@@ -323,3 +364,21 @@ script = ExtResource("8_px48s")
 [node name="InteractableLinker" type="Node" parent="."]
 script = ExtResource("8_ty6g5")
 InteractableNodePath = NodePath("../PuzzlePanel2")
+
+[node name="Area" type="Area3D" parent="."]
+transform = Transform3D(4.09808, 0, 0, 0, 4.09808, 0, 0, 0, 1, 6.86732, 4.05715, -2.26709)
+collision_layer = 19
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area"]
+transform = Transform3D(-2.98023e-08, 0, 1, 0, 1, 0, -1, 0, -2.98023e-08, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_x0q7u")
+
+[node name="Mesh" type="MeshInstance3D" parent="Area"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+transparency = 0.7
+cast_shadow = 0
+mesh = ExtResource("9_wjh1j")
+surface_material_override/0 = SubResource("StandardMaterial3D_qhgok")

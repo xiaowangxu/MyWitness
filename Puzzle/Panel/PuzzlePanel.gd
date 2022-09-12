@@ -163,8 +163,8 @@ class ViewportInstance extends RefCounted:
 	
 	func set_rendering(render : bool) -> void:
 		if viewport != null and need_update:
-			await RenderingServer.frame_post_draw
-			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if render else SubViewport.UPDATE_DISABLED
+#			await RenderingServer.frame_post_draw
+			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if render else SubViewport.UPDATE_ONCE
 	
 	func update_render() -> void:
 		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
@@ -313,7 +313,7 @@ func on_mouse_moved(pos : Vector3) -> Vector3:
 		var back_line : LineData = LineData.new(puzzle_line.start)
 		puzzle_line = clamp_puzzle_line(back_line, puzzle_line, true)
 		if puzzle_line.is_empty():
-			current_position = puzzle_line.get_current_position()
+#			current_position = puzzle_line.get_current_position()
 			_on_confirm(true)
 			return get_current_world_position()
 	var local = mouse_to_local(pos)

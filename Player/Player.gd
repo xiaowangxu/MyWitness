@@ -24,7 +24,7 @@ func _ready() -> void:
 	GlobalData.cursor_state_changed.connect(on_cursor_state_changed)
 
 func _physics_process(delta: float) -> void:
-	var last_pos := global_transform.origin
+#	var last_pos := global_transform.origin
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
@@ -53,15 +53,15 @@ func _physics_process(delta: float) -> void:
 	%Walkzilla.update_collision(self.global_transform.origin + Vector3(0, 4, 0))
 	move_and_slide()
 	
-	var b = global_transform.origin
-	
-	if b.distance_to(last_pos) > 0.01:
-		var rid = nav.get_region_rid()
-		var map_rid = NavigationServer3D.region_get_map(rid)
-		var closest_point = NavigationServer3D.map_get_closest_point(map_rid, global_transform.origin)
-		var a = closest_point
-		global_transform.origin.x = a.x
-		global_transform.origin.z = a.z
+#	var b = global_transform.origin
+#
+#	if b.distance_to(last_pos) > 0.01:
+#		var rid = nav.get_region_rid()
+#		var map_rid = NavigationServer3D.region_get_map(rid)
+#		var closest_point = NavigationServer3D.map_get_closest_point(map_rid, global_transform.origin)
+#		var a = closest_point
+#		global_transform.origin.x = a.x
+#		global_transform.origin.z = a.z
 #	printt(b, global_transform.origin)
 
 func on_cursor_state_changed(new_state : GlobalData.CursorState, old_state : GlobalData.CursorState) -> void:
