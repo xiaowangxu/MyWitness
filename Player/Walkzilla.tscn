@@ -5,6 +5,7 @@
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_cktli"]
 
 [node name="Walkzilla" type="Node3D"]
+process_mode = 4
 script = ExtResource("1_rj7v1")
 grid_count = 15
 

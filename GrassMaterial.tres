@@ -24,4 +24,4 @@ void light() {
 [resource]
 render_priority = 0
 shader = SubResource("Shader_gp7d5")
-color = Color(0.415686, 0.494118, 0.215686, 1)
+shader_parameter/color = Color(0.415686, 0.494118, 0.215686, 1)

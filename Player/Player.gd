@@ -1,9 +1,8 @@
 class_name Player
 extends CharacterBody3D
 
-const SPEED = 5.0
-const RUN_SPEED = 10.0
-const JUMP_VELOCITY = 4.5
+const SPEED = 7.0
+const RUN_SPEED = 11.0
 
 @onready var body : CharacterBody3D = self
 @onready var neck : Node3D = %Neck
@@ -29,10 +28,6 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-	# Handle Jump.
-#	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-#		velocity.y = JUMP_VELOCITY
-
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	if GlobalData.cursor_state == GlobalData.CursorState.DISABLED:
@@ -50,7 +45,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0
 		velocity.z = 0
 	
-	%Walkzilla.update_collision(self.global_transform.origin + Vector3(0, 4, 0))
+#	%Walkzilla.update_collision(self.global_transform.origin + Vector3(0, 4, 0))
 	move_and_slide()
 	
 #	var b = global_transform.origin

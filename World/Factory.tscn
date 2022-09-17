@@ -13,7 +13,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2t4uh"]
 render_priority = 0
 shader = ExtResource("6_4yo83")
-texture_puzzle = ExtResource("6_ohbsx")
+shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vkax3"]
 points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
@@ -135,12 +135,12 @@ shader = SubResource("Shader_mk38y")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lxpwi"]
 render_priority = 0
 shader = ExtResource("6_4yo83")
-texture_puzzle = ExtResource("6_ohbsx")
+shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tkuu6"]
 render_priority = 0
 shader = ExtResource("6_4yo83")
-texture_puzzle = ExtResource("6_ohbsx")
+shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_x0q7u"]
 data = PackedVector3Array(0, 0.5, 0.5, 0, 0.1, -0.1, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, 0.1, 0.1, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.1, 0.1, 0, 0.1, 0.1, 0, -0.1, 0.1, 0, -0.5, 0.5, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.1, 0.1, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.1, -0.1)
@@ -165,7 +165,6 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
-min_delta_length = 2.0
 puzzle_surface_material_id = 2
 initial_active = true
 
