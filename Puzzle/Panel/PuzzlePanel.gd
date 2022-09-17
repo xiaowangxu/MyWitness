@@ -54,8 +54,8 @@ var hint_ring_render_item : StartEndHintRing
 @onready var material : Material = mesh.get_surface_override_material(puzzle_surface_material_id)
 
 @onready var puzzle_data : PuzzleData = GlobalData.AllPuzzleData[puzzle_name]
-var viewport_size : Vector2 = GlobalData.PuzzleViewportSizes.regular
-@onready var puzzle_panel_scale : Vector2 = Vector2(viewport_size) / Vector2(puzzle_data.base_size)
+@export var viewport_size_override : Vector2i = Vector2i(700,700)
+@onready var puzzle_panel_scale : Vector2 = Vector2(viewport_size_override) / Vector2(puzzle_data.base_size)
 var base_viewport_instance : ViewportInstance = null
 var puzzle_line : LineData = null
 @export var initial_active : bool = false
@@ -76,7 +76,7 @@ func _ready() -> void:
 	puzzle_interact_state_changed.connect(on_puzzle_interact_state_changed)
 	area.collision_layer |= GlobalData.PhysicsLayerInteractables | GlobalData.PhysicsLayerPuzzles
 	audio.bus = GlobalData.PuzzleSoundEffectsBus
-	hint_ring_render_item = StartEndHintRing.new(puzzle_data, viewport_size)
+	hint_ring_render_item = StartEndHintRing.new(puzzle_data, viewport_size_override)
 	
 	for config_idx in range(viewport_configs.size()):
 		var viewport_instance := set_visual_instance(config_idx)
@@ -110,6 +110,7 @@ class ViewportInstance extends RefCounted:
 	var config_name : String
 	var config_idx : int
 	var puzzle_renderer : PuzzleRenderer
+	var puzzle_visual_config : int
 	var viewport : SubViewport = SubViewport.new()
 	var viewport_size : Vector2
 	var viewport_transparent : bool = false
@@ -121,6 +122,7 @@ class ViewportInstance extends RefCounted:
 		self.puzzle_renderer = puzzle_renderer
 		self.viewport_size = viewport_size
 		self.viewport_transparent = config.transparent
+		self.puzzle_visual_config = config.visual
 		self.need_update = config.update
 		self.targets = config.targets
 		self.config_name = config.name
@@ -152,15 +154,6 @@ class ViewportInstance extends RefCounted:
 			var texture : ViewportTexture = viewport.get_texture()
 			set_texture(parent, texture)
 			return
-#		if viewport != null: return
-#		else:
-#			viewport = SubViewport.new()
-#			viewport.size = viewport_size
-#			viewport.transparent_bg = viewport_transparent
-#			viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-#			parent.add_child(viewport)
-#			viewport.add_child(puzzle_renderer)
-#			
 	
 	func set_rendering(render : bool) -> void:
 		if viewport != null and need_update:
@@ -171,24 +164,26 @@ class ViewportInstance extends RefCounted:
 		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	
 	func free_viewport(parent : Node) -> void:
-#		if viewport.size == Vector2i.ONE: return
 		viewport.size = Vector2i.ONE
 		set_texture(parent, null)
 		return
-#		if viewport != null:
-#			for target in targets:
-#				mesh.set_indexed(target, null)
-#			viewport.remove_child(puzzle_renderer)
-#			parent.remove_child(viewport)
-#			viewport.queue_free()
-#			viewport = null
 	
+	func free_puzzle_renderer() -> void:
+		if self.puzzle_renderer != null:
+			self.viewport.remove_child(self.puzzle_renderer)
+			self.puzzle_renderer.queue_free()
+			self.puzzle_renderer = null
+	
+	func set_puzzle_renderer(puzzle_renderer : PuzzleRenderer) -> void:
+		if self.puzzle_renderer == null:
+			self.puzzle_renderer = puzzle_renderer
+			self.viewport.add_child(self.puzzle_renderer)
 	pass
 
 func set_visual_instance(idx : int) -> ViewportInstance:
 	var config : Dictionary = viewport_configs[idx]
-	var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size, config.visual)
-	var viewport_instance : ViewportInstance = ViewportInstance.new(idx, config, viewport_size, puzzle_renderer, self)
+	var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size_override, config.visual)
+	var viewport_instance : ViewportInstance = ViewportInstance.new(idx, config, viewport_size_override, puzzle_renderer, self)
 	viewport_instance_map[config.name] = viewport_instance
 	viewport_instance_list.append(viewport_instance)
 	return viewport_instance
@@ -198,6 +193,8 @@ func set_viewports(force : bool = false) -> void:
 	if not force and _is_viewports_instanced: return
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.set_viewport(self)
+#		var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size, viewport_instance.puzzle_visual_config)
+#		viewport_instance.set_puzzle_renderer(puzzle_renderer)
 	_is_viewports_instanced = true
 #	Debugger.print_tag("Viewport Inited", puzzle_name, Color.MEDIUM_SPRING_GREEN)
 	pass
@@ -206,6 +203,7 @@ func free_viewports(force : bool = false) -> void:
 	if not force and not _is_viewports_instanced: return
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.free_viewport(self)
+#		viewport_instance.free_puzzle_renderer()
 	_is_viewports_instanced = false
 #	Debugger.print_tag("Viewport Freed", puzzle_name, Color.MEDIUM_SPRING_GREEN)
 	pass
@@ -230,7 +228,6 @@ func set_active_with_tween(active : bool) -> void:
 			tween.tween_method(set_panel_active_percentage, 1.0, 0.0, ActiveDuration).set_trans(Tween.TRANS_LINEAR)
 
 func on_visible_changed(on_screen : bool) -> void:
-#	print(">>>>> ", puzzle_name, " ", on_screen)
 	if on_screen:
 		set_viewports()
 	else:
@@ -345,15 +342,15 @@ func mouse_to_local(pos : Vector3) -> Vector3:
 	var ans := trans * pos
 	ans.y *= -1
 	var scaled := (ans + Vector3(0.5,0.5,0))
-	scaled.x *= viewport_size.x
-	scaled.y *= viewport_size.y
+	scaled.x *= viewport_size_override.x
+	scaled.y *= viewport_size_override.y
 	return scaled
 
 func mouse_to_global(pos : Vector3) -> Vector3:
 	var trans := area.global_transform
 	var scaled := pos
-	scaled.x /= viewport_size.x
-	scaled.y /= viewport_size.y
+	scaled.x /= viewport_size_override.x
+	scaled.y /= viewport_size_override.y
 	scaled -= Vector3(0.5, 0.5, 0)
 	scaled.y *= -1
 	var ans := trans * scaled
@@ -607,7 +604,9 @@ func play_sound(stream_name : String = "") -> void:
 		audio.play()
 
 func set_puzzle_line(line_data : LineData) -> void:
-	get_base_viewport_instance().puzzle_renderer.set_puzzle_line(0, line_data)
+	var puzzle_renderer = get_base_viewport_instance().puzzle_renderer
+	if puzzle_renderer != null:
+		get_base_viewport_instance().puzzle_renderer.set_puzzle_line(0, line_data)
 
 # save load
 func save() -> void:

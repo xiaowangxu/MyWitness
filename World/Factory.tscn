@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dlf4w36spirku"]
+[gd_scene load_steps=29 format=3 uid="uid://dlf4w36spirku"]
 
 [ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="1_7faw7"]
 [ext_resource type="PackedScene" uid="uid://bw1qfphklfn4t" path="res://World/Panels/CRT/Objects/CrtPanelStandConnector.tscn" id="2_hveph"]
@@ -17,6 +17,50 @@ shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vkax3"]
 points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fixk2"]
+size = Vector2(1, 1)
+
+[sub_resource type="Shader" id="Shader_ijcjd"]
+code = "shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+
+instance uniform float enable_percentage : hint_range(0.0, 1.0, 0.1) = 1.0;
+instance uniform vec4 albedo : source_color = vec4(1.0);
+uniform sampler2D texture_puzzle : source_color, hint_default_black,filter_linear;
+instance uniform vec4 emission : source_color = vec4(0.0,0.0,0.0,1.0);
+instance uniform float emission_energy = 1.0;
+instance uniform float black_range_a = -0.713;
+instance uniform float black_range_b = 1.106;
+instance uniform float pow_factor = 4.0;
+instance uniform float black_factor = 0.489;
+
+instance uniform vec4 default_color : source_color = vec4(0.15, 0.65, 0.15, 1.0);
+instance uniform float fade_percentage : hint_range(0.0, 1.0, 0.1) = 1.0;
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_puzzle,base_uv);
+	albedo_tex = mix(albedo_tex, default_color, 1.0-fade_percentage);
+	vec2 transformed_uv = (base_uv - vec2(0.5)) * 2.0;
+	float _dis = pow(abs(transformed_uv.x), pow_factor) + pow(abs(transformed_uv.y), pow_factor);
+	float dis = smoothstep(black_range_a, black_range_b, 1.0 - _dis) * (1.0 - black_factor) + black_factor;
+	ALBEDO = albedo.rgb * albedo_tex.rgb * dis * enable_percentage;
+	vec3 emission_tex = albedo_tex.rgb;
+	EMISSION = (emission.rgb + emission_tex) * emission_energy * dis * enable_percentage;
+	ROUGHNESS = 1.0;
+}"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_xa0c2"]
+load_path = "res://.godot/imported/PlaceHolder.png-19498f6504afe477dd4de274afe3dcad.s3tc.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k70j8"]
+render_priority = 0
+shader = SubResource("Shader_ijcjd")
+shader_parameter/texture_puzzle = SubResource("CompressedTexture2D_xa0c2")
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_uv260"]
+points = PackedVector3Array(0.5, 0.143, 0, 0.5, -0.143, 0, -0.5, 0.143, 0, -0.5, -0.143, 0)
 
 [sub_resource type="GDScript" id="GDScript_6c3uf"]
 script/source = "extends AnimatableBody3D
@@ -187,6 +231,43 @@ shape = SubResource("ConvexPolygonShape3D_vkax3")
 bus = &"PuzzleSoundEffect"
 
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2"]
+script = ExtResource("8_px48s")
+
+[node name="PuzzlePanel3" parent="." instance=ExtResource("3_20gwl")]
+transform = Transform3D(-2.94741e-08, -3.22794e-08, 1, -0.803774, 0.594935, -4.48637e-09, -0.594935, -0.803774, -4.34805e-08, 2.20887e-08, 2.66237, 3.26286)
+puzzle_name = "factory1_1"
+save_name = "factory1_1"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:texture_puzzle"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+min_delta_length = 2.0
+viewport_size_override = Vector2i(700, 200)
+initial_active = true
+
+[node name="Mesh" type="MeshInstance3D" parent="PuzzlePanel3"]
+transform = Transform3D(-4.37114e-08, -1, 0, -8.88178e-16, -2.98023e-08, -0.286, 1, -4.37114e-08, 0, 0, 0, 0)
+mesh = SubResource("PlaneMesh_fixk2")
+surface_material_override/0 = SubResource("ShaderMaterial_k70j8")
+
+[node name="Area" type="Area3D" parent="PuzzlePanel3"]
+transform = Transform3D(7.54979e-08, 1.78814e-07, -1, 0, 1, 1.78814e-07, 1, 1.06581e-14, 7.54979e-08, 0, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzlePanel3/Area"]
+transform = Transform3D(1, -1.77636e-15, -5.96046e-08, 3.55271e-15, 1, 2.98023e-08, 5.96046e-08, -2.98023e-08, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_uv260")
+
+[node name="Audio" type="AudioStreamPlayer" parent="PuzzlePanel3"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel3"]
 script = ExtResource("8_px48s")
 
 [node name="StaticBody3D" type="AnimatableBody3D" parent="."]

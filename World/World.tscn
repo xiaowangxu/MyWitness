@@ -354,6 +354,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_664iv")
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -7.39405, 4, -2.551)
 script = ExtResource("7_cy246")
 puzzle_name = "hello_world"
+save_name = null
+add_config = null
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/0:albedo_texture"),
@@ -361,6 +363,9 @@ viewport_configs = [{
 "update": true,
 "visual": 12
 }]
+min_delta_length = null
+puzzle_surface_material_id = null
+viewport_size_override = Vector2i(2048, 2048)
 initial_active = true
 metadata/_edit_group_ = true
 

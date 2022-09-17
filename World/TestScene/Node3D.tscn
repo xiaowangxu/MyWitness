@@ -22,7 +22,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g3ral"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-texture_puzzle = ExtResource("13_wxr3c")
+shader_parameter/texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_eia8a"]
 points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
@@ -30,30 +30,30 @@ points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5,
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0c73y"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-texture_puzzle = ExtResource("13_wxr3c")
+shader_parameter/texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fdsnr"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-texture_puzzle = ExtResource("13_wxr3c")
+shader_parameter/texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jcljl"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-texture_puzzle = ExtResource("13_wxr3c")
+shader_parameter/texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kcqa4"]
 render_priority = 0
 shader = ExtResource("9_ncb7v")
-texture_puzzle = ExtResource("13_wxr3c")
+shader_parameter/texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5jm5q"]
 render_priority = 0
 shader = ExtResource("12_8wjxh")
-resolution = null
-scanlines_opacity = null
-scanlines_width = null
-texture_puzzle = ExtResource("13_wxr3c")
+shader_parameter/resolution = null
+shader_parameter/scanlines_opacity = null
+shader_parameter/scanlines_width = null
+shader_parameter/texture_puzzle = ExtResource("13_wxr3c")
 
 [sub_resource type="Shader" id="Shader_mlaq8"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.alpha11's StandardMaterial3D.
@@ -79,26 +79,26 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_58b0w"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-albedo = Color(1, 1, 1, 1)
-texture_albedo = ExtResource("13_wxr3c")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_os25v"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-albedo = Color(1, 1, 1, 1)
-texture_albedo = ExtResource("13_wxr3c")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6xs4f"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-albedo = Color(1, 1, 1, 1)
-texture_albedo = ExtResource("13_wxr3c")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_aq7mu"]
 render_priority = 0
 shader = SubResource("Shader_mlaq8")
-albedo = Color(1, 1, 1, 1)
-texture_albedo = ExtResource("13_wxr3c")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="Shader" id="Shader_85mnk"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.0.alpha11's StandardMaterial3D.
@@ -124,8 +124,8 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ovbow"]
 render_priority = 0
 shader = SubResource("Shader_85mnk")
-albedo = Color(1, 1, 1, 1)
-texture_albedo = ExtResource("13_wxr3c")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("13_wxr3c")
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_oeoie"]
 data = PackedVector3Array(0, 0.5, 0.5, 0, 0.1, -0.1, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, 0.1, 0.1, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.1, 0.1, 0, 0.1, 0.1, 0, -0.1, 0.1, 0, -0.5, 0.5, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.1, 0.1, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.1, -0.1)

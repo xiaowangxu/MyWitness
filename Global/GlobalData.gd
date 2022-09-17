@@ -22,6 +22,7 @@ const AllPuzzleJsons : Dictionary = {
 	"editor2": preload("res://PuzzleDataJson/Editor5.json"),
 	"treebase": preload("res://PuzzleDataJson/TreeBase.json"),
 	"factory1": preload("res://PuzzleDataJson/Factory1.json"),
+	"factory1_1": preload("res://PuzzleDataJson/Factory1-1.json"),
 	"factory2": preload("res://PuzzleDataJson/Factory2.json"),
 	"factory2_1": preload("res://PuzzleDataJson/Factory2-1.json"),
 }
@@ -38,6 +39,7 @@ var AllPuzzleData : Dictionary = {
 	"editor2": PuzzleData.new(AllPuzzleJsons.editor2),
 	"treebase": PuzzleData.new(AllPuzzleJsons.treebase),
 	"factory1": PuzzleData.new(AllPuzzleJsons.factory1),
+	"factory1_1": PuzzleData.new(AllPuzzleJsons.factory1_1),
 	"factory2": PuzzleData.new(AllPuzzleJsons.factory2),
 	"factory2_1": PuzzleData.new(AllPuzzleJsons.factory2_1),
 }
