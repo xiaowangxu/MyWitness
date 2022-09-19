@@ -74,7 +74,7 @@ func get_player() -> Player:
 	return get_tree().get_first_node_in_group(PlayerGroupName)
 
 var cursor_state : CursorState = CursorState.DISABLED
-const Mouse2DSensitivity : float = 3.75
+const Mouse2DSensitivity : float = 4.5
 const Mouse3DSensitivity : float = 0.1
 const CameraEdgeMovementSensitivity : float = 0.5
 var mouse_position : Vector2 = Vector2.ZERO
@@ -209,6 +209,9 @@ func set_preferred_puzzle_panel(panel : PuzzlePanel) -> void:
 func has_preferred_puzzle_panel() -> bool:
 	return preferred_puzzle_panel != null
 
+func get_preferred_puzzle_panel() -> PuzzlePanel:
+	return preferred_puzzle_panel
+
 var last_puzzle_panel : PuzzlePanel = null
 func set_active_puzzle_panel(panel : PuzzlePanel = null) -> void:
 	if last_puzzle_panel != panel:
@@ -217,6 +220,9 @@ func set_active_puzzle_panel(panel : PuzzlePanel = null) -> void:
 		last_puzzle_panel = panel
 		if last_puzzle_panel != null:
 			last_puzzle_panel.area.collision_layer |= PhysicsLayerCurrentPuzzle
+
+func get_current_puzzle_panel() -> PuzzlePanel:
+	return last_puzzle_panel
 
 func _process(delta: float) -> void:
 	if cursor_state == CursorState.DISABLED: return

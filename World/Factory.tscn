@@ -60,7 +60,7 @@ shader = SubResource("Shader_ijcjd")
 shader_parameter/texture_puzzle = SubResource("CompressedTexture2D_xa0c2")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_uv260"]
-points = PackedVector3Array(0.5, 0.143, 0, 0.5, -0.143, 0, -0.5, 0.143, 0, -0.5, -0.143, 0)
+points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
 
 [sub_resource type="GDScript" id="GDScript_6c3uf"]
 script/source = "extends AnimatableBody3D
@@ -245,16 +245,16 @@ viewport_configs = [{
 "visual": 15
 }]
 min_delta_length = 2.0
-viewport_size_override = Vector2i(700, 200)
+viewport_size_override = Vector2i(700, 240)
 initial_active = true
 
 [node name="Mesh" type="MeshInstance3D" parent="PuzzlePanel3"]
-transform = Transform3D(-4.37114e-08, -1, 0, -8.88178e-16, -2.98023e-08, -0.286, 1, -4.37114e-08, 0, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, -1, 1.4993e-08, 0, -4.37114e-08, -0.343, 1, -4.37114e-08, 6.55365e-16, 0, 0, 0)
 mesh = SubResource("PlaneMesh_fixk2")
 surface_material_override/0 = SubResource("ShaderMaterial_k70j8")
 
 [node name="Area" type="Area3D" parent="PuzzlePanel3"]
-transform = Transform3D(7.54979e-08, 1.78814e-07, -1, 0, 1, 1.78814e-07, 1, 1.06581e-14, 7.54979e-08, 0, 0, 0)
+transform = Transform3D(7.54979e-08, 7.15554e-08, -1, 0, 0.343, 2.08616e-07, 1, -5.40228e-15, 7.54979e-08, 0, 0, 0)
 collision_layer = 2147483652
 collision_mask = 0
 monitoring = false
@@ -392,6 +392,7 @@ viewport_configs = [{
 }]
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
+initial_active = true
 
 [node name="Mesh" parent="PuzzlePanel2" instance=ExtResource("5_ucw50")]
 transform = Transform3D(0.999846, -0.0175747, -8.75591e-08, 0.0175747, 0.999846, -1.01601e-09, 8.75635e-08, -5.22984e-10, 1, 0, 0, 0)

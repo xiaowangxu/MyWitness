@@ -204,6 +204,7 @@ func _process(delta: float) -> void:
 	else:
 		%CoverA.material.set_shader_parameter("opacity", 0.0)
 		%CoverB.material.set_shader_parameter("opacity", 0.0)
+		pass
 	update_confirm_state(puzzle_line)
 
 func _notification(what: int) -> void:

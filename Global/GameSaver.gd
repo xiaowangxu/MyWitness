@@ -112,7 +112,7 @@ func save_game_save_data_resource(new_save_data: GameSaveDataResource = null) ->
 	await RenderingServer.frame_post_draw
 	var texture := viewport.get_texture()
 	var image := texture.get_image()
-#	game_save_data.set_cover_image(image)
+	image.save_png("res://test.png")
 	game_save_data_config.save_game_data(_game_save_data, image, ConfigPath)
 #	var ans := ResourceSaver.save(game_save_data_config.get_file_path("GameSave"), game_save_data)
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED

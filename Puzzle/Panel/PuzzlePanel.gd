@@ -428,6 +428,9 @@ func on_puzzle_interact_state_changed(state : PuzzleInteractState) -> void:
 #	Debugger.print_tag(puzzle_name + " interact state", str(state) + (" Answered" if is_answered else ""), Color.SEA_GREEN)
 	if state == PuzzleInteractState.PREFERRED and not is_answered:
 		hint_ring_render_item.set_start_hint_enabled(true)
+#	elif state == PuzzleInteractState.PICKING:
+#		hint_ring_render_item.set_start_hint_enabled(true)
+#		hint_ring_render_item.set_end_hint_enabled(false)
 	elif state == PuzzleInteractState.PICKING or state == PuzzleInteractState.ANSWERED:
 		hint_ring_render_item.set_start_hint_enabled(false)
 		hint_ring_render_item.set_end_hint_enabled(false)
@@ -488,6 +491,7 @@ func start_puzzle(line_data : LineData, puzzle_pos : Vector2 = Vector2.ZERO, mou
 	puzzle_interact_state_changed.emit(PuzzleInteractState.DRAWING)
 	pass
 
+# for move line function
 func get_is_clamped(line_data : LineData) -> bool:
 	return false
 
@@ -586,6 +590,9 @@ func commit_move_line(line_data : LineData, puzzle_position : Vector2 = Vector2.
 	_update_confirm_state(line_data)
 	puzzle_line_updated.emit(line_data)
 	return new_puzzle_pos
+
+func confirm() -> void:
+	_on_confirm()
 
 func on_move_finished(line_data : LineData, puzzle_position : Vector2 = Vector2.ZERO, mouse_position : Vector3 = Vector3.ZERO, world_position : Vector3 = Vector3.ZERO) -> Vector2:
 	return puzzle_position

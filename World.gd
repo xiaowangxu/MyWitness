@@ -11,7 +11,7 @@ func _process(delta: float) -> void:
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_home"):
-		%AutoTester.run()
+		%AutoTester.solve()
 #		var player := GlobalData.get_player()
 #		var trans : Transform3D = player.get_look_at_transform(%Position3D.global_transform.origin)
 #		trans = Transform3D(trans.basis, player.position)

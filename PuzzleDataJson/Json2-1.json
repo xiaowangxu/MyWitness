@@ -167,7 +167,12 @@
 				],
 				"texture": null,
 				"rotation": 0,
-				"rules": []
+				"rules": [
+					{
+						"name": 0,
+						"data": 1
+					}
+				]
 			}
 		},
 		{

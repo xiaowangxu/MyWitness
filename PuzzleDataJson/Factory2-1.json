@@ -78,8 +78,8 @@
                 ]
             }
         ],
-        "normal_radius": 16,
-        "start_radius": 40
+        "normal_radius": 21,
+        "start_radius": 50
     },
     "decorators": [],
     "edges": [

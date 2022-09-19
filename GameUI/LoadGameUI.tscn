@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cn4flf268frdp"]
+[gd_scene load_steps=9 format=3 uid="uid://cn4flf268frdp"]
 
 [ext_resource type="Script" path="res://GameUI/LoadGameUI.gd" id="1_3mr0b"]
+[ext_resource type="Texture2D" uid="uid://lnrb2gidfbl2" path="res://test.webp" id="2_kcl36"]
+[ext_resource type="Texture2D" uid="uid://dwd121vy3pbsu" path="res://TestCover.png" id="3_l2vcb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwlta"]
 
@@ -26,19 +28,19 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a2hua"]
 shader = SubResource("Shader_rnioc")
-black_factor = null
-black_range_a = null
-black_range_b = null
-opacity = null
-pow_factor = null
+shader_parameter/black_factor = 0.489
+shader_parameter/black_range_a = -0.713
+shader_parameter/black_range_b = 1.106
+shader_parameter/opacity = 1.0
+shader_parameter/pow_factor = 4.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_41pfa"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g5pfo"]
 shader = SubResource("Shader_rnioc")
-black_factor = null
-black_range_a = null
-black_range_b = null
-opacity = null
-pow_factor = null
+shader_parameter/black_factor = 0.489
+shader_parameter/black_range_a = -0.713
+shader_parameter/black_range_b = 1.106
+shader_parameter/opacity = 1.0
+shader_parameter/pow_factor = 4.0
 
 [node name="LoadGameUI" type="Control"]
 process_mode = 2
@@ -134,21 +136,23 @@ grow_vertical = 2
 [node name="CoverA" type="TextureRect" parent="HBoxContainer/Panel2/CenterContainer"]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_a2hua")
-custom_minimum_size = Vector2(800, 800)
+custom_minimum_size = Vector2i(800, 800)
 offset_left = 107.0
 offset_top = 140.0
 offset_right = 907.0
 offset_bottom = 940.0
+texture = ExtResource("2_kcl36")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="CoverB" type="TextureRect" parent="HBoxContainer/Panel2/CenterContainer"]
 unique_name_in_owner = true
-material = SubResource("ShaderMaterial_41pfa")
-custom_minimum_size = Vector2(800, 800)
+material = SubResource("ShaderMaterial_g5pfo")
+custom_minimum_size = Vector2i(800, 800)
 offset_left = 107.0
 offset_top = 140.0
 offset_right = 907.0
 offset_bottom = 940.0
+texture = ExtResource("3_l2vcb")
 ignore_texture_size = true
 stretch_mode = 5
