@@ -1,6 +1,6 @@
 extends PuzzlePanel
 
-static func get_mirror_data(data, segment, element : PuzzleElement):
+static func get_mirror_data(data, segment, element : PuzzleElement, idx : int):
 	match typeof(data):
 		TYPE_DICTIONARY:
 			if segment is Vertice:

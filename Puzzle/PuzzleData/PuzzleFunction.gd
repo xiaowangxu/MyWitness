@@ -191,31 +191,31 @@ static func generate_line_from_idxs(puzzle_data : PuzzleData, idxs : PackedInt32
 			line.get_current_segment().set_percentage(end_percentage)
 	return line
 
-static func map_line_data(puzzle_data : PuzzleData, line_data : LineData, custom_data_key : StringName, map_func : Callable = func(i, s, e):return i) -> Array:
+static func map_line_data(puzzle_data : PuzzleData, line_data : LineData, custom_data_key : StringName, map_func : Callable = func(i, s, e, idx):return i) -> Array:
 	var ans : Array = []
 	var elems := line_data.to_puzzle_elements(puzzle_data)
 	for i in range(elems.size()):
 		var elem : PuzzleElement = elems[i]
 		var segment = line_data.get_nth_segment(i)
 		if elem.has_custom_data(custom_data_key):
-			ans.append(map_func.call(elem.get_custom_data(custom_data_key), segment, elem))
+			ans.append(map_func.call(elem.get_custom_data(custom_data_key), segment, elem, i))
 		else:
 			break
 	return ans
 
 # TODO refactor
-static func get_valid_line(puzzle_data : PuzzleData, line_data : LineData) -> LineData:
-	var new_line : LineData
-	var vertices_count := puzzle_data.vertices.size()
-	var last_vertice : Vertice = puzzle_data.get_vertice_by_id(line_data.start.id)
-	if last_vertice == null: return null
-	new_line = LineData.new(last_vertice)
-	for segment in line_data.segments:
-		if last_vertice.has_neighbour(segment.to.id):
-			new_line.add_vertice_segment(segment.to, segment.percentage)
-		else:
-			return new_line
-	return new_line
+#static func get_valid_line(puzzle_data : PuzzleData, line_data : LineData) -> LineData:
+#	var new_line : LineData
+#	var vertices_count := puzzle_data.vertices.size()
+#	var last_vertice : Vertice = puzzle_data.get_vertice_by_id(line_data.start.id)
+#	if last_vertice == null: return null
+#	new_line = LineData.new(last_vertice)
+#	for segment in line_data.segments:
+#		if last_vertice.has_neighbour(segment.to.id):
+#			new_line.add_vertice_segment(segment.to, segment.percentage)
+#		else:
+#			return new_line
+#	return new_line
 
 # get the percentage of a portion of the path
 static func get_base_path_percentage(line_data : LineData, base_path : LineData, strict : bool = true) -> float:
@@ -248,22 +248,13 @@ static func get_base_path_percentage(line_data : LineData, base_path : LineData,
 	return line_length / base_length
 
 # Area Util
-static func _get_area_neighbour_by_sround_edge_id(puzzle_data : PuzzleData, area : Area, edge_id : int) -> Array:
-	if not area.srounds.has(edge_id): return []
-	if not puzzle_data.area_neighbour_map.has(edge_id): return []
-	var sround_areas : Array[Area] = puzzle_data.area_neighbour_map[edge_id].duplicate()
-	sround_areas.erase(area)
-	return sround_areas
-
-static func _is_areas_neighbour(puzzle_data : PuzzleData, area1 : Area, area2 : Area) -> bool:
-	for area_sround in puzzle_data.area_neighbour_map:
-		if area_sround.has(area1) and area_sround.has(area2): return true
-	return false
+static func is_areas_neighbour(puzzle_data : PuzzleData, area1 : Area, area2 : Area) -> bool:
+	return area1.neighbours.has(area2.id) or area2.neighbours.has(area1.id)
 
 static func _reduce_linked_areas(puzzle_data : PuzzleData, edge_ids : PackedInt32Array, area : Area, ans : Array[Area]) -> void:
 	for edge_id in area.srounds:
 		if edge_ids.has(edge_id): continue
-		var sround_areas : Array[Area] = _get_area_neighbour_by_sround_edge_id(puzzle_data, area, edge_id)
+		var sround_areas : Array[Area] = puzzle_data.get_area_neighbours_by_sround_edge_id(area, edge_id)
 		for sub_area in sround_areas:
 			if ans.has(sub_area): continue
 			else:

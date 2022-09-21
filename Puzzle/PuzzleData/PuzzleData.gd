@@ -263,7 +263,12 @@ func calcu_area_neighbour_map() -> void:
 	for area in areas:
 		for i in area.srounds:
 			if area_neighbour_map.has(i):
-				area_neighbour_map[i].append(area)
+				var neighbours : Array[Area] = area_neighbour_map[i]
+				for _area in neighbours:
+					_area.add_neighbour(area.id)
+					area.add_neighbour(_area.id)
+					pass
+				neighbours.append(area)
 			else:
 				area_neighbour_map[i] = [area]
 	pass
@@ -309,6 +314,13 @@ func get_edge_by_id(id : int) -> Edge:
 
 func has_edge_id(id : int) -> bool:
 	return 0 <= id and id < edges.size()
+
+func get_area_neighbours_by_sround_edge_id(area : Area, edge_id : int) -> Array:
+	if not area.srounds.has(edge_id): return []
+	if not self.area_neighbour_map.has(edge_id): return []
+	var sround_areas : Array[Area] = self.area_neighbour_map[edge_id].duplicate()
+	sround_areas.erase(area)
+	return sround_areas
 
 #func find_edge(a : Vertice, b : Vertice) -> Edge:
 #	if edge_map.has(a):

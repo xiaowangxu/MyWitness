@@ -353,6 +353,7 @@ viewport_configs = [{
 }]
 min_delta_length = 2.0
 puzzle_surface_material_id = 2
+viewport_size_override = Vector2i(1024, 1024)
 initial_active = true
 
 [node name="Mesh" parent="Path3D/PathFollow3D/PuzzlePanel2" instance=ExtResource("5_ucw50")]
