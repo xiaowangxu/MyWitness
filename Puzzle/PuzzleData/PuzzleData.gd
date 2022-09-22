@@ -21,13 +21,8 @@ var line_correct_color : Color
 var start_radius : float
 var normal_radius : float
 
-#var edge_map : Dictionary = {}
-var area_neighbour_map : Dictionary = {}
-
 func _init(res : JsonResource) -> void:
 	calcu_puzzle(res.data)
-#	calcu_egde_map()
-	calcu_area_neighbour_map()
 	pass
 
 func calcu_line_center(from : Vertice, to : Vertice, radius : float = normal_radius) -> Vector2:
@@ -229,9 +224,11 @@ func calcu_puzzle(data : Dictionary) -> void:
 		end.add_neighbour(i)
 	for i in range(data.areas.size()):
 		var area : Dictionary = data.areas[i]
-		var srounds : PackedInt32Array = []
+		var srounds : Array[Edge] = []
 		for edge_idx in area.srounds:
-			srounds.append(edge_idx)
+			var edge := edges[edge_idx]
+			srounds.append(edge)
+			edge.add_neighbour(i)
 		var decorator : Decorator = null if not area.has("decorator") else create_decorator(decorators[int(area.decorator.id)], area.decorator.color, area.decorator.rotation, area.decorator.rules)
 		var center : Vector2
 		if area.has("position"):
@@ -243,11 +240,17 @@ func calcu_puzzle(data : Dictionary) -> void:
 			center = calcu_area_center(points)
 		else:
 			var points : PackedVector2Array = []
-			for edge_idx in srounds:
-				var edge : Edge = edges[edge_idx]
+			for edge in srounds:
 				points.append(edge.position)
 			center = calcu_area_center(points)
-		var _area := Area.new(srounds, center, decorator)
+		var edge_types : PackedInt32Array = []
+		var srounds_count := srounds.size()
+		if area.has("types") and area.types.size() == srounds_count:
+			edge_types = PackedInt32Array(area.types)
+		var edge_sub_types : PackedInt32Array = []
+		if area.has("subtypes") and area.types.size() == srounds_count:
+			edge_sub_types = PackedInt32Array(area.subtypes)
+		var _area := Area.new(srounds, edge_types, edge_sub_types, center, decorator)
 		if decorator != null:
 			append_decorator(_area)
 		_area.id = i
@@ -257,32 +260,6 @@ func calcu_puzzle(data : Dictionary) -> void:
 		if area.has("custom"):
 			_area.set_custom_data(area.custom)
 	pass
-
-func calcu_area_neighbour_map() -> void:
-	if not area_neighbour_map.is_empty(): return
-	for area in areas:
-		for i in area.srounds:
-			if area_neighbour_map.has(i):
-				var neighbours : Array[Area] = area_neighbour_map[i]
-				for _area in neighbours:
-					_area.add_neighbour(area.id)
-					area.add_neighbour(_area.id)
-					pass
-				neighbours.append(area)
-			else:
-				area_neighbour_map[i] = [area]
-	pass
-
-#func calcu_egde_map() -> void:
-#	if not edge_map.is_empty(): return
-#	for edge in edges:
-#		if edge_map.has(edge.from):
-#			edge_map[edge.from][edge.to] = edge
-#		else:
-#			edge_map[edge.from] = {
-#				edge.to: edge
-#			}
-#	pass
 
 # utils
 func get_vertice_by_id(id : int) -> Vertice:
@@ -315,18 +292,10 @@ func get_edge_by_id(id : int) -> Edge:
 func has_edge_id(id : int) -> bool:
 	return 0 <= id and id < edges.size()
 
-func get_area_neighbours_by_sround_edge_id(area : Area, edge_id : int) -> Array:
-	if not area.srounds.has(edge_id): return []
-	if not self.area_neighbour_map.has(edge_id): return []
-	var sround_areas : Array[Area] = self.area_neighbour_map[edge_id].duplicate()
-	sround_areas.erase(area)
+func get_area_neighbours_by_sround_edge(area : Area, edge : Edge) -> Array:
+	if not edge.has_neighbour(area.id): return []
+	var sround_areas : Array[Area] = []
+	for area_id in edge.neighbours:
+		if area_id == area.id: continue
+		sround_areas.append(get_area_by_id(area_id))
 	return sround_areas
-
-#func find_edge(a : Vertice, b : Vertice) -> Edge:
-#	if edge_map.has(a):
-#		if edge_map[a].has(b):
-#			return edge_map[a][b]
-#	if edge_map.has(b):
-#		if edge_map[b].has(a):
-#			return edge_map[b][a]
-#	return null

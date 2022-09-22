@@ -14,7 +14,6 @@ grow_vertical = 2
 script = ExtResource("1_nv4y1")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,7 +26,6 @@ theme_override_constants/margin_bottom = 12
 metadata/_edit_layout_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
 offset_left = 20.0
 offset_top = 1020.0
 offset_right = 1900.0
@@ -37,7 +35,6 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
 offset_right = 1880.0
 offset_bottom = 48.0
 size_flags_vertical = 8
@@ -45,7 +42,6 @@ theme_override_constants/separation = 12
 
 [node name="Name" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 2
 offset_right = 186.0
 offset_bottom = 48.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -55,7 +51,6 @@ text = "Puzzle : first"
 
 [node name="Movement" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 2
 offset_left = 198.0
 offset_right = 384.0
 offset_bottom = 48.0

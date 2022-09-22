@@ -9,6 +9,7 @@ enum VerticeType {
 }
 
 var type : VerticeType = VerticeType.NORMAL
+# edge_ids
 var neighbours : PackedInt32Array = []
 	
 func _init(position: Vector2, type : VerticeType, decorator : Decorator = null) -> void:

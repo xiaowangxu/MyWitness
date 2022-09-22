@@ -3,6 +3,9 @@ extends PuzzleElement
 
 var from : Vertice
 var to : Vertice
+# areas
+var neighbours : PackedInt32Array = []
+
 var length : float
 var normal : Vector2
 var wrap : bool = false
@@ -17,6 +20,13 @@ func _init(from : Vertice, to : Vertice, center : Vector2, decorator : Decorator
 	self.decorator = decorator
 	self.length = from.position.distance_to(to.position)
 	self.normal = from.position.direction_to(to.position)
+
+func add_neighbour(neighbour_id : int) -> void:
+	if not neighbours.has(neighbour_id):
+		neighbours.append(neighbour_id)
+
+func has_neighbour(neighbour_id : int) -> bool:
+	return neighbours.has(neighbour_id)
 
 func calcu_wrap() -> void:
 	if has_custom_data(&"wrap"):

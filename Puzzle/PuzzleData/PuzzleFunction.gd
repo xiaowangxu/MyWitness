@@ -248,13 +248,10 @@ static func get_base_path_percentage(line_data : LineData, base_path : LineData,
 	return line_length / base_length
 
 # Area Util
-static func is_areas_neighbour(puzzle_data : PuzzleData, area1 : Area, area2 : Area) -> bool:
-	return area1.neighbours.has(area2.id) or area2.neighbours.has(area1.id)
-
 static func _reduce_linked_areas(puzzle_data : PuzzleData, edge_ids : PackedInt32Array, area : Area, ans : Array[Area]) -> void:
-	for edge_id in area.srounds:
-		if edge_ids.has(edge_id): continue
-		var sround_areas : Array[Area] = puzzle_data.get_area_neighbours_by_sround_edge_id(area, edge_id)
+	for edge in area.srounds:
+		if edge_ids.has(edge.id): continue
+		var sround_areas : Array[Area] = puzzle_data.get_area_neighbours_by_sround_edge(area, edge)
 		for sub_area in sround_areas:
 			if ans.has(sub_area): continue
 			else:
@@ -273,10 +270,6 @@ static func get_isolated_areas(puzzle_data : PuzzleData, edge_ids : PackedInt32A
 			areas.erase(sub_area)
 		ans.append(_ans)
 	return ans
-
-static func get_directional_sround_area(puzzle_data : PuzzleData, area : Area, sround_direction : int = 0) -> Area:
-	if sround_direction < 0 or sround_direction >= area.srounds.size(): return null
-	return puzzle_data.get_area_by_id(area.srounds[sround_direction])
 
 # check puzzle answer main function
 static func check_puzzle_answer(puzzle_data : PuzzleData, lines_data : Array[LineData]) -> Array:
