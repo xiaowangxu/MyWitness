@@ -37,38 +37,10 @@
 	},
 	"decorators": [
 		{
-			"type": 0,
-			"data": {
-				"edge_count": 6,
-				"radius": 19,
-				"round_cornor": 3,
-				"uv": false
-			}
+			"type": 237
 		},
 		{
-			"type": 0,
-			"data": {
-				"edge_count": 3,
-				"radius": 30,
-				"round_cornor": 0,
-				"uv": false
-			}
-		},
-		{
-			"type": 0,
-			"data": {
-				"edge_count": 4,
-				"radius": 31,
-				"round_cornor": 20,
-				"uv": false
-			}
-		},
-		{
-			"type": 1,
-			"data": {
-				"round_cornor": 5,
-				"uv": false
-			}
+			"type": 235
 		}
 	],
 	"points": [
@@ -150,19 +122,7 @@
 		},
 		{
 			"from": 1,
-			"to": 2,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.9,
-					0.9,
-					0.015,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": []
-			}
+			"to": 2
 		},
 		{
 			"from": 0,
@@ -187,39 +147,10 @@
 		{
 			"from": 3,
 			"to": 6,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.025,
-					0.8,
-					0.35,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": [
-					{
-						"name": 0,
-						"data": 1
-					}
-				]
-			}
 		},
 		{
 			"from": 4,
 			"to": 7,
-			"decorator": {
-				"id": 0,
-				"color": [
-					0.015,
-					0.015,
-					0.015,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": []
-			}
 		},
 		{
 			"from": 5,
@@ -246,26 +177,41 @@
 				5,
 				3
 			],
+			"types": [
+				-1,
+				-1,
+				2,
+				1
+			],
+			"subtypes": [
+				0,
+				0,
+				0,
+				0
+			],
 			"decorator": {
-				"id": 2,
+				"id": 0,
 				"color": [
 					0.85,
-					0.35,
+					0.65,
 					0.0,
 					1.0
 				],
 				"texture": null,
-				"rotation": 45,
+				"rotation": 0,
 				"rules": [
 					{
-						"name": 2,
-						"data": 1
-					},
-					{
-						"name": 3,
-						"data": {
-							"color_id": 1
-						}
+						"name": 4,
+						"data": [
+							0,
+							1,
+							-1,
+							0,
+							0,
+							2,
+							-1,
+							0
+						]
 					}
 				]
 			}
@@ -277,27 +223,18 @@
 				6,
 				3
 			],
-			"decorator": {
-				"id": 3,
-				"color": [
-					0.85,
-					0.35,
-					0.0,
-					1.0
-				],
-				"texture": null,
-				"rotation": 0,
-				"rules": [
-					{
-						"name": 3,
-						"data": {
-							"color_id": 1,
-							"host": true,
-							"count": 2
-						}
-					}
-				]
-			}
+			"types": [
+				-1,
+				-1,
+				2,
+				3
+			],
+			"subtypes": [
+				0,
+				0,
+				0,
+				0
+			]
 		},
 		{
 			"srounds": [
@@ -306,27 +243,22 @@
 				10,
 				7
 			],
+			"types": [
+				0,
+				1,
+				-1,
+				-1
+			],
+			"subtypes": [
+				0,
+				0,
+				0,
+				0
+			],
 			"position": [
 				235,
 				465
-			],
-			"decorator": {
-				"id": 2,
-				"color": [
-					0,
-					0,
-					0,
-					1.0
-				],
-				"texture": null,
-				"rotation": 45,
-				"rules": [
-					{
-						"name": 2,
-						"data": 0
-					}
-				]
-			}
+			]
 		},
 		{
 			"srounds": [
@@ -335,15 +267,27 @@
 				9,
 				11
 			],
+			"types": [
+				0,
+				3,
+				-1,
+				-1
+			],
+			"subtypes": [
+				0,
+				0,
+				0,
+				0
+			],
 			"position": [
 				465,
 				465
 			],
 			"decorator": {
-				"id": 3,
+				"id": 1,
 				"color": [
 					0.85,
-					0.35,
+					0.65,
 					0.0,
 					1.0
 				],
@@ -351,12 +295,8 @@
 				"rotation": 0,
 				"rules": [
 					{
-						"name": 3,
-						"data": {
-							"color_id": 1,
-							"host": true,
-							"count": 2
-						}
+						"name": 4,
+						"data": []
 					}
 				]
 			}

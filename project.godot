@@ -15,6 +15,11 @@ _global_script_classes=[{
 "path": "res://Puzzle/PuzzleData/Area.gd"
 }, {
 "base": "PuzzleRule",
+"class": &"AreaLinkFill",
+"language": &"GDScript",
+"path": "res://Puzzle/PuzzleData/Rules/AreaLinkFill.gd"
+}, {
+"base": "PuzzleRule",
 "class": &"AreaSroundSegmentCountRule",
 "language": &"GDScript",
 "path": "res://Puzzle/PuzzleData/Rules/AreaSroundSegmentCountRule.gd"
@@ -216,6 +221,7 @@ _global_script_classes=[{
 }]
 _global_script_class_icons={
 "Area": "",
+"AreaLinkFill": "",
 "AreaSroundSegmentCountRule": "",
 "AutoTester": "",
 "ColorIsolate": "",

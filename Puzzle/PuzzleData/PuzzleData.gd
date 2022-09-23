@@ -124,6 +124,31 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseRe
 				Transform2D(deg_to_rad(45), Vector2(-18, 18)),
 				Transform2D(deg_to_rad(45), Vector2(18, 18)),
 			])
+		235:
+			return GroupShapeResource.new([
+				_TestSquare,
+			], [
+				Transform2D(deg_to_rad(45), Vector2(0, 0)),
+				
+			])
+		236:
+			return GroupShapeResource.new([
+				_TestSquare,
+				_TestSquare,
+			], [
+				Transform2D(deg_to_rad(45), Vector2(-18, 0)),
+				Transform2D(deg_to_rad(45), Vector2(18, 0)),
+			])
+		237:
+			return GroupShapeResource.new([
+				_TestSquare,
+				_TestSquare,
+				_TestSquare,
+			], [
+				Transform2D(deg_to_rad(45), Vector2(-18, -18)),
+				Transform2D(deg_to_rad(45), Vector2(18, -18)),
+				Transform2D(deg_to_rad(45), Vector2(-18, 18)),
+			])
 		_:
 			return null
 
@@ -133,6 +158,7 @@ func create_rule(name : int, data) -> PuzzleRule:
 		PuzzleRuleFunction.AREA_SROUND_SEGMENT_COUNT: return AreaSroundSegmentCountRule.new(data)
 		PuzzleRuleFunction.COLOR_ISOLATE: return ColorIsolate.new(data)
 		PuzzleRuleFunction.COLOR_MATCH: return ColorMatch.new(data)
+		PuzzleRuleFunction.AREA_LINK_FILL: return AreaLinkFill.new(data)
 	return null
 
 func create_decorator(base : ShapeBaseResource, color : Array, rotation : float = 0.0, rules : Array = []) -> Decorator:
@@ -188,7 +214,7 @@ func calcu_puzzle(data : Dictionary) -> void:
 	
 	for i in range(data.decorators.size()):
 		var decorator : Dictionary = data.decorators[i]
-		decorators.append(create_decorator_shared_shape(decorator.type, decorator.data))
+		decorators.append(create_decorator_shared_shape(decorator.type, decorator.get("data", {})))
 	for i in range(data.points.size()):
 		var point : Dictionary = data.points[i]
 		var decorator : Decorator = null if not point.has("decorator") else create_decorator(decorators[int(point.decorator.id)], point.decorator.color, point.decorator.rotation, point.decorator.rules)

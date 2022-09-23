@@ -12,7 +12,7 @@ const PuzzleViewportSizes : Dictionary = {
 const AllPuzzleJsons : Dictionary = {
 	"first_try": preload("res://PuzzleDataJson/Json.json"),
 	"second": preload("res://PuzzleDataJson/Json2.json"),
-	"second2": preload("res://PuzzleDataJson/Json2-1.json"),
+	"second2": preload("res://PuzzleDataJson/Json2-2.json"),
 	"hello_world": preload("res://PuzzleDataJson/Json3.json"),
 	"generator": preload("res://PuzzleDataJson/PuzzleTest.json"),
 	"crt": preload("res://PuzzleDataJson/CRTTest.json"),

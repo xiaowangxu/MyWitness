@@ -24,6 +24,7 @@ func _init(from : Vertice, to : Vertice, center : Vector2, decorator : Decorator
 func add_neighbour(neighbour_id : int) -> void:
 	if not neighbours.has(neighbour_id):
 		neighbours.append(neighbour_id)
+		assert(neighbours.size() <= 2, "found more than 2 neighbours")
 
 func has_neighbour(neighbour_id : int) -> bool:
 	return neighbours.has(neighbour_id)

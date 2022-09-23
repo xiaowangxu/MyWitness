@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://dvavdlrmk1w48"]
+
+[ext_resource type="Script" path="res://Puzzle/Panel/PuzzlePanelPillar.gd" id="1_38mrf"]
+[ext_resource type="ArrayMesh" uid="uid://hf6r8fma0hbe" path="res://untitled.obj" id="2_b4hkv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0qlj5"]
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 1
+shading_mode = 0
+disable_receive_shadows = true
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_jg655"]
+height = 5.615
+radius = 1.0
+
+[node name="TestPuzzle" type="Node3D"]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -7.39405, 4, -2.551)
+script = ExtResource("1_38mrf")
+metadata/_edit_group_ = true
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+layers = 524289
+ignore_occlusion_culling = true
+mesh = ExtResource("2_b4hkv")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_0qlj5")
+
+[node name="Area" type="Area3D" parent="."]
+collision_layer = 2147483648
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_jg655")
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]
+bus = &"PuzzleSoundEffect"

@@ -13,7 +13,10 @@ func _init(srounds : Array[Edge], edge_types : PackedInt32Array, edge_sub_types 
 	self.edge_sub_types = edge_sub_types
 
 func get_sround_edge_by_type_and_subtype(type : int, subtype : int = -1) -> Edge:
+	for i in range(edge_types.size()):
+		if edge_types[i] == type and (subtype < 0 or edge_sub_types[i] == subtype):
+			return srounds[i]
 	return null
 
 func _to_string() -> String:
-		return "[Area \n\tsrounds:%s\n\tdecorator:%s\n]" % [srounds, decorator]
+		return "[Area id: %d]" % [id]
