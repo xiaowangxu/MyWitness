@@ -55,6 +55,7 @@ func array_to_color(array : Array) -> Color:
 			return Color.RED
 
 var _TestSquare := RegularShapeResource.new(4, 20, 0, false)
+var _TestSquare2 := RegularShapeResource.new(4, 16, 0, false)
 func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseResource:
 	match type:
 		0:
@@ -149,6 +150,70 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseRe
 				Transform2D(deg_to_rad(45), Vector2(18, -18)),
 				Transform2D(deg_to_rad(45), Vector2(-18, 18)),
 			])
+		238:
+			return GroupShapeResource.new([
+				_TestSquare2,
+				_TestSquare2,
+				_TestSquare2,
+				_TestSquare2,
+			], [
+				Transform2D(deg_to_rad(45), Vector2(-14, 28)),
+				Transform2D(deg_to_rad(45), Vector2(-14, 0)),
+				Transform2D(deg_to_rad(45), Vector2(-14, -28)),
+				Transform2D(deg_to_rad(45), Vector2( 14, 28)),
+			])
+		239:
+			return GroupShapeResource.new([
+				_TestSquare2,
+				_TestSquare2,
+				_TestSquare2,
+				_TestSquare2,
+			], [
+				Transform2D(deg_to_rad(45), Vector2(-14, 28)),
+				Transform2D(deg_to_rad(45), Vector2(-14, 0)),
+				Transform2D(deg_to_rad(45), Vector2(-14, -28)),
+				Transform2D(deg_to_rad(45), Vector2( 14, -28)),
+			])
+		240:
+			return GroupShapeResource.new([
+					_TestSquare2,
+					_TestSquare2,
+				], [
+				Transform2D(deg_to_rad(45), Vector2(0, 14)),
+				Transform2D(deg_to_rad(45), Vector2(0, -14)),
+				])
+			return GroupShapeResource.new([ GroupShapeResource.new([
+					_TestSquare2,
+					_TestSquare2,
+				], [
+				Transform2D(deg_to_rad(45), Vector2(0, 14)),
+				Transform2D(deg_to_rad(45), Vector2(0, -14)),
+				])
+			], [
+				Transform2D(deg_to_rad(-45), Vector2(0, 0)),
+			])
+		241:
+			return _TestSquare2
+		242:
+			return GroupShapeResource.new([
+					_TestSquare2,
+					_TestSquare2,
+					_TestSquare2,
+					_TestSquare2,
+					_TestSquare2,
+					_TestSquare2,
+					_TestSquare2,
+					_TestSquare2,
+				], [
+				Transform2D(deg_to_rad(45), Vector2(-28, 28)),
+				Transform2D(deg_to_rad(45), Vector2(0, 28)),
+				Transform2D(deg_to_rad(45), Vector2(28, 28)),
+				Transform2D(deg_to_rad(45), Vector2(-28, 0)),
+				Transform2D(deg_to_rad(45), Vector2(28, 0)),
+				Transform2D(deg_to_rad(45), Vector2(-28, -28)),
+				Transform2D(deg_to_rad(45), Vector2(0, -28)),
+				Transform2D(deg_to_rad(45), Vector2(28, -28)),
+				])
 		_:
 			return null
 

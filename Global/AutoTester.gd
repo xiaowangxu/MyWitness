@@ -15,7 +15,7 @@ func solve() -> void:
 	solutions.clear()
 	var ans : LineData = await solve_puzzle(current_panel.puzzle_data, current_panel)
 
-func advance_line_data(puzzle_data : PuzzleData, line_data : LineData, panel : PuzzlePanel, max_solutions : int = 1000) -> void:
+func advance_line_data(puzzle_data : PuzzleData, line_data : LineData, panel : PuzzlePanel, max_solutions : int = 100) -> void:
 	if solutions.size() >= max_solutions: return
 	var current_vertice := line_data.get_current_vertice()
 	if current_vertice.type == Vertice.VerticeType.END:
@@ -46,6 +46,6 @@ func solve_puzzle(puzzle_data : PuzzleData, panel : PuzzlePanel) -> LineData:
 			panel.start_puzzle(solution)
 			panel.commit_move_line(solution)
 			panel.confirm()
-			await get_tree().create_timer(0.1).timeout
+			await get_tree().create_timer(0.2).timeout
 	solutions.clear()
 	return null

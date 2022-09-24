@@ -1,7 +1,7 @@
 class_name GroupShapeResource
 extends ShapeBaseResource
 
-var shapes : Array[ShapeResource]
+var shapes : Array[ShapeBaseResource]
 var transforms : Array[Transform2D]
 
 func _init(shapes : Array, transforms : Array) -> void:
