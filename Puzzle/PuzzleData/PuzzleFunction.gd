@@ -47,7 +47,7 @@ class _MoveLineInfo extends RefCounted:
 		pass
 	pass
 
-const DotSmoothSensitivity : float = 0.25
+const DotSmoothSensitivity : float = 0.2
 
 static func _move_line(puzzle_data : PuzzleData, line_data : LineData, remain_movement : Vector2, clamped : bool = false, dot_smooth : bool = false) -> Vector2:
 	var movement_normal := remain_movement.normalized()

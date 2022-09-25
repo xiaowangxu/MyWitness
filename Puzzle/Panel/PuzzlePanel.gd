@@ -54,7 +54,7 @@ var hint_ring_render_item : StartEndHintRing
 @onready var material : Material = mesh.get_surface_override_material(puzzle_surface_material_id)
 
 @onready var puzzle_data : PuzzleData = GlobalData.AllPuzzleData[puzzle_name]
-@export var viewport_size_override : Vector2i = Vector2i(700,700)
+@export var viewport_size_override : Vector2i = Vector2i(800,800)
 @onready var puzzle_panel_scale : Vector2 = Vector2(viewport_size_override) / Vector2(puzzle_data.base_size)
 var base_viewport_instance : ViewportInstance = null
 var puzzle_line : LineData = null
@@ -128,7 +128,7 @@ class ViewportInstance extends RefCounted:
 		self.config_name = config.name
 		self.viewport.transparent_bg = viewport_transparent
 		self.viewport.size = Vector2i.ONE
-		self.viewport.msaa_2d = Viewport.MSAA_4X
+		self.viewport.msaa_2d = Viewport.MSAA_2X
 		parent.add_child(self.viewport)
 		self.viewport.add_child(self.puzzle_renderer)
 		if self.config_name == 'base':
@@ -287,7 +287,7 @@ func get_current_mouse_position() -> Vector3:
 func get_current_world_position() -> Vector3:
 	return mouse_to_global(get_current_mouse_position())
 
-const PreferredDistance : float = 2.5
+const PreferredDistance : float = 2.0
 func get_preferred_transform(player_transform : Transform3D) -> Transform3D:
 	var pos := area.global_transform.origin
 	var quat := area.global_transform.basis.get_rotation_quaternion()

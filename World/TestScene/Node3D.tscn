@@ -403,7 +403,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 skeleton = NodePath("../..")
 
 [node name="PuzzlePanel" parent="CrtPanelStand3/CrtPanelStandConnector" groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
-puzzle_name = "crt"
+puzzle_name = "tetris_test"
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
@@ -447,7 +447,7 @@ script = ExtResource("13_tdnaq")
 
 [node name="PuzzlePanel" parent="." groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.8, 4, -8.58307e-06)
-puzzle_name = "tetris_test"
+puzzle_name = "second2"
 viewport_configs = [{
 "name": "base",
 "targets": PackedStringArray("surface_material_override/1:texture_puzzle"),

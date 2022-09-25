@@ -214,6 +214,22 @@ func create_decorator_shared_shape(type : int, data : Dictionary) -> ShapeBaseRe
 				Transform2D(deg_to_rad(45), Vector2(0, -28)),
 				Transform2D(deg_to_rad(45), Vector2(28, -28)),
 				])
+		243:
+			return GroupShapeResource.new([
+					_TestSquare2,
+					_TestSquare2,
+				], [
+				Transform2D(deg_to_rad(45), Vector2(14, 14)),
+				Transform2D(deg_to_rad(45), Vector2(-14, -14)),
+				])
+		244:
+			return GroupShapeResource.new([
+					_TestSquare2,
+					_TestSquare2,
+				], [
+				Transform2D(deg_to_rad(45), Vector2(-14, 14)),
+				Transform2D(deg_to_rad(45), Vector2(14, -14)),
+				])
 		_:
 			return null
 

@@ -6,6 +6,7 @@ var edge_types : PackedInt32Array = []
 var edge_sub_types : PackedInt32Array = []
 
 func _init(srounds : Array[Edge], edge_types : PackedInt32Array, edge_sub_types : PackedInt32Array, center : Vector2, decorator : Decorator = null) -> void:
+	self.tag = 1
 	self.srounds = srounds
 	self.position = center
 	self.decorator = decorator

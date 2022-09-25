@@ -169,7 +169,7 @@ func create_error_tween(errors : Array) ->void:
 		line_canvas_group.self_modulate = Color.WHITE
 		var tween : Tween = create_tween()
 		tween.tween_interval(1.0)
-		tween.tween_property(line_canvas_group, "self_modulate", Color.TRANSPARENT, 4.0).from_current().set_trans(Tween.TRANS_LINEAR)
+		tween.tween_property(line_canvas_group, "self_modulate", Color.TRANSPARENT, 8.0).from_current().set_trans(Tween.TRANS_LINEAR)
 		tween.tween_interval(0.1)
 		tween.tween_callback(func ():
 			self.state_changed.emit(State.STOPPED)
