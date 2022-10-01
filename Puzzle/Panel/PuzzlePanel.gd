@@ -51,6 +51,7 @@ var hint_ring_render_item : StartEndHintRing
 @onready var area : CollisionObject3D = $Area
 @onready var audio : AudioStreamPlayer = $Audio
 @onready var interactable_notifier : InteractableNotifier = get_node_or_null("InteractableNotifier")
+@onready var free_notifier : InteractableNotifier = get_node_or_null("FreeNotifier")
 @onready var material : Material = mesh.get_surface_override_material(puzzle_surface_material_id)
 
 @onready var puzzle_data : PuzzleData = GlobalData.AllPuzzleData[puzzle_name]
@@ -67,6 +68,11 @@ func _ready() -> void:
 	if interactable_notifier != null:
 		interactable_notifier.reachable_change.connect(on_visible_changed)
 		interactable_notifier.fade_step.connect(on_visible_percentage_changed)
+	if free_notifier != null:
+		free_notifier.reachable_change.connect(on_free_changed)
+	
+	if interactable_notifier != null and free_notifier != null:
+		assert(interactable_notifier.far <= free_notifier.near, 'interactable_notifier is farer than free_notifier')
 	
 	set_panel_active_percentage(1.0 if is_active else 0.0)
 	self.add_to_group(GlobalData.PuzzleGroupName)
@@ -79,11 +85,15 @@ func _ready() -> void:
 	hint_ring_render_item = StartEndHintRing.new(puzzle_data, viewport_size_override)
 	
 	for config_idx in range(viewport_configs.size()):
-		var viewport_instance := set_visual_instance(config_idx)
+		var config : Dictionary = viewport_configs[config_idx]
+#		var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size_override, config.visual)
+		var viewport_instance : ViewportInstance = ViewportInstance.new(config_idx, config, viewport_size_override, null, self)
+		viewport_instance_map[config.name] = viewport_instance
+		viewport_instance_list.append(viewport_instance)
 		if viewport_instance.config_name == "base":
 			base_viewport_instance = viewport_instance
-	
-	viewport_configs.clear()
+			viewport_instance.viewport.add_child(hint_ring_render_item)
+			viewport_instance.viewport.add_child(test_info)
 	
 	if interactable_notifier != null:
 		_set_material_fade_percentage_param(interactable_notifier.percentage)
@@ -96,14 +106,18 @@ func _ready() -> void:
 		_set_material_fade_percentage_param(1.0)
 	mesh.set_instance_shader_parameter(&"default_color", puzzle_data.background_color)
 	
+	if free_notifier != null:
+		if free_notifier.is_reachable:
+			set_renderers(true)
+		else:
+			free_renderers(true)
+	else:
+		set_renderers(true)
+	
 #	test info
-	get_base_viewport_instance().puzzle_renderer.state_changed.connect(on_puzzle_render_state_changed)
 	test_info.puzzle_name = puzzle_name
 	
-	load_save()
-	
 	Debugger.print_tag("Puzzle Inited", "{0} as {1}".format([puzzle_name, puzzle_save_name]), Color.CRIMSON)
-	
 	pass
 
 class ViewportInstance extends RefCounted:
@@ -130,10 +144,8 @@ class ViewportInstance extends RefCounted:
 		self.viewport.size = Vector2i.ONE
 		self.viewport.msaa_2d = Viewport.MSAA_2X
 		parent.add_child(self.viewport)
-		self.viewport.add_child(self.puzzle_renderer)
-		if self.config_name == 'base':
-			self.viewport.add_child(parent.hint_ring_render_item)
-			self.viewport.add_child(parent.test_info)
+		if self.puzzle_renderer != null:
+			self.viewport.add_child(self.puzzle_renderer)
 		var texture : ViewportTexture = viewport.get_texture()
 		set_texture(parent, texture)
 		update_render()
@@ -178,34 +190,46 @@ class ViewportInstance extends RefCounted:
 		if self.puzzle_renderer == null:
 			self.puzzle_renderer = puzzle_renderer
 			self.viewport.add_child(self.puzzle_renderer)
+			self.viewport.move_child(self.puzzle_renderer, 0)
 	pass
-
-func set_visual_instance(idx : int) -> ViewportInstance:
-	var config : Dictionary = viewport_configs[idx]
-	var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size_override, config.visual)
-	var viewport_instance : ViewportInstance = ViewportInstance.new(idx, config, viewport_size_override, puzzle_renderer, self)
-	viewport_instance_map[config.name] = viewport_instance
-	viewport_instance_list.append(viewport_instance)
-	return viewport_instance
 
 var _is_viewports_instanced : bool = false
 func set_viewports(force : bool = false) -> void:
 	if not force and _is_viewports_instanced: return
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.set_viewport(self)
-#		var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_size, viewport_instance.puzzle_visual_config)
-#		viewport_instance.set_puzzle_renderer(puzzle_renderer)
 	_is_viewports_instanced = true
-#	Debugger.print_tag("Viewport Inited", puzzle_name, Color.MEDIUM_SPRING_GREEN)
+	Debugger.print_tag("Viewport Inited", puzzle_name, Color.MEDIUM_SPRING_GREEN)
 	pass
 
 func free_viewports(force : bool = false) -> void:
 	if not force and not _is_viewports_instanced: return
 	for viewport_instance in viewport_instance_list:
 		viewport_instance.free_viewport(self)
-#		viewport_instance.free_puzzle_renderer()
 	_is_viewports_instanced = false
-#	Debugger.print_tag("Viewport Freed", puzzle_name, Color.MEDIUM_SPRING_GREEN)
+	Debugger.print_tag("Viewport Freed", puzzle_name, Color.RED)
+	pass
+
+var _is_renderers_instanced : bool = false
+func set_renderers(force : bool = false) -> void:
+	if not force and _is_renderers_instanced: return
+	for viewport_instance in viewport_instance_list:
+		if viewport_instance.puzzle_renderer == null :
+			var puzzle_renderer : PuzzleRenderer = PuzzleRenderer.new(puzzle_data, viewport_instance.viewport_size, viewport_instance.puzzle_visual_config)
+			viewport_instance.set_puzzle_renderer(puzzle_renderer)
+	get_base_viewport_instance().puzzle_renderer.state_changed.connect(on_puzzle_render_state_changed)
+	load_save()
+	_is_renderers_instanced = true
+	Debugger.print_tag("Renderer Inited", puzzle_name, Color.MEDIUM_SPRING_GREEN)
+	pass
+
+func free_renderers(force : bool = false) -> void:
+	if not force and not _is_renderers_instanced: return
+	for viewport_instance in viewport_instance_list:
+		if viewport_instance.puzzle_renderer != null :
+			viewport_instance.free_puzzle_renderer()
+	_is_renderers_instanced = false
+	Debugger.print_tag("Renderer Freed", puzzle_name, Color.RED)
 	pass
 
 func set_panel_active_percentage(percentage : float) -> void:
@@ -241,6 +265,13 @@ func _set_material_fade_percentage_param(percentage : float) -> void:
 	mesh.set_instance_shader_parameter(&"fade_percentage", percentage)
 	pass
 
+func on_free_changed(exist : bool) -> void:
+	if exist:
+		set_renderers()
+	else:
+		free_renderers()
+	pass
+
 var current_position : Vector2 = Vector2.ZERO :
 	set(val):
 		current_position = val
@@ -252,7 +283,7 @@ var current_position : Vector2 = Vector2.ZERO :
 			assert(false, "Current Mouse Puzzle Position is out side of panel")
 
 func input_event(event : InputEvent, mouse_position : Vector3, world_position : Vector3) -> void:
-	if not is_active: return
+	if not is_active || not _is_viewports_instanced || not _is_renderers_instanced: return
 	if event is InputPuzzleForceExitEvent:
 		if puzzle_line != null:
 			_on_confirm(true)

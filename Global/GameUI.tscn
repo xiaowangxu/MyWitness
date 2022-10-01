@@ -135,7 +135,7 @@ IndicatorNodePath = NodePath("../Panel")
 visible = false
 color = Color(0, 0, 0, 0.282353)
 antialiased = true
-polygon = PackedVector2Array(0, -8, 1, -8, 6, -6.33333, 8, -1, 8, 0, 8, 1, 6, 6, 1, 8, 0, 8, -1, 8, -6, 6.33333, -8, 1, -8, 0, -8, -1, -6, -6, -1, -8)
+polygon = PackedVector2Array(0, -3, 8, 0, 0, 3.33333)
 
 [node name="TestCursor" type="Polygon2D" parent="."]
 visible = false

@@ -445,6 +445,11 @@ acceptable_tags = PackedInt32Array(0)
 [node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"]
 script = ExtResource("13_tdnaq")
 
+[node name="FreeNotifier" type="Node3D" parent="CrtPanelStand3/CrtPanelStandConnector/PuzzlePanel"]
+script = ExtResource("13_tdnaq")
+near = 120.0
+far = 140.0
+
 [node name="PuzzlePanel" parent="." groups=["AutoTest"] instance=ExtResource("7_kbxjn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.8, 4, -8.58307e-06)
 puzzle_name = "second2"

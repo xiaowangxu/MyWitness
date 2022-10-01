@@ -241,8 +241,9 @@ shader = ExtResource("24_vo5iv")
 shader_parameter/Texture2DParameter = ExtResource("23_ccvjj")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y051d"]
-transparency = 4
-cull_mode = 2
+transparency = 2
+alpha_scissor_threshold = 0.8
+alpha_antialiasing_mode = 0
 specular_mode = 2
 albedo_color = Color(0.784314, 0.529412, 0.160784, 1)
 albedo_texture = ExtResource("16_qto2w")
@@ -254,8 +255,9 @@ subsurf_scatter_strength = 0.23
 backlight = Color(0.666667, 0.733333, 0.533333, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qlhu"]
-transparency = 4
-specular_mode = 2
+transparency = 2
+alpha_scissor_threshold = 0.856
+alpha_antialiasing_mode = 0
 albedo_color = Color(0.588235, 0.141176, 0.184314, 1)
 albedo_texture = ExtResource("16_qto2w")
 metallic_specular = 0.0
@@ -308,7 +310,10 @@ environment = ExtResource("2_opfjl")
 transform = Transform3D(1, 0, 0, 0, 0.849893, 0.526956, 0, -0.526956, 0.849893, 0, 4.72494, 0)
 light_bake_mode = 0
 shadow_enabled = true
-shadow_blur = 0.5
+directional_shadow_split_1 = 0.2
+directional_shadow_split_2 = 0.5
+directional_shadow_split_3 = 1.0
+directional_shadow_blend_splits = true
 
 [node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
 occluder = ExtResource("4_oegm4")
