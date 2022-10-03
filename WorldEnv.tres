@@ -6,12 +6,11 @@ sky_horizon_color = Color(0.364706, 0.721569, 1, 1)
 ground_bottom_color = Color(0.298039, 0.239216, 0.168627, 1)
 ground_horizon_color = Color(0.32549, 0.243137, 0.2, 1)
 ground_curve = 0.0386374
-sun_angle_max = 5.0
-sun_curve = 0.599995
+sun_angle_max = 2.0
+sun_curve = 0.356762
 
 [sub_resource type="Sky" id="Sky_n86sw"]
 sky_material = SubResource("ProceduralSkyMaterial_rrxjs")
-process_mode = 1
 radiance_size = 0
 
 [resource]

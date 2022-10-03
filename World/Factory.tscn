@@ -1,7 +1,5 @@
-[gd_scene load_steps=29 format=3 uid="uid://dlf4w36spirku"]
+[gd_scene load_steps=30 format=3 uid="uid://dlf4w36spirku"]
 
-[ext_resource type="PackedScene" uid="uid://beo2iieb68qe2" path="res://World/Panels/CRT/Objects/CrtPanelStand.tscn" id="1_7faw7"]
-[ext_resource type="PackedScene" uid="uid://bw1qfphklfn4t" path="res://World/Panels/CRT/Objects/CrtPanelStandConnector.tscn" id="2_hveph"]
 [ext_resource type="PackedScene" uid="uid://cdnre7g4poyqw" path="res://Puzzle/Panel/PuzzlePanel.tscn" id="3_20gwl"]
 [ext_resource type="PackedScene" uid="uid://8i2beujlsawi" path="res://World/Panels/CRT/Objects/CrtPanelStandPanel.tscn" id="5_ucw50"]
 [ext_resource type="Shader" uid="uid://cgx666a0b1qxd" path="res://World/Panels/CRT/Materials/CRTShader.tres" id="6_4yo83"]
@@ -10,16 +8,90 @@
 [ext_resource type="Script" path="res://World/Factory/FactoryRailController.gd" id="8_ty6g5"]
 [ext_resource type="ArrayMesh" uid="uid://dv7xhebjk25ws" path="res://World/Panels/TreeBase/Meshs/TreeBase_平面.res" id="9_wjh1j"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2t4uh"]
+[sub_resource type="Shader" id="Shader_mk38y"]
+code = "shader_type spatial;
+
+void fragment() {
+	discard;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sh5ee"]
 render_priority = 0
-shader = ExtResource("6_4yo83")
-shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
+shader = SubResource("Shader_mk38y")
+
+[sub_resource type="Shader" id="Shader_istuu"]
+code = "shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+
+instance uniform float enable_percentage : hint_range(0.0, 1.0, 0.1) = 1.0;
+instance uniform vec4 albedo : source_color = vec4(1.0);
+uniform sampler2D texture_puzzle : source_color, hint_default_black,filter_linear;
+instance uniform vec4 emission : source_color = vec4(0.0,0.0,0.0,1.0);
+instance uniform float emission_energy = 1.0;
+instance uniform float black_range_a = -0.713;
+instance uniform float black_range_b = 1.106;
+instance uniform float pow_factor = 4.0;
+instance uniform float black_factor = 0.489;
+
+instance uniform vec4 default_color : source_color = vec4(0.15, 0.65, 0.15, 1.0);
+instance uniform float fade_percentage : hint_range(0.0, 1.0, 0.1) = 1.0;
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_puzzle,base_uv);
+	albedo_tex = mix(albedo_tex, default_color, 1.0-fade_percentage);
+	vec2 transformed_uv = (base_uv - vec2(0.5)) * 2.0;
+	float _dis = pow(abs(transformed_uv.x), pow_factor) + pow(abs(transformed_uv.y), pow_factor);
+	float dis = smoothstep(black_range_a, black_range_b, 1.0 - _dis) * (1.0 - black_factor) + black_factor;
+	ALBEDO = albedo.rgb * albedo_tex.rgb * dis * enable_percentage;
+	vec3 emission_tex = albedo_tex.rgb;
+	EMISSION = (emission.rgb + emission_tex) * emission_energy * dis * enable_percentage;
+	ROUGHNESS = 1.0;
+}"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_o0abb"]
+load_path = "res://.godot/imported/PlaceHolder.png-19498f6504afe477dd4de274afe3dcad.s3tc.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ujkvo"]
+render_priority = 0
+shader = SubResource("Shader_istuu")
+shader_parameter/texture_puzzle = SubResource("CompressedTexture2D_o0abb")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vkax3"]
 points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
 
+[sub_resource type="GDScript" id="GDScript_6c3uf"]
+script/source = "extends AnimatableBody3D
+
+func _ready() -> void:
+	$CollisionShape3D.disabled = !self.visible
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(\"ui_accept\"):
+		self.visible = !self.visible
+		$CollisionShape3D.disabled = !self.visible
+"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qmd5g"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_8gmmf"]
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_fixk2"]
 size = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ivnwk"]
+render_priority = 0
+shader = ExtResource("6_4yo83")
+shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_uv260"]
+points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ldgaj"]
+render_priority = 0
+shader = ExtResource("6_4yo83")
+shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
 
 [sub_resource type="Shader" id="Shader_ijcjd"]
 code = "shader_type spatial;
@@ -54,152 +126,60 @@ void fragment() {
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_xa0c2"]
 load_path = "res://.godot/imported/PlaceHolder.png-19498f6504afe477dd4de274afe3dcad.s3tc.ctex"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k70j8"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_la2e8"]
 render_priority = 0
 shader = SubResource("Shader_ijcjd")
 shader_parameter/texture_puzzle = SubResource("CompressedTexture2D_xa0c2")
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_uv260"]
-points = PackedVector3Array(0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0)
-
-[sub_resource type="GDScript" id="GDScript_6c3uf"]
-script/source = "extends AnimatableBody3D
-
-func _ready() -> void:
-	$CollisionShape3D.disabled = !self.visible
-
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed(\"ui_accept\"):
-		self.visible = !self.visible
-		$CollisionShape3D.disabled = !self.visible
-"
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_qmd5g"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_8gmmf"]
-
-[sub_resource type="Animation" id="Animation_8k0xe"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CrtPanelStand:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CrtPanelStand/CrtPanelStandConnector:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 4, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2/Mesh:shader_params/enable_percentage")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.0]
-}
-
-[sub_resource type="Animation" id="Animation_5m4ht"]
-resource_name = "新建动画"
-length = 7.5
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/path = NodePath("CrtPanelStand:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 2.5, 5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(-0.610854, 0, 2.67013e-08), Vector3(0.640413, 0, -2.79933e-08)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CrtPanelStand/CrtPanelStandConnector:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 2.5, 5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 4, 0), Vector3(0, 4, -0.55702), Vector3(0, 4, 0.662787)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = false
-tracks/2/path = NodePath("CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2/Mesh:shader_params/enable_percentage")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 3, 3.5, 7),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [1.0, 1.0, 0.0, 0.0]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_h8e3h"]
-_data = {
-"RESET": SubResource("Animation_8k0xe"),
-"新建动画": SubResource("Animation_5m4ht")
-}
-
-[sub_resource type="Shader" id="Shader_mk38y"]
-code = "shader_type spatial;
-
-void fragment() {
-	discard;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_sh5ee"]
-render_priority = 0
-shader = SubResource("Shader_mk38y")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lxpwi"]
-render_priority = 0
-shader = ExtResource("6_4yo83")
-shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tkuu6"]
-render_priority = 0
-shader = ExtResource("6_4yo83")
-shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_x0q7u"]
 data = PackedVector3Array(0, 0.5, 0.5, 0, 0.1, -0.1, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, 0.1, 0.1, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.1, 0.1, 0, 0.1, 0.1, 0, -0.1, 0.1, 0, -0.5, 0.5, 0, -0.1, -0.1, 0, -0.5, 0.5, 0, -0.1, 0.1, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.1, -0.1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qhgok"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q7y2v"]
+render_priority = 0
+shader = ExtResource("6_4yo83")
+shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_svjjn"]
+render_priority = 0
+shader = SubResource("Shader_ijcjd")
+shader_parameter/texture_puzzle = SubResource("CompressedTexture2D_xa0c2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vblb2"]
+render_priority = 0
+shader = ExtResource("6_4yo83")
+shader_parameter/texture_puzzle = ExtResource("6_ohbsx")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ab368"]
+render_priority = 0
+shader = SubResource("Shader_ijcjd")
+shader_parameter/texture_puzzle = SubResource("CompressedTexture2D_xa0c2")
+
 [node name="Factory" type="Node3D"]
 
-[node name="CrtPanelStand" parent="." instance=ExtResource("1_7faw7")]
+[node name="Factory1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0527005, 4.05715, -2.89093)
 
-[node name="CrtPanelStandConnector" parent="CrtPanelStand" instance=ExtResource("2_hveph")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
-skeleton = NodePath("../..")
+[node name="Position3D1" type="Marker3D" parent="Factory1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
-[node name="PuzzlePanel2" parent="CrtPanelStand/CrtPanelStandConnector" instance=ExtResource("3_20gwl")]
+[node name="Position3D2" type="Marker3D" parent="Factory1"]
+
+[node name="Position3D3" type="Marker3D" parent="Factory1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Path3D1" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0527005, 4.05715, -2.89093)
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D1"]
+transform = Transform3D(-4.37115e-08, 0, 1, 0, 0.99999, 0, -1, 0, -4.37115e-08, 0, 0, 0)
+rotation_mode = 0
+cubic_interp = false
+loop = false
+
+[node name="PuzzlePanel2" parent="Path3D1/PathFollow3D" instance=ExtResource("3_20gwl")]
+transform = Transform3D(1, 0, -7.10543e-15, 0, 1.8, 0, 3.55271e-15, 0, 1.8, 0, 0, 0)
 puzzle_name = "factory1"
 save_name = "factory1"
 viewport_configs = [{
@@ -209,29 +189,58 @@ viewport_configs = [{
 "update": true,
 "visual": 15
 }]
+min_delta_length = 2.0
 puzzle_surface_material_id = 2
+viewport_size_override = Vector2i(1024, 1024)
 initial_active = true
 
-[node name="Mesh" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2" instance=ExtResource("5_ucw50")]
+[node name="Mesh" parent="Path3D1/PathFollow3D/PuzzlePanel2" instance=ExtResource("5_ucw50")]
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
-surface_material_override/2 = SubResource("ShaderMaterial_2t4uh")
+surface_material_override/0 = SubResource("ShaderMaterial_sh5ee")
+surface_material_override/1 = SubResource("ShaderMaterial_sh5ee")
+surface_material_override/2 = SubResource("ShaderMaterial_ujkvo")
+surface_material_override/3 = SubResource("ShaderMaterial_sh5ee")
 
-[node name="Area" type="Area3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2"]
+[node name="Area" type="Area3D" parent="Path3D1/PathFollow3D/PuzzlePanel2"]
 transform = Transform3D(1.12039e-07, 0, -1, 0, 1.484, 0, 1.484, 0, 7.54979e-08, -0.01, 0, 0)
 collision_layer = 2147483652
 collision_mask = 0
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2/Area"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D1/PathFollow3D/PuzzlePanel2/Area"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_vkax3")
 
-[node name="Audio" type="AudioStreamPlayer" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2"]
+[node name="Audio" type="AudioStreamPlayer" parent="Path3D1/PathFollow3D/PuzzlePanel2"]
 bus = &"PuzzleSoundEffect"
 
-[node name="InteractableNotifier" type="Node3D" parent="CrtPanelStand/CrtPanelStandConnector/PuzzlePanel2"]
+[node name="InteractableNotifier" type="Node3D" parent="Path3D1/PathFollow3D/PuzzlePanel2"]
 script = ExtResource("8_px48s")
+
+[node name="StaticBody3D" type="AnimatableBody3D" parent="."]
+transform = Transform3D(0.158502, 0, 0, 0, 3.88643, 0, 0, 0, 0.158502, -0.407019, 3.24619, -2.65707)
+script = SubResource("GDScript_6c3uf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("CylinderShape3D_qmd5g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("CylinderMesh_8gmmf")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D2" type="AnimatableBody3D" parent="."]
+transform = Transform3D(0.157771, -0.3727, 0, 0.0152, 3.86851, 0, 0, 0, 0.158502, 0.479897, 2.94631, -2.65707)
+script = SubResource("GDScript_6c3uf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 2.38419e-07, 0, -4.65661e-10, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_qmd5g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 9.31323e-10, 1, 0, 0, 0, 1, 0, -1.19209e-07, 0)
+mesh = SubResource("CylinderMesh_8gmmf")
+skeleton = NodePath("../..")
 
 [node name="PuzzlePanel3" parent="." instance=ExtResource("3_20gwl")]
 transform = Transform3D(-2.94741e-08, -3.22794e-08, 1, -0.803774, 0.594935, -4.48637e-09, -0.594935, -0.803774, -4.34805e-08, 2.20887e-08, 2.66237, 3.26286)
@@ -251,7 +260,7 @@ initial_active = true
 [node name="Mesh" type="MeshInstance3D" parent="PuzzlePanel3"]
 transform = Transform3D(-4.37114e-08, -1, 1.4993e-08, 0, -4.37114e-08, -0.343, 1, -4.37114e-08, 6.55365e-16, 0, 0, 0)
 mesh = SubResource("PlaneMesh_fixk2")
-surface_material_override/0 = SubResource("ShaderMaterial_k70j8")
+surface_material_override/0 = SubResource("ShaderMaterial_ivnwk")
 
 [node name="Area" type="Area3D" parent="PuzzlePanel3"]
 transform = Transform3D(7.54979e-08, 7.15554e-08, -1, 0, 0.343, 2.08616e-07, 1, -5.40228e-15, 7.54979e-08, 0, 0, 0)
@@ -270,37 +279,12 @@ bus = &"PuzzleSoundEffect"
 [node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel3"]
 script = ExtResource("8_px48s")
 
-[node name="StaticBody3D" type="AnimatableBody3D" parent="."]
-transform = Transform3D(0.158502, 0, 0, 0, 3.88643, 0, 0, 0, 0.158502, -0.225623, 3.24619, 0.199858)
-script = SubResource("GDScript_6c3uf")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("CylinderShape3D_qmd5g")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-mesh = SubResource("CylinderMesh_8gmmf")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D2" type="AnimatableBody3D" parent="."]
-transform = Transform3D(0.157771, -0.3727, 0, 0.0152, 3.86851, 0, 0, 0, 0.158502, 0.388828, 2.94631, 0.199858)
-script = SubResource("GDScript_6c3uf")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
-transform = Transform3D(1, 2.38419e-07, 0, -4.65661e-10, 1, 0, 0, 0, 1, 0, 0, 0)
-shape = SubResource("CylinderShape3D_qmd5g")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
-transform = Transform3D(1, 0, 0, 9.31323e-10, 1, 0, 0, 0, 1, 0, -1.19209e-07, 0)
-mesh = SubResource("CylinderMesh_8gmmf")
-skeleton = NodePath("../..")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-autoplay = "新建动画"
-playback_process_mode = 0
-method_call_mode = 1
-libraries = {
-"": SubResource("AnimationLibrary_h8e3h")
-}
+[node name="InteractableLinker4" type="Node" parent="." node_paths=PackedStringArray("path", "path_follower")]
+script = ExtResource("8_ty6g5")
+path = NodePath("../Path3D1")
+path_follower = NodePath("../Path3D1/PathFollow3D")
+rail_points = [NodePath("../Factory1/Position3D1"), NodePath("../Factory1/Position3D2"), NodePath("../Factory1/Position3D3")]
+InteractableNodePath = NodePath("../PuzzlePanel3")
 
 [node name="Factory" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.86732, 4.05715, -2.89093)
@@ -360,7 +344,7 @@ initial_active = true
 transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
 surface_material_override/0 = SubResource("ShaderMaterial_sh5ee")
 surface_material_override/1 = SubResource("ShaderMaterial_sh5ee")
-surface_material_override/2 = SubResource("ShaderMaterial_lxpwi")
+surface_material_override/2 = SubResource("ShaderMaterial_ldgaj")
 surface_material_override/3 = SubResource("ShaderMaterial_sh5ee")
 
 [node name="Area" type="Area3D" parent="Path3D/PathFollow3D/PuzzlePanel2"]
@@ -381,26 +365,26 @@ bus = &"PuzzleSoundEffect"
 script = ExtResource("8_px48s")
 
 [node name="PuzzlePanel2" parent="." instance=ExtResource("3_20gwl")]
-transform = Transform3D(-2.94741e-08, -3.22794e-08, 1, -0.803774, 0.594935, -4.48637e-09, -0.594935, -0.803774, -4.34805e-08, 6.86732, 2.06017, 2.8172)
+transform = Transform3D(-2.96115e-08, -3.2465e-08, 1, -0.803774, 0.594935, -4.48637e-09, -0.594935, -0.803774, -4.37114e-08, 6.867, 2.662, 2.817)
 puzzle_name = "factory2_1"
 save_name = "factory2_1"
 viewport_configs = [{
 "name": "base",
-"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
+"targets": PackedStringArray("surface_material_override/0:texture_puzzle"),
 "transparent": false,
 "update": true,
 "visual": 15
 }]
 min_delta_length = 2.0
-puzzle_surface_material_id = 2
 initial_active = true
 
-[node name="Mesh" parent="PuzzlePanel2" instance=ExtResource("5_ucw50")]
-transform = Transform3D(0.999846, -0.0175747, -8.75591e-08, 0.0175747, 0.999846, -1.01601e-09, 8.75635e-08, -5.22984e-10, 1, 0, 0, 0)
-surface_material_override/2 = SubResource("ShaderMaterial_tkuu6")
+[node name="Mesh" type="MeshInstance3D" parent="PuzzlePanel2"]
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
+mesh = SubResource("PlaneMesh_fixk2")
+surface_material_override/0 = SubResource("ShaderMaterial_la2e8")
 
 [node name="Area" type="Area3D" parent="PuzzlePanel2"]
-transform = Transform3D(1.12039e-07, 0, -1, 0, 1.484, 0, 1.484, 0, 7.54979e-08, -0.01, 0, 0)
+transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -0.00999999, 0, 0)
 collision_layer = 2147483652
 collision_mask = 0
 monitoring = false
@@ -416,8 +400,11 @@ bus = &"PuzzleSoundEffect"
 [node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel2"]
 script = ExtResource("8_px48s")
 
-[node name="InteractableLinker" type="Node" parent="."]
+[node name="InteractableLinker" type="Node" parent="." node_paths=PackedStringArray("path", "path_follower")]
 script = ExtResource("8_ty6g5")
+path = NodePath("../Path3D")
+path_follower = NodePath("../Path3D/PathFollow3D")
+rail_points = [NodePath("../Factory/Position3D1"), NodePath("../Factory/Position3D2"), NodePath("../Factory/Position3D3"), NodePath("../Factory/Position3D4"), NodePath("../Factory/Position3D5"), NodePath("../Factory/Position3D6"), NodePath("../Factory/Position3D7"), NodePath("../Factory/Position3D8"), NodePath("../Factory/Position3D9")]
 InteractableNodePath = NodePath("../PuzzlePanel2")
 
 [node name="Area" type="Area3D" parent="."]
@@ -437,3 +424,265 @@ transparency = 0.7
 cast_shadow = 0
 mesh = ExtResource("9_wjh1j")
 surface_material_override/0 = SubResource("StandardMaterial3D_qhgok")
+
+[node name="Factory2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2259, 4.05715, -2.89093)
+
+[node name="Position3D1" type="Marker3D" parent="Factory2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
+
+[node name="Position3D2" type="Marker3D" parent="Factory2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Position3D3" type="Marker3D" parent="Factory2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+
+[node name="Position3D4" type="Marker3D" parent="Factory2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="Position3D5" type="Marker3D" parent="Factory2"]
+
+[node name="Position3D6" type="Marker3D" parent="Factory2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Path3D2" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2259, 4.05715, -2.89093)
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D2"]
+transform = Transform3D(-4.37115e-08, 0, 1, 0, 0.99999, 0, -1, 0, -4.37115e-08, 0, 1, 0)
+rotation_mode = 0
+cubic_interp = false
+loop = false
+
+[node name="PuzzlePanel2" parent="Path3D2/PathFollow3D" instance=ExtResource("3_20gwl")]
+transform = Transform3D(1, 0, -7.10543e-15, 0, 1.8, 0, 3.55271e-15, 0, 1.8, 0, 0, 0)
+puzzle_name = "factory3"
+save_name = "factory3"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+min_delta_length = 2.0
+puzzle_surface_material_id = 2
+viewport_size_override = Vector2i(1024, 1024)
+initial_active = true
+
+[node name="Mesh" parent="Path3D2/PathFollow3D/PuzzlePanel2" instance=ExtResource("5_ucw50")]
+transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
+surface_material_override/0 = SubResource("ShaderMaterial_sh5ee")
+surface_material_override/1 = SubResource("ShaderMaterial_sh5ee")
+surface_material_override/2 = SubResource("ShaderMaterial_q7y2v")
+surface_material_override/3 = SubResource("ShaderMaterial_sh5ee")
+
+[node name="Area" type="Area3D" parent="Path3D2/PathFollow3D/PuzzlePanel2"]
+transform = Transform3D(1.12039e-07, 0, -1, 0, 1.484, 0, 1.484, 0, 7.54979e-08, -0.01, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D2/PathFollow3D/PuzzlePanel2/Area"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_vkax3")
+
+[node name="Audio" type="AudioStreamPlayer" parent="Path3D2/PathFollow3D/PuzzlePanel2"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="Path3D2/PathFollow3D/PuzzlePanel2"]
+script = ExtResource("8_px48s")
+
+[node name="Area2" type="Area3D" parent="."]
+transform = Transform3D(4.09808, 0, 0, 0, 4.09808, 0, 0, 0, 1, 14.2259, 4.05715, -2.26709)
+collision_layer = 19
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area2"]
+transform = Transform3D(-2.98023e-08, 0, 1, 0, 1, 0, -1, 0, -2.98023e-08, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_x0q7u")
+
+[node name="Mesh" type="MeshInstance3D" parent="Area2"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+transparency = 0.7
+cast_shadow = 0
+mesh = ExtResource("9_wjh1j")
+surface_material_override/0 = SubResource("StandardMaterial3D_qhgok")
+
+[node name="PuzzlePanel4" parent="." instance=ExtResource("3_20gwl")]
+transform = Transform3D(-2.94741e-08, -3.22794e-08, 1, -0.803774, 0.594935, -4.48637e-09, -0.594935, -0.803774, -4.34805e-08, 14.226, 2.662, 3.263)
+puzzle_name = "factory3_1"
+save_name = "factory3_1"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:texture_puzzle"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+min_delta_length = 2.0
+viewport_size_override = Vector2i(700, 500)
+initial_active = true
+
+[node name="Mesh" type="MeshInstance3D" parent="PuzzlePanel4"]
+transform = Transform3D(-4.37114e-08, -1, 3.12099e-08, 0, -4.37114e-08, -0.714, 1, -4.37114e-08, 1.36423e-15, 0, 0, 0)
+mesh = SubResource("PlaneMesh_fixk2")
+surface_material_override/0 = SubResource("ShaderMaterial_svjjn")
+
+[node name="Area" type="Area3D" parent="PuzzlePanel4"]
+transform = Transform3D(7.54979e-08, 1.19209e-07, -1, 0, 0.714, 2.08616e-07, 1, -1.06581e-14, 7.54979e-08, 0, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzlePanel4/Area"]
+transform = Transform3D(1, -1.77636e-15, -5.96046e-08, 3.55271e-15, 1, 2.98023e-08, 5.96046e-08, -2.98023e-08, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_uv260")
+
+[node name="Audio" type="AudioStreamPlayer" parent="PuzzlePanel4"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel4"]
+script = ExtResource("8_px48s")
+
+[node name="InteractableLinker2" type="Node" parent="." node_paths=PackedStringArray("path", "path_follower")]
+script = ExtResource("8_ty6g5")
+path = NodePath("../Path3D2")
+path_follower = NodePath("../Path3D2/PathFollow3D")
+rail_points = [NodePath("../Factory2/Position3D1"), NodePath("../Factory2/Position3D2"), NodePath("../Factory2/Position3D3"), NodePath("../Factory2/Position3D4"), NodePath("../Factory2/Position3D5"), NodePath("../Factory2/Position3D6")]
+InteractableNodePath = NodePath("../PuzzlePanel4")
+
+[node name="Factory3" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5182, 4.05715, -2.89093)
+
+[node name="Position3D1" type="Marker3D" parent="Factory3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
+
+[node name="Position3D2" type="Marker3D" parent="Factory3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Position3D3" type="Marker3D" parent="Factory3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+
+[node name="Position3D4" type="Marker3D" parent="Factory3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="Position3D5" type="Marker3D" parent="Factory3"]
+
+[node name="Position3D6" type="Marker3D" parent="Factory3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Path3D3" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5182, 4.05715, -2.89093)
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D3"]
+transform = Transform3D(-4.37115e-08, 0, 1, 0, 0.99999, 0, -1, 0, -4.37115e-08, 0, 1, 0)
+rotation_mode = 0
+cubic_interp = false
+loop = false
+
+[node name="PuzzlePanel2" parent="Path3D3/PathFollow3D" instance=ExtResource("3_20gwl")]
+transform = Transform3D(1, 0, -7.10543e-15, 0, 1.8, 0, 3.55271e-15, 0, 1.8, 0, 0, 0)
+puzzle_name = "factory3"
+save_name = "factory4"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/2:texture_puzzle"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+min_delta_length = 2.0
+puzzle_surface_material_id = 2
+viewport_size_override = Vector2i(1024, 1024)
+initial_active = true
+
+[node name="Mesh" parent="Path3D3/PathFollow3D/PuzzlePanel2" instance=ExtResource("5_ucw50")]
+transform = Transform3D(1, 0, -8.70007e-08, 0, 1, 0, 8.70007e-08, 0, 1, 0, 0, 0)
+surface_material_override/0 = SubResource("ShaderMaterial_sh5ee")
+surface_material_override/1 = SubResource("ShaderMaterial_sh5ee")
+surface_material_override/2 = SubResource("ShaderMaterial_vblb2")
+surface_material_override/3 = SubResource("ShaderMaterial_sh5ee")
+
+[node name="Area" type="Area3D" parent="Path3D3/PathFollow3D/PuzzlePanel2"]
+transform = Transform3D(1.12039e-07, 0, -1, 0, 1.484, 0, 1.484, 0, 7.54979e-08, -0.01, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D3/PathFollow3D/PuzzlePanel2/Area"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_vkax3")
+
+[node name="Audio" type="AudioStreamPlayer" parent="Path3D3/PathFollow3D/PuzzlePanel2"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="Path3D3/PathFollow3D/PuzzlePanel2"]
+script = ExtResource("8_px48s")
+
+[node name="Area4" type="Area3D" parent="."]
+transform = Transform3D(4.09808, 0, 0, 0, 4.09808, 0, 0, 0, 1, 21.5182, 4.05715, -2.26709)
+collision_layer = 19
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area4"]
+transform = Transform3D(-2.98023e-08, 0, 1, 0, 1, 0, -1, 0, -2.98023e-08, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_x0q7u")
+
+[node name="Mesh" type="MeshInstance3D" parent="Area4"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+transparency = 0.7
+cast_shadow = 0
+mesh = ExtResource("9_wjh1j")
+surface_material_override/0 = SubResource("StandardMaterial3D_qhgok")
+
+[node name="PuzzlePanel5" parent="." instance=ExtResource("3_20gwl")]
+transform = Transform3D(-2.94741e-08, -3.22794e-08, 1, -0.803774, 0.594935, -4.48637e-09, -0.594935, -0.803774, -4.34805e-08, 21.518, 2.662, 3.263)
+puzzle_name = "factory4_1"
+save_name = "factory4_1"
+viewport_configs = [{
+"name": "base",
+"targets": PackedStringArray("surface_material_override/0:texture_puzzle"),
+"transparent": false,
+"update": true,
+"visual": 15
+}]
+min_delta_length = 2.0
+viewport_size_override = Vector2i(700, 500)
+initial_active = true
+
+[node name="Mesh" type="MeshInstance3D" parent="PuzzlePanel5"]
+transform = Transform3D(-4.37114e-08, -1, 3.12099e-08, 0, -4.37114e-08, -0.714, 1, -4.37114e-08, 1.36423e-15, 0, 0, 0)
+mesh = SubResource("PlaneMesh_fixk2")
+surface_material_override/0 = SubResource("ShaderMaterial_ab368")
+
+[node name="Area" type="Area3D" parent="PuzzlePanel5"]
+transform = Transform3D(7.54979e-08, 1.19209e-07, -1, 0, 0.714, 2.08616e-07, 1, -1.06581e-14, 7.54979e-08, 0, 0, 0)
+collision_layer = 2147483652
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzlePanel5/Area"]
+transform = Transform3D(1, -1.77636e-15, -5.96046e-08, 3.55271e-15, 1, 2.98023e-08, 5.96046e-08, -2.98023e-08, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_uv260")
+
+[node name="Audio" type="AudioStreamPlayer" parent="PuzzlePanel5"]
+bus = &"PuzzleSoundEffect"
+
+[node name="InteractableNotifier" type="Node3D" parent="PuzzlePanel5"]
+script = ExtResource("8_px48s")
+
+[node name="InteractableLinker3" type="Node" parent="." node_paths=PackedStringArray("path", "path_follower")]
+script = ExtResource("8_ty6g5")
+path = NodePath("../Path3D3")
+path_follower = NodePath("../Path3D3/PathFollow3D")
+rail_points = [NodePath("../Factory3/Position3D1"), NodePath("../Factory3/Position3D2"), NodePath("../Factory3/Position3D3"), NodePath("../Factory3/Position3D4"), NodePath("../Factory3/Position3D5"), NodePath("../Factory3/Position3D6")]
+InteractableNodePath = NodePath("../PuzzlePanel5")

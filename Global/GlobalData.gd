@@ -25,6 +25,9 @@ const AllPuzzleJsons : Dictionary = {
 	"factory1_1": preload("res://PuzzleDataJson/Factory1-1.json"),
 	"factory2": preload("res://PuzzleDataJson/Factory2.json"),
 	"factory2_1": preload("res://PuzzleDataJson/Factory2-1.json"),
+	"factory3": preload("res://PuzzleDataJson/Factory3.json"),
+	"factory3_1": preload("res://PuzzleDataJson/Factory3-1.json"),
+	"factory4_1": preload("res://PuzzleDataJson/Factory4-1.json"),
 	"tetris_test": preload("res://PuzzleDataJson/Tetris-Test.json"),
 }
 var AllPuzzleData : Dictionary = {
@@ -43,6 +46,9 @@ var AllPuzzleData : Dictionary = {
 	"factory1_1": PuzzleData.new(AllPuzzleJsons.factory1_1),
 	"factory2": PuzzleData.new(AllPuzzleJsons.factory2),
 	"factory2_1": PuzzleData.new(AllPuzzleJsons.factory2_1),
+	"factory3": PuzzleData.new(AllPuzzleJsons.factory3),
+	"factory3_1": PuzzleData.new(AllPuzzleJsons.factory3_1),
+	"factory4_1": PuzzleData.new(AllPuzzleJsons.factory4_1),
 	"tetris_test": PuzzleData.new(AllPuzzleJsons.tetris_test),
 }
 # Layers: Puzzles | CurrentPuzzle | Walkzilla | WalkzillaDisabled ... | InvisibleObstacles | Player | Interactable | Visual | Normal

@@ -29,6 +29,7 @@ func _ready():
 	assert(near < far, 'near >= far')
 	var camera = get_viewport().get_camera_3d()
 	var camera_position = camera.global_transform.origin
+	
 	var self_position = self.global_transform.origin
 	var distance = camera_position.distance_to(self_position)
 	is_reachable = distance <= far
