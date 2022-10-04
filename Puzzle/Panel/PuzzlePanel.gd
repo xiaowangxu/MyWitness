@@ -142,7 +142,7 @@ class ViewportInstance extends RefCounted:
 		self.config_name = config.name
 		self.viewport.transparent_bg = viewport_transparent
 		self.viewport.size = Vector2i.ONE
-		self.viewport.msaa_2d = Viewport.MSAA_2X
+#		self.viewport.msaa_2d = Viewport.MSAA_4X
 		parent.add_child(self.viewport)
 		if self.puzzle_renderer != null:
 			self.viewport.add_child(self.puzzle_renderer)
